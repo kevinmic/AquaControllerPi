@@ -9,6 +9,7 @@
 
     <properties>
         <pi4j.version>1.1</pi4j.version>
+        <dropwizard.version>1.1.0-rc1</dropwizard.version>
     </properties>
 
     <modules>
@@ -20,6 +21,29 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Local Dependencies -->
+            <dependency>
+                <groupId>com.kevin_mic.aqua</groupId>
+                <artifactId>model</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kevin_mic.aqua</groupId>
+                <artifactId>dao</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kevin_mic.aqua</groupId>
+                <artifactId>service</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.kevin_mic.aqua</groupId>
+                <artifactId>rest</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+
+            <!-- 3rd party dependencies -->
             <dependency>
                 <groupId>com.pi4j</groupId>
                 <artifactId>pi4j-gpio-extension</artifactId>
@@ -29,6 +53,13 @@
                 <groupId>com.pi4j</groupId>
                 <artifactId>pi4j-device</artifactId>
                 <version>${pi4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard</groupId>
+                <artifactId>dropwizard-bom</artifactId>
+                <version>${dropwizard.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
