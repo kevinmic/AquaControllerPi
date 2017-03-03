@@ -22,7 +22,6 @@ public class Main extends Application<AquaControllerConfig> {
     @Override
     public void run(AquaControllerConfig configuration, Environment environment) {
         final TestResource resource = new TestResource();
-        environment.jersey().register(resource);
-
+        environment.jersey().packages(Main.class.getPackage().getName());
     }
 }
