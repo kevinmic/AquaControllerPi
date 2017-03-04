@@ -31,3 +31,9 @@ database:
   password: sa
   url: jdbc:h2:./h2db
 
+flyway:
+  encoding: UTF-8
+  # Locations to scan recursively for migrations. (default: db/migration)
+  locations:
+    - db/migration
+

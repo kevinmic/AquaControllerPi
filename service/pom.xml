@@ -13,5 +13,9 @@
     <packaging>jar</packaging>
 
     <dependencies>
+        <dependency>
+            <groupId>com.kevin_mic.aqua</groupId>
+            <artifactId>dao</artifactId>
+        </dependency>
     </dependencies>
 </project>

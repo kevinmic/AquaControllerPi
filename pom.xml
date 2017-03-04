@@ -11,6 +11,7 @@
         <pi4j.version>1.1</pi4j.version>
         <dropwizard.version>1.0.2</dropwizard.version>
         <dropwizard.hubspot.guice.version>1.0.0.3</dropwizard.hubspot.guice.version>
+        <dropwizard.flyway>1.0.0-1</dropwizard.flyway>
     </properties>
 
     <modules>
@@ -66,6 +67,16 @@
                 <groupId>com.hubspot.dropwizard</groupId>
                 <artifactId>dropwizard-guice</artifactId>
                 <version>${dropwizard.hubspot.guice.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>io.dropwizard.modules</groupId>
+                <artifactId>dropwizard-flyway</artifactId>
+                <version>${dropwizard.flyway}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>1.4.193</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
