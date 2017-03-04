@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <version>1.0</version>
-    <artifactId>parent</artifactId>
+    <artifactId>aqua-controller</artifactId>
     <groupId>com.kevin_mic.aqua</groupId>
     <packaging>pom</packaging>
 

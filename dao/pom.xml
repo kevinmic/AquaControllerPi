@@ -4,7 +4,7 @@
 
     <parent>
         <groupId>com.kevin_mic.aqua</groupId>
-        <artifactId>parent</artifactId>
+        <artifactId>aqua-controller</artifactId>
         <version>1.0</version>
     </parent>
 
