@@ -14,6 +14,7 @@
         <dropwizard.flyway>1.0.0-1</dropwizard.flyway>
         <h2.version>1.4.193</h2.version>
         <quarts.version>2.2.1</quarts.version>
+        <lombok.version>1.16.10</lombok.version>
     </properties>
 
     <modules>
@@ -89,6 +90,11 @@
                 <groupId>org.quartz-scheduler</groupId>
                 <artifactId>quartz-jobs</artifactId>
                 <version>${quarts.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

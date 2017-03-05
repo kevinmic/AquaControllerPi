@@ -26,7 +26,7 @@ public class AquaControllerModule extends AbstractModule {
         // Bind each dao to a provider
         try {
             ClassPath from = ClassPath.from(Thread.currentThread().getContextClassLoader());
-            ImmutableSet<ClassPath.ClassInfo> topLevelClasses = from.getTopLevelClasses("com.kevin_eic.aqua.dao");
+            ImmutableSet<ClassPath.ClassInfo> topLevelClasses = from.getTopLevelClasses("com.kevin_mic.aqua.dao");
             for (ClassPath.ClassInfo topLevelClass : topLevelClasses) {
                 if (topLevelClass.getName().endsWith("Dbi")) {
                     Class aClass = Thread.currentThread().getContextClassLoader().loadClass(topLevelClass.getName());
