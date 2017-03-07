@@ -19,6 +19,7 @@ import java.io.IOException;
 public class AquaControllerModule extends AbstractModule {
     private static DBI jdbi = null;
     private static Scheduler scheduler = null;
+    private AquaConnectionProvider provider;
 
     protected void configure() {
         bind(DatabaseConfiguration.class).to(AquaControllerConfig.class);

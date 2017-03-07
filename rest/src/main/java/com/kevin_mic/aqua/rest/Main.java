@@ -9,7 +9,8 @@ import io.dropwizard.setup.Bootstrap;
 import io.dropwizard.setup.Environment;
 
 public class Main extends Application<AquaControllerConfig> {
-    private GuiceBundle<AquaControllerConfig> guiceBundle;
+    // NOTE: I have done this so that AquaConnectorProvider can gain access to the DBI
+    private static GuiceBundle<AquaControllerConfig> GUICE_BUNDLE;
 
     public static void main(String[] args) throws Exception {
         new Main().run(args);
@@ -22,13 +23,13 @@ public class Main extends Application<AquaControllerConfig> {
 
     @Override
     public void initialize(Bootstrap<AquaControllerConfig> bootstrap) {
-        guiceBundle = GuiceBundle.<AquaControllerConfig>newBuilder()
+        GUICE_BUNDLE = GuiceBundle.<AquaControllerConfig>newBuilder()
                 .addModule(new AquaControllerModule())
                 .setConfigClass(AquaControllerConfig.class)
                 .enableAutoConfig(getClass().getPackage().getName())
                 .build();
 
-        bootstrap.addBundle(guiceBundle);
+        bootstrap.addBundle(GUICE_BUNDLE);
 
         bootstrap.addBundle(new FlywayBundle<AquaControllerConfig>() {
             public DataSourceFactory getDataSourceFactory(AquaControllerConfig configuration) {
@@ -45,5 +46,9 @@ public class Main extends Application<AquaControllerConfig> {
 
     @Override
     public void run(AquaControllerConfig configuration, Environment environment) {
+    }
+
+    public static <T> T getBean(Class<T> clazz) {
+        return GUICE_BUNDLE.getInjector().getInstance(clazz);
     }
 }
