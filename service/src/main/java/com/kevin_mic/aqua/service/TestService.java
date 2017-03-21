@@ -1,6 +1,6 @@
 package com.kevin_mic.aqua.service;
 
-import com.kevin_mic.aqua.dao.TestDbi;
+import com.kevin_mic.aqua.dbi.TestDbi;
 import com.kevin_mic.aqua.model.TestObj;
 
 import javax.inject.Inject;

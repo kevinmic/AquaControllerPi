@@ -1,6 +1,6 @@
 package com.kevin_mic.aqua.service;
 
-import com.kevin_mic.aqua.dao.TestDbi;
+import com.kevin_mic.aqua.dbi.TestDbi;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

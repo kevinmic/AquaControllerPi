@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.dao;
+package com.kevin_mic.aqua.dbi;
 
 import com.kevin_mic.aqua.model.TestObj;
 import org.skife.jdbi.v2.sqlobject.BindBean;
@@ -14,6 +14,6 @@ public interface TestDbi {
     @SqlQuery("select id, name from test")
     List<TestObj> getTests();
 
-    @SqlUpdate("insert into test (id, name) values (:id, :name)")
+    @SqlUpdate("insertNewPin into test (id, name) values (:id, :name)")
     void insert(@BindBean TestObj obj);
 }
