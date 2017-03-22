@@ -1,10 +1,5 @@
 package com.kevin_mic.aqua.types;
 
-import com.kevin_mic.aqua.entity.PinSupplier;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public enum PinSupplierType {
     RASBERRY_PI(30),
     PCF8574(8),
