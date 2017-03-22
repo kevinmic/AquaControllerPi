@@ -15,11 +15,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 public class PinSupplierDaoTest extends BaseTest {
-    private PinSupplierDao dao;
+    private PinSupplierDao tested;
 
     @Before
     public void beforeMethod() {
-        dao = new PinSupplierDao(dbi);
+        tested = new PinSupplierDao(dbi);
     }
 
     @Test
@@ -27,33 +27,33 @@ public class PinSupplierDaoTest extends BaseTest {
         PinSupplier createSupplier = getPinSupplier();
         int supplierId = createSupplier.getPinSupplierId();
 
-        dao.insertSupplier(createSupplier);
+        tested.insertSupplier(createSupplier);
 
-        PinSupplier foundSupplier = dao.getSupplier(supplierId);
+        PinSupplier foundSupplier = tested.getSupplier(supplierId);
         assertEquals(createSupplier, foundSupplier);
 
-        List<Pin> foundPins = dao.getPins(supplierId);
+        List<Pin> foundPins = tested.getPins(supplierId);
         assertNotNull(foundPins);
         assertEquals(8, foundPins.size());
         Pin test_1_1 = foundPins.stream().filter(p -> p.getPinNumber() == 1).findFirst().get();
         assertEquals(supplierId, test_1_1.getPinSupplierId());
         assertNull(test_1_1.getOwnedByDeviceId());
 
-        assertEquals(1, dao.getPinSuppliers().size());
+        assertEquals(1, tested.getPinSuppliers().size());
 
-        dao.deleteSupplier(supplierId);
+        tested.deleteSupplier(supplierId);
 
-        foundSupplier = dao.getSupplier(supplierId);
+        foundSupplier = tested.getSupplier(supplierId);
         assertNull(foundSupplier);
 
-        foundPins = dao.getPins(supplierId);
+        foundPins = tested.getPins(supplierId);
         assertEquals(0, foundPins.size());
 
     }
 
     private PinSupplier getPinSupplier() {
         PinSupplier createSupplier = new PinSupplier();
-        createSupplier.setPinSupplierId(dao.getNextId());
+        createSupplier.setPinSupplierId(tested.getNextId());
         createSupplier.setHardwareId("HRD1");
         createSupplier.setName("NAME");
         createSupplier.setSupplierType(PinSupplierType.PCF8574);

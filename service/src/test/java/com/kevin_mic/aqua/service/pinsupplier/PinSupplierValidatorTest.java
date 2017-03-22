@@ -8,6 +8,7 @@ import com.kevin_mic.aqua.model.types.PinSupplierType;
 import org.junit.Before;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -34,52 +35,31 @@ public class PinSupplierValidatorTest {
     @Test
     public void test_validate_invalid_Hardware() {
         PinSupplier pinSupplier = getValidPinSupplier();
-        pinSupplier.setHardwareId(null);
-        try {
-            tested.validate(pinSupplier);
-            fail();
-        }
-        catch (AquaException e) {
-            assertEquals(ErrorType.SupplierHardwareIdCannotBeNull, e.getErrorType());
-        }
+        pinSupplier.setHardwareId("");
+
+        assertThatThrownBy(() -> tested.validate(pinSupplier)).hasMessage(ErrorType.SupplierHardwareIdCannotBeNull.name());
     }
 
     @Test
     public void test_validate_invalid_name() {
         PinSupplier pinSupplier = getValidPinSupplier();
-        pinSupplier.setName(null);
-        try {
-            tested.validate(pinSupplier);
-            fail();
-        }
-        catch (AquaException e) {
-            assertEquals(ErrorType.SupplierNameCannotBeNull, e.getErrorType());
-        }
+        pinSupplier.setName("");
+
+        assertThatThrownBy(() -> tested.validate(pinSupplier)).hasMessage(ErrorType.SupplierNameCannotBeNull.name());
     }
 
     @Test
     public void test_validate_invalid_type() {
         PinSupplier pinSupplier = getValidPinSupplier();
         pinSupplier.setSupplierType(null);
-        try {
-            tested.validate(pinSupplier);
-            fail();
-        }
-        catch (AquaException e) {
-            assertEquals(ErrorType.SupplierTypeCannotBeNull, e.getErrorType());
-        }
+
+        assertThatThrownBy(() -> tested.validate(pinSupplier)).hasMessage(ErrorType.SupplierTypeCannotBeNull.name());
     }
 
     @Test
     public void test_validateHardwareidNotUsed_found() {
         when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(getValidPinSupplier());
-        try {
-            tested.validateHardwareIdNotUsed(getValidPinSupplier());
-            fail();
-        }
-        catch (AquaException e) {
-            assertEquals(ErrorType.SupplierHardwareIdAlreadyUsed, e.getErrorType());
-        }
+        assertThatThrownBy(() -> tested.validateHardwareIdNotUsed(getValidPinSupplier())).hasMessage(ErrorType.SupplierHardwareIdAlreadyUsed.name());
     }
 
     @Test

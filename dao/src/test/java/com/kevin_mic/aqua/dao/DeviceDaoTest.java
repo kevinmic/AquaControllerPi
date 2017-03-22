@@ -15,12 +15,12 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class DeviceDaoTest extends BaseTest {
-    private DeviceDao dao;
+    private DeviceDao tested;
     private PinSupplierDao pinSupplierDao;
 
     @Before
     public void beforeMethod() {
-        dao = new DeviceDao(dbi);
+        tested = new DeviceDao(dbi);
         pinSupplierDao = new PinSupplierDao(dbi);
     }
 
@@ -43,7 +43,7 @@ public class DeviceDaoTest extends BaseTest {
         device.setDeviceId(1);
         device.setType(DeviceType.DosingPumpPeristalticStepper);
 
-        dao.addDevice(device);
+        tested.addDevice(device);
     }
 
     @Test
@@ -52,18 +52,20 @@ public class DeviceDaoTest extends BaseTest {
         int pinId = getPinId(supplierId);
 
         Device createDevice = createDevice(pinId);
-        dao.addDevice(createDevice);
+        tested.addDevice(createDevice);
         int deviceId = createDevice.getDeviceId();
 
-        Device findDevice = dao.getDevice(deviceId);
+        Device findDevice = tested.getDevice(deviceId);
         assertEquals(createDevice, findDevice);
 
         Pin pin = pinSupplierDao.getPins(supplierId).get(0);
         assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
 
-        dao.removeDevice(deviceId);
+        assertEquals(1, tested.getAllDevices().size());
 
-        findDevice = dao.getDevice(deviceId);
+        tested.removeDevice(deviceId);
+
+        findDevice = tested.getDevice(deviceId);
         assertNull(findDevice);
 
         pin = pinSupplierDao.getPins(supplierId).get(0);
@@ -77,7 +79,7 @@ public class DeviceDaoTest extends BaseTest {
         Device createDevice = createDevice(1111);
 
         try {
-            dao.addDevice(createDevice);
+            tested.addDevice(createDevice);
             fail("We should have had a constraint violation");
         }
         catch (CallbackFailedException e) {
@@ -92,7 +94,7 @@ public class DeviceDaoTest extends BaseTest {
         int pinId = getPinId(supplierId);
         {
             Device device1 = createDevice(pinId);
-            dao.addDevice(device1);
+            tested.addDevice(device1);
         }
 
         Device device2 = new Device();
@@ -102,7 +104,7 @@ public class DeviceDaoTest extends BaseTest {
         device2.setType(DeviceType.DosingPumpPeristalticStepper);
 
         try {
-            dao.addDevice(device2);
+            tested.addDevice(device2);
             fail("We should have failed");
         }
         catch (CallbackFailedException e) {
@@ -116,7 +118,7 @@ public class DeviceDaoTest extends BaseTest {
         int pinId = getPinId(supplierId);
 
         Device device1 = createDevice(pinId);
-        dao.addDevice(device1);
+        tested.addDevice(device1);
 
         try {
             pinSupplierDao.deleteSupplier(supplierId);

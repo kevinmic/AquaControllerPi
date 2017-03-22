@@ -9,6 +9,8 @@ import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapperFactory;
 import org.skife.jdbi.v2.tweak.BeanMapperFactory;
 
+import java.util.List;
+
 @RegisterMapperFactory(BeanMapperFactory.class)
 public interface DeviceDbi {
     @SqlUpdate("insert into " + Device.TABLE_NAME + " (pinId, type, name, hardwareId) values (:pinId, :type, :name, :hardwareId) ")
@@ -23,4 +25,7 @@ public interface DeviceDbi {
 
     @SqlUpdate("delete from " + Device.TABLE_NAME + " where deviceId = :deviceId ")
     void delete(@Bind("deviceId") int deviceId);
+
+    @SqlQuery("select * from " + Device.TABLE_NAME)
+    List<Device> getAllDevices();
 }

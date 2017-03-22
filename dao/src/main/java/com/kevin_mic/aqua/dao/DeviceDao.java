@@ -6,6 +6,7 @@ import com.kevin_mic.aqua.model.Device;
 import org.skife.jdbi.v2.DBI;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class DeviceDao {
     private DBI dbi;
@@ -33,7 +34,11 @@ public class DeviceDao {
     }
 
     public Device getDevice(int deviceId) {
-        return dbi.onDemand(DeviceDbi.class).getDevice(deviceId);
+        return getDeviceDbi().getDevice(deviceId);
+    }
+
+    private DeviceDbi getDeviceDbi() {
+        return dbi.onDemand(DeviceDbi.class);
     }
 
     public void removeDevice(int deviceId) {
@@ -50,5 +55,9 @@ public class DeviceDao {
             }
             return null;
         });
+    }
+
+    public List<Device> getAllDevices() {
+        return getDeviceDbi().getAllDevices();
     }
 }
