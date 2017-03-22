@@ -17,17 +17,17 @@ public class PinSupplierService {
     public PinSupplier add(PinSupplier pinSupplier) {
         validate(pinSupplier);
         validateHardwareIdNotUsed(pinSupplier.getHardwareId());
-        pinSupplier.setPinSupplierId(pinSupplierDao.getNextId());
+        validateHardwareConnected(pinSupplier);
 
-        // TODO, we need to get a pinSupplierId first
+        pinSupplier.setPinSupplierId(pinSupplierDao.getNextId());
         List<String> pins = pinSupplier.getSupplierType().getPinIds(pinSupplier.getPinSupplierId(), pinSupplier.getHardwareId());
         pinSupplierDao.insertSupplier(pinSupplier, pins);
 
         return pinSupplier;
     }
 
-    private void generateAndValidateId(PinSupplier pinSupplier) {
-        pinSupplier.getSupplierType();
+    private void validateHardwareConnected(PinSupplier pinSupplier) {
+        // TODO
     }
 
     private void validateHardwareIdNotUsed(String hardwareId) {
