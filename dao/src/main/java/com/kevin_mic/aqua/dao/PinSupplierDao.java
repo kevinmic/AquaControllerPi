@@ -18,15 +18,15 @@ public class PinSupplierDao {
         this.dbi = dbi;
     }
 
-    public void insertSupplier(PinSupplier pinSupplier, List<String> pinIds) {
+    public void insertSupplier(PinSupplier pinSupplier) {
         dbi.inTransaction((handle,transactionStatus) -> {
             PinDbi pinDbi = handle.attach(PinDbi.class);
             PinSupplierDbi pinSupplierDbi = handle.attach(PinSupplierDbi.class);
 
             pinSupplierDbi.insert(pinSupplier);
-            for (String pinId : pinIds) {
+            for (int pinNumber = 0; pinNumber < pinSupplier.getSupplierType().getNumberOfPins(); pinNumber++) {
                 Pin pin = new Pin();
-                pin.setPinId(pinId);
+                pin.setPinNumber(pinNumber);
                 pin.setPinSupplierId(pinSupplier.getPinSupplierId());
                 pinDbi.insert(pin);
             }

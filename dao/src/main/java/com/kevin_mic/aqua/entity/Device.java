@@ -8,7 +8,7 @@ public class Device {
     public static final String TABLE_NAME = "device";
 
     private int deviceId;
-    private String pinId;
+    private Integer pinId;
     private DeviceType type;
     private String name;
     private String hardwareId;

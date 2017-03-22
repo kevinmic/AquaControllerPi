@@ -18,8 +18,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 public class DeviceDaoTest extends BaseTest {
-    public static final String PIN_1 = "PIN_1";
-
     private DeviceDao dao;
     private PinSupplierDao pinSupplierDao;
 
@@ -54,8 +52,9 @@ public class DeviceDaoTest extends BaseTest {
     @Test
     public void test_crud_wPin() {
         int supplierId = createPin();
+        int pinId = getPinId(supplierId);
 
-        Device createDevice = createDevice();
+        Device createDevice = createDevice(pinId);
         dao.addDevice(createDevice);
         int deviceId = createDevice.getDeviceId();
 
@@ -78,7 +77,7 @@ public class DeviceDaoTest extends BaseTest {
 
     @Test
     public void test_devicePinFK_pinMustExist() {
-        Device createDevice = createDevice();
+        Device createDevice = createDevice(1111);
 
         try {
             dao.addDevice(createDevice);
@@ -92,15 +91,16 @@ public class DeviceDaoTest extends BaseTest {
 
     @Test
     public void test_devicePinFK_pinAlreadyUsed() {
-        createPin();
+        int supplierId = createPin();
+        int pinId = getPinId(supplierId);
         {
-            Device device1 = createDevice();
+            Device device1 = createDevice(pinId);
             dao.addDevice(device1);
         }
 
         Device device2 = new Device();
         device2.setName("NAME");
-        device2.setPinId(PIN_1);
+        device2.setPinId(pinId);
         device2.setHardwareId("HWD");
         device2.setType(DeviceType.DosingPumpPeristalticStepper);
 
@@ -116,7 +116,9 @@ public class DeviceDaoTest extends BaseTest {
     @Test
     public void test_devicePinFK() {
         int supplierId = createPin();
-        Device device1 = createDevice();
+        int pinId = getPinId(supplierId);
+
+        Device device1 = createDevice(pinId);
         dao.addDevice(device1);
 
         try {
@@ -129,10 +131,10 @@ public class DeviceDaoTest extends BaseTest {
 
     }
 
-    private Device createDevice() {
+    private Device createDevice(Integer pinId) {
         Device createDevice = new Device();
         createDevice.setName("NAME");
-        createDevice.setPinId(PIN_1);
+        createDevice.setPinId(pinId);
         createDevice.setHardwareId("HWD");
         createDevice.setType(DeviceType.DosingPumpPeristalticStepper);
         return createDevice;
@@ -148,10 +150,13 @@ public class DeviceDaoTest extends BaseTest {
         pinSupplier.setHardwareId("HARDWAREID");
         pinSupplier.setSupplierType(PinSupplierType.RASBERRY_PI);
         pinSupplier.setName("PI");
-        List<String> pins = new ArrayList<>();
-        pins.add(PIN_1);
-        pinSupplierDao.insertSupplier(pinSupplier, pins);
+        pinSupplierDao.insertSupplier(pinSupplier);
         return pinSupplier.getPinSupplierId();
     }
+
+    private int getPinId(int supplierId) {
+        return pinSupplierDao.getPins(supplierId).get(0).getPinId();
+    }
+
 
 }

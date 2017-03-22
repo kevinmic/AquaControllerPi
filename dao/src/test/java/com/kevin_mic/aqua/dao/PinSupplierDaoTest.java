@@ -28,20 +28,15 @@ public class PinSupplierDaoTest extends BaseTest {
         PinSupplier createSupplier = getPinSupplier();
         int supplierId = createSupplier.getPinSupplierId();
 
-        List<String> pins = new ArrayList<>();
-        pins.add("TEST_1_1");
-        pins.add("TEST_1_2");
-        pins.add("TEST_1_3");
-        pins.add("TEST_1_4");
-        dao.insertSupplier(createSupplier, pins);
+        dao.insertSupplier(createSupplier);
 
         PinSupplier foundSupplier = dao.getSupplier(supplierId);
         assertEquals(createSupplier, foundSupplier);
 
         List<Pin> foundPins = dao.getPins(supplierId);
         assertNotNull(foundPins);
-        assertEquals(4, foundPins.size());
-        Pin test_1_1 = foundPins.stream().filter(p -> p.getPinId().equals("TEST_1_1")).findFirst().get();
+        assertEquals(8, foundPins.size());
+        Pin test_1_1 = foundPins.stream().filter(p -> p.getPinNumber() == 1).findFirst().get();
         assertEquals(supplierId, test_1_1.getPinSupplierId());
         assertNull(test_1_1.getOwnedByDeviceId());
 

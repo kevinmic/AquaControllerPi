@@ -20,8 +20,7 @@ public class PinSupplierService {
         validateHardwareConnected(pinSupplier);
 
         pinSupplier.setPinSupplierId(pinSupplierDao.getNextId());
-        List<String> pins = pinSupplier.getSupplierType().getPinIds(pinSupplier.getPinSupplierId(), pinSupplier.getHardwareId());
-        pinSupplierDao.insertSupplier(pinSupplier, pins);
+        pinSupplierDao.insertSupplier(pinSupplier);
 
         return pinSupplier;
     }
