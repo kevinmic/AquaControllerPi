@@ -8,7 +8,3 @@ CREATE TABLE pin_supplier (
   hardwareId VARCHAR(124) UNIQUE NOT NULL
 );
 
-insert into pin_supplier
-(pinSupplierId, supplierType, name, voltage, hardwareId)
-VALUES
-  (1, 'RASBERRY_PI', 'PI', null, 'PI');

@@ -1,13 +1,18 @@
 package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.model.Device;
+import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
+import com.kevin_mic.aqua.model.types.PinType;
 import org.junit.Before;
 import org.junit.Test;
 import org.skife.jdbi.v2.exceptions.CallbackFailedException;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -28,7 +33,7 @@ public class DeviceDaoTest extends BaseTest {
     public String[] cleanupSql() {
         return new String[] {
                 "update " + Pin.TABLE_NAME + " set ownedByDeviceId = null",
-                "update " + Device.TABLE_NAME + " set pinId = null",
+                "delete from " + DevicePin.TABLE_NAME,
                 "delete from " + Pin.TABLE_NAME,
                 "delete from " + PinSupplier.TABLE_NAME,
                 "delete from " + Device.TABLE_NAME
@@ -97,12 +102,7 @@ public class DeviceDaoTest extends BaseTest {
             tested.addDevice(device1);
         }
 
-        Device device2 = new Device();
-        device2.setName("NAME");
-        device2.setPinId(pinId);
-        device2.setHardwareId("HWD");
-        device2.setType(DeviceType.DosingPumpPeristalticStepper);
-
+        Device device2 = createDevice(pinId);
         try {
             tested.addDevice(device2);
             fail("We should have failed");
@@ -110,6 +110,16 @@ public class DeviceDaoTest extends BaseTest {
         catch (CallbackFailedException e) {
             assertTrue(e.getMessage().contains("Pin Already In Use"));
         }
+    }
+
+    private void addPin(Device device, int pinId, PinType type) {
+        List<DevicePin> pins = device.getPins();
+        if (pins == null) {
+            pins = new ArrayList<>();
+            device.setPins(pins);
+        }
+
+        pins.add(new DevicePin(pinId, -1, type));
     }
 
     @Test
@@ -133,9 +143,9 @@ public class DeviceDaoTest extends BaseTest {
     private Device createDevice(Integer pinId) {
         Device createDevice = new Device();
         createDevice.setName("NAME");
-        createDevice.setPinId(pinId);
         createDevice.setHardwareId("HWD");
         createDevice.setType(DeviceType.DosingPumpPeristalticStepper);
+        addPin(createDevice, pinId, PinType.I2C_SDA1);
         return createDevice;
     }
 

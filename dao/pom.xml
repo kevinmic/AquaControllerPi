@@ -27,6 +27,10 @@
             <artifactId>javax.inject</artifactId>
             <version>1</version>
         </dependency>
+        <dependency>
+            <groupId>commons-collections</groupId>
+            <artifactId>commons-collections</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>com.kevin_mic.aqua</groupId>

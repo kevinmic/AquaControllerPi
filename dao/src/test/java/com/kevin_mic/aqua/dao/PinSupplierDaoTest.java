@@ -1,6 +1,7 @@
 package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.model.Device;
+import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
@@ -65,7 +66,7 @@ public class PinSupplierDaoTest extends BaseTest {
     public String[] cleanupSql() {
         return new String[] {
                 "update " + Pin.TABLE_NAME + " set ownedByDeviceId = null",
-                "update " + Device.TABLE_NAME + " set pinid = null",
+                "delete from " + DevicePin.TABLE_NAME,
                 "delete from " + Pin.TABLE_NAME,
                 "delete from " + PinSupplier.TABLE_NAME,
         };

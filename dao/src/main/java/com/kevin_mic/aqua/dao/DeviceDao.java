@@ -3,6 +3,8 @@ package com.kevin_mic.aqua.dao;
 import com.kevin_mic.aqua.dbi.DeviceDbi;
 import com.kevin_mic.aqua.dbi.PinDbi;
 import com.kevin_mic.aqua.model.Device;
+import com.kevin_mic.aqua.model.DevicePin;
+import org.apache.commons.collections.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
 
 import javax.inject.Inject;
@@ -23,8 +25,12 @@ public class DeviceDao {
 
             int deviceId = deviceDbi.insert(device);
             device.setDeviceId(deviceId);
-            if (device.getPinId() != null) {
-                pinDbi.addDeviceOwnershipWithCheck(device.getPinId(), device.getDeviceId());
+            if (!CollectionUtils.isEmpty(device.getPins())) {
+                for (DevicePin devicePin : device.getPins()) {
+                    devicePin.setDeviceId(deviceId);
+                    pinDbi.addDeviceOwnershipWithCheck(devicePin);
+                    deviceDbi.insertDevicePin(devicePin);
+                }
             }
 
             return null;
@@ -34,7 +40,11 @@ public class DeviceDao {
     }
 
     public Device getDevice(int deviceId) {
-        return getDeviceDbi().getDevice(deviceId);
+        Device device = getDeviceDbi().getDevice(deviceId);
+        if (device != null) {
+            device.setPins(getDeviceDbi().getPins(deviceId));
+        }
+        return device;
     }
 
     private DeviceDbi getDeviceDbi() {
@@ -48,9 +58,13 @@ public class DeviceDao {
 
             Device device = deviceDbi.getDevice_forUpdate(deviceId);
             if (device != null) {
-                if (device.getPinId() != null) {
-                    pinDbi.removeDeviceOwnership(device.getPinId(), deviceId);
+                List<DevicePin> pins = deviceDbi.getPins(deviceId);
+                if (!CollectionUtils.isEmpty(pins)) {
+                    for (DevicePin devicePin : pins) {
+                        pinDbi.removeDeviceOwnership(devicePin);
+                    }
                 }
+                deviceDbi.removeAllPins(deviceId);
                 deviceDbi.delete(deviceId);
             }
             return null;

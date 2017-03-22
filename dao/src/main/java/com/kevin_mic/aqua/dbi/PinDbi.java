@@ -1,5 +1,6 @@
 package com.kevin_mic.aqua.dbi;
 
+import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.Pin;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
@@ -23,22 +24,22 @@ public abstract class PinDbi {
     @GetGeneratedKeys
     public abstract int insert(@BindBean Pin pin);
 
-    public void addDeviceOwnershipWithCheck(@Bind("pinId") int pinId, @Bind("deviceId") int deviceId) {
-        Pin pin = getPin_ForUpdate(pinId);
+    public void addDeviceOwnershipWithCheck(DevicePin devicePin) {
+        Pin pin = getPin_ForUpdate(devicePin.getPinId());
         if (pin != null && pin.getOwnedByDeviceId() != null) {
             throw new RuntimeException("Pin Already In Use");
         }
-        addDeviceOwnership(pinId, deviceId);
+        addDeviceOwnership(devicePin);
     }
 
     @SqlQuery("select * from " + Pin.TABLE_NAME + " where pinId = :pinId for update")
     public abstract Pin getPin_ForUpdate(@Bind("pinId") int pinId);
 
     @SqlUpdate("update " + Pin.TABLE_NAME + " set ownedByDeviceId = :deviceId where pinId = :pinId")
-    abstract void addDeviceOwnership(@Bind("pinId") int pinId, @Bind("deviceId") int deviceId);
+    abstract void addDeviceOwnership(@BindBean DevicePin dpin);
 
     @SqlUpdate("update " + Pin.TABLE_NAME + " set ownedByDeviceId = null where pinId = :pinId and ownedByDeviceId = :deviceId")
-    public abstract void removeDeviceOwnership(@Bind("pinId") int pinId, @Bind("deviceId") int deviceId);
+    public abstract void removeDeviceOwnership(@BindBean DevicePin dpin);
 
     @SqlUpdate("delete from " + Pin.TABLE_NAME + " where pinSupplierId = :supplierId")
     public abstract void deleteBySupplier(@Bind("supplierId") int supplierId);

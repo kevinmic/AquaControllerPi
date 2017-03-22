@@ -13,5 +13,7 @@ public class DeviceValidator {
         if (device.getType() == null) {
             throw new AquaException(ErrorType.DeviceTypeRequired);
         }
+
+        // TODO: Validate pins
     }
 }
