@@ -39,6 +39,8 @@ public class PinSupplierDaoTest extends BaseTest {
         assertEquals(supplierId, test_1_1.getPinSupplierId());
         assertNull(test_1_1.getOwnedByDeviceId());
 
+        assertEquals(1, dao.getPinSuppliers().size());
+
         dao.deleteSupplier(supplierId);
 
         foundSupplier = dao.getSupplier(supplierId);
@@ -46,6 +48,7 @@ public class PinSupplierDaoTest extends BaseTest {
 
         foundPins = dao.getPins(supplierId);
         assertEquals(0, foundPins.size());
+
     }
 
     private PinSupplier getPinSupplier() {

@@ -36,6 +36,12 @@ public class PinSupplierREST {
     }
 
     @GET
+    @Path("/{supplierId}")
+    public PinSupplier getPinSupplier(@PathParam("supplierId") int supplierId) {
+        return supplierService.findById(supplierId);
+    }
+
+    @GET
     @Path("/{supplierId}/pins")
     public List<Pin> getPins(@PathParam("supplierId") int supplierId) {
         return supplierService.listPins(supplierId);

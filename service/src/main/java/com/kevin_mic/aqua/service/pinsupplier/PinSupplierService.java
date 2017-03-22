@@ -35,4 +35,8 @@ public class PinSupplierService {
     public List<Pin> listPins(int supplierId) {
         return pinSupplierDao.getPins(supplierId);
     }
+
+    public PinSupplier findById(int supplierId) {
+        return pinSupplierDao.getSupplier(supplierId);
+    }
 }

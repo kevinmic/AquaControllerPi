@@ -1,6 +1,6 @@
 package com.kevin_mic.aqua.service;
 
-import com.kevin_mic.aqua.dbi.TestDbi;
+import com.kevin_mic.aqua.dao.PinSupplierDao;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -8,15 +8,15 @@ import org.quartz.JobExecutionException;
 import javax.inject.Inject;
 
 public class TestJob implements Job {
-    TestDbi testDbi;
+    private final PinSupplierDao pinSupplierDao;
 
     @Inject
-    public TestJob(TestDbi testDbi) {
-        this.testDbi = testDbi;
+    public TestJob(PinSupplierDao pinSupplierDao) {
+        this.pinSupplierDao = pinSupplierDao;
     }
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
-        System.out.println("CHECKING TESTS - " + testDbi.getTests().size());
+        System.out.println("CHECKING suppliers - " + pinSupplierDao.getPinSuppliers().size());
     }
 }
