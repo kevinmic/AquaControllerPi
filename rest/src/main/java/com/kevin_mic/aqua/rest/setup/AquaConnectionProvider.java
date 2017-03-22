@@ -1,5 +1,6 @@
-package com.kevin_mic.aqua.rest;
+package com.kevin_mic.aqua.rest.setup;
 
+import com.kevin_mic.aqua.rest.Main;
 import org.quartz.utils.ConnectionProvider;
 import org.skife.jdbi.v2.DBI;
 

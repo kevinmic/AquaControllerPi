@@ -1,9 +1,7 @@
 package com.kevin_mic.aqua.service.pinsupplier;
 
 import com.kevin_mic.aqua.dao.PinSupplierDao;
-import com.kevin_mic.aqua.entity.PinSupplier;
-import com.kevin_mic.aqua.service.pinsupplier.PinSupplierService;
-import com.kevin_mic.aqua.service.pinsupplier.PinSupplierValidator;
+import com.kevin_mic.aqua.model.PinSupplier;
 import org.junit.Before;
 import org.junit.Test;
 

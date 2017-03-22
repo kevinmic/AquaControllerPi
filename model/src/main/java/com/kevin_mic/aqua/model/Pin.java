@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.entity;
+package com.kevin_mic.aqua.model;
 
 import lombok.Data;
 

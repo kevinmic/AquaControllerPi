@@ -2,8 +2,8 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.dbi.PinDbi;
 import com.kevin_mic.aqua.dbi.PinSupplierDbi;
-import com.kevin_mic.aqua.entity.Pin;
-import com.kevin_mic.aqua.entity.PinSupplier;
+import com.kevin_mic.aqua.model.Pin;
+import com.kevin_mic.aqua.model.PinSupplier;
 import org.skife.jdbi.v2.DBI;
 
 import javax.inject.Inject;
@@ -77,5 +77,9 @@ public class PinSupplierDao {
 
     public int getNextId() {
         return getPinSupplierDbi().getNextId();
+    }
+
+    public List<PinSupplier> getPinSuppliers() {
+        return getPinSupplierDbi().getSuppliers();
     }
 }

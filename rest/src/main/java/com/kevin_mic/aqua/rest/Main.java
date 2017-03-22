@@ -1,6 +1,8 @@
 package com.kevin_mic.aqua.rest;
 
 import com.hubspot.dropwizard.guice.GuiceBundle;
+import com.kevin_mic.aqua.rest.setup.AquaControllerConfig;
+import com.kevin_mic.aqua.rest.setup.AquaControllerModule;
 import io.dropwizard.Application;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.flyway.FlywayBundle;

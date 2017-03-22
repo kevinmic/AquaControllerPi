@@ -2,8 +2,7 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.dbi.DeviceDbi;
 import com.kevin_mic.aqua.dbi.PinDbi;
-import com.kevin_mic.aqua.entity.Device;
-import com.kevin_mic.aqua.entity.PinSupplier;
+import com.kevin_mic.aqua.model.Device;
 import org.skife.jdbi.v2.DBI;
 
 import javax.inject.Inject;

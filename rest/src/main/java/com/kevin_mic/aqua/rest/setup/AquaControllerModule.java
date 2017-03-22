@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.rest;
+package com.kevin_mic.aqua.rest.setup;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;

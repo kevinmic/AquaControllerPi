@@ -1,6 +1,6 @@
-package com.kevin_mic.aqua.entity;
+package com.kevin_mic.aqua.model;
 
-import com.kevin_mic.aqua.types.PumpCalibrationType;
+import com.kevin_mic.aqua.model.types.PumpCalibrationType;
 
 public class PumpCalibration {
     public static final String TABLE_NAME = "pump_calibration";

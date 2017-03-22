@@ -1,6 +1,6 @@
-package com.kevin_mic.aqua.entity;
+package com.kevin_mic.aqua.model;
 
-import com.kevin_mic.aqua.types.DeviceType;
+import com.kevin_mic.aqua.model.types.DeviceType;
 import lombok.Data;
 
 @Data

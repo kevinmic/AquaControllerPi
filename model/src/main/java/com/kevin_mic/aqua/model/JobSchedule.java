@@ -1,6 +1,6 @@
-package com.kevin_mic.aqua.entity;
+package com.kevin_mic.aqua.model;
 
-import com.kevin_mic.aqua.type.ScheduleType;
+import com.kevin_mic.aqua.model.types.ScheduleType;
 
 public class JobSchedule {
     public static final String TABLE_NAME = "job_schedule";

@@ -1,7 +1,7 @@
-package com.kevin_mic.aqua.entity;
+package com.kevin_mic.aqua.model;
 
-import com.kevin_mic.aqua.types.PinSupplierType;
-import com.kevin_mic.aqua.types.Voltage;
+import com.kevin_mic.aqua.model.types.PinSupplierType;
+import com.kevin_mic.aqua.model.types.Voltage;
 import lombok.Data;
 
 import java.util.List;

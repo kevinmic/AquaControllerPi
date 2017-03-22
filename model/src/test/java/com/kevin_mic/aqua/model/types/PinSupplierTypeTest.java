@@ -1,8 +1,6 @@
-package com.kevin_mic.aqua.types;
+package com.kevin_mic.aqua.model.types;
 
 import org.junit.Test;
-
-import java.util.List;
 
 import static org.junit.Assert.*;
 

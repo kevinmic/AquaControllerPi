@@ -1,16 +1,13 @@
 package com.kevin_mic.aqua.dao;
 
-import com.kevin_mic.aqua.entity.Device;
-import com.kevin_mic.aqua.entity.Pin;
-import com.kevin_mic.aqua.entity.PinSupplier;
-import com.kevin_mic.aqua.types.DeviceType;
-import com.kevin_mic.aqua.types.PinSupplierType;
+import com.kevin_mic.aqua.model.Device;
+import com.kevin_mic.aqua.model.Pin;
+import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.types.DeviceType;
+import com.kevin_mic.aqua.model.types.PinSupplierType;
 import org.junit.Before;
 import org.junit.Test;
 import org.skife.jdbi.v2.exceptions.CallbackFailedException;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;

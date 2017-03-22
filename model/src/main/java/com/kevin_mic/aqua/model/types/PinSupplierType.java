@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.types;
+package com.kevin_mic.aqua.model.types;
 
 public enum PinSupplierType {
     RASBERRY_PI(30),

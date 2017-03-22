@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.rest;
+package com.kevin_mic.aqua.rest.http;
 
 import com.kevin_mic.aqua.model.TestObj;
 import com.kevin_mic.aqua.service.TestService;
@@ -13,11 +13,11 @@ import java.util.List;
 
 @Path("/test")
 @Produces(MediaType.APPLICATION_JSON)
-public class TestResource {
+public class TestREST {
     TestService testService;
 
     @Inject
-    public TestResource(TestService testService) {
+    public TestREST(TestService testService) {
         this.testService = testService;
     }
 

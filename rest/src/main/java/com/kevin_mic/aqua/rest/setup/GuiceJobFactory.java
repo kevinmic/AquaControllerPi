@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.rest;
+package com.kevin_mic.aqua.rest.setup;
 
 import com.google.inject.Injector;
 import org.quartz.Job;

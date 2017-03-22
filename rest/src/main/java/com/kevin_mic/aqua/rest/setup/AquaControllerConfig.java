@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.rest;
+package com.kevin_mic.aqua.rest.setup;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import io.dropwizard.Configuration;
