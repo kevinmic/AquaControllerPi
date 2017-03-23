@@ -49,15 +49,7 @@ public class PinSupplierREST {
     @PUT
     @Path("/{supplierId}")
     public PinSupplier updatePinSupplier(@PathParam("supplierId") int supplierId, PinSupplierUpdate update) {
-        PinSupplier pinSupplier = supplierService.findById(supplierId);
-        if (pinSupplier == null) {
-            throw new AquaException(ErrorType.InvalidPinSupplierId);
-        }
-
-        pinSupplier.setName(update.getName());
-        pinSupplier.setHardwareId(update.getHardwareId());
-
-        return supplierService.update(pinSupplier);
+        return supplierService.update(supplierId, update);
     }
 
     @DELETE

@@ -3,6 +3,9 @@ package com.kevin_mic.aqua.service.pinsupplier;
 import com.kevin_mic.aqua.dao.PinSupplierDao;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
+import com.kevin_mic.aqua.service.AquaException;
+import com.kevin_mic.aqua.service.ErrorType;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -27,7 +30,15 @@ public class PinSupplierService {
         return pinSupplierDao.insertSupplier(pinSupplier);
     }
 
-    public PinSupplier update(PinSupplier pinSupplier) {
+    public PinSupplier update(int supplierId, PinSupplierUpdate update) {
+        PinSupplier pinSupplier = findById(supplierId);
+        if (pinSupplier == null) {
+            throw new AquaException(ErrorType.InvalidPinSupplierId);
+        }
+
+        pinSupplier.setName(update.getName());
+        pinSupplier.setHardwareId(update.getHardwareId());
+
         validator.validate(pinSupplier);
         validator.validateHardwareIdNotUsed(pinSupplier.getPinSupplierId(), pinSupplier.getHardwareId());
         validator.validateHardwareConnected(pinSupplier);
@@ -51,4 +62,5 @@ public class PinSupplierService {
         validator.validatePinsNotOwned(pinSupplierId);
         pinSupplierDao.deleteSupplier(pinSupplierId);
     }
+
 }
