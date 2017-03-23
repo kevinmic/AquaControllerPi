@@ -40,4 +40,9 @@ public class PinSupplierService {
     public PinSupplier findById(int supplierId) {
         return pinSupplierDao.getSupplier(supplierId);
     }
+
+    public void delete(int pinSupplierId) {
+        validator.validatePinsNotOwned(pinSupplierId);
+        pinSupplierDao.deleteSupplier(pinSupplierId);
+    }
 }

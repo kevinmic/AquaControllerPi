@@ -69,4 +69,10 @@ public class PinSupplierServiceTest {
         verify(supplierDao).getPins(1);
     }
 
+    @Test
+    public void test_delete() {
+        tested.delete(1);
+        verify(validator).validatePinsNotOwned(1);
+    }
+
 }

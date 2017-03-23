@@ -1,12 +1,17 @@
 package com.kevin_mic.aqua.service.pinsupplier;
 
 import com.kevin_mic.aqua.dao.PinSupplierDao;
+import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import org.junit.Before;
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
@@ -75,6 +80,22 @@ public class PinSupplierValidatorTest {
     public void test_validateHardwareidNotUsed_notfound_valid() {
         when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(null);
         tested.validateHardwareIdNotUsed(1, HARDWARE_ID);
+    }
+
+    @Test
+    public void test_validatePinsNotOwned_valid() {
+        List<Pin> pins = new ArrayList<>();
+        when(supplierDao.getPins(1)).thenReturn(pins);
+        tested.validatePinsNotOwned(1);
+    }
+
+    @Test
+    public void test_validatePinsNotOwned_invalid() {
+        List<Pin> pins = new ArrayList<>();
+        pins.add(new Pin(1, 2, 3, 4));
+        when(supplierDao.getPins(1)).thenReturn(pins);
+
+        assertThatThrownBy(() -> tested.validatePinsNotOwned(1)).hasMessage(ErrorType.PinsInUse.name());
     }
 
     private PinSupplier getValidPinSupplier() {

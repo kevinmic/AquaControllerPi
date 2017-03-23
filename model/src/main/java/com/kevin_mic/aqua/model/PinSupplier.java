@@ -15,7 +15,4 @@ public class PinSupplier {
     private String name;
     private Voltage voltage;
     private String hardwareId;
-
-    //
-    private List<Pin> pins;
 }

@@ -1,12 +1,14 @@
 package com.kevin_mic.aqua.service.pinsupplier;
 
 import com.kevin_mic.aqua.dao.PinSupplierDao;
+import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
+import java.util.List;
 
 public class PinSupplierValidator {
     PinSupplierDao pinSupplierDao;
@@ -42,4 +44,10 @@ public class PinSupplierValidator {
         }
     }
 
+    public void validatePinsNotOwned(int pinSupplierId) {
+        List<Pin> pins = pinSupplierDao.getPins(pinSupplierId);
+        if (pins.stream().filter(p -> p.getOwnedByDeviceId() != null).count() > 0) {
+            throw new AquaException(ErrorType.PinsInUse);
+        }
+    }
 }

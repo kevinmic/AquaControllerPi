@@ -6,6 +6,7 @@ import com.kevin_mic.aqua.service.pinsupplier.PinSupplierService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -39,6 +40,12 @@ public class PinSupplierREST {
     @Path("/{supplierId}")
     public PinSupplier getPinSupplier(@PathParam("supplierId") int supplierId) {
         return supplierService.findById(supplierId);
+    }
+
+    @DELETE
+    @Path("/{supplierId}")
+    public void deletePinSupplier(@PathParam("supplierId") int supplierId) {
+        supplierService.delete(supplierId);
     }
 
     @GET
