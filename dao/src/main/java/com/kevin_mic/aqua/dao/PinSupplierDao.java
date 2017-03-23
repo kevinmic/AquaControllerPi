@@ -18,8 +18,8 @@ public class PinSupplierDao {
         this.dbi = dbi;
     }
 
-    public void insertSupplier(PinSupplier pinSupplier) {
-        dbi.inTransaction((handle,transactionStatus) -> {
+    public PinSupplier insertSupplier(PinSupplier pinSupplier) {
+        return dbi.inTransaction((handle,transactionStatus) -> {
             PinDbi pinDbi = handle.attach(PinDbi.class);
             PinSupplierDbi pinSupplierDbi = handle.attach(PinSupplierDbi.class);
 
@@ -30,7 +30,7 @@ public class PinSupplierDao {
                 pin.setPinSupplierId(pinSupplier.getPinSupplierId());
                 pinDbi.insert(pin);
             }
-            return null;
+            return pinSupplier;
         });
     }
 
@@ -81,5 +81,9 @@ public class PinSupplierDao {
 
     public List<PinSupplier> getPinSuppliers() {
         return getPinSupplierDbi().getSuppliers();
+    }
+
+    public Pin findPin(int pinId) {
+        return getPinSupplierDbi().getPin(pinId);
     }
 }

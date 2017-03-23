@@ -7,13 +7,16 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PinSupplierServiceTest {
+    public static final String HARDWARE_ID = "HARDWARE_ID";
     PinSupplierService tested;
     PinSupplierDao supplierDao;
     PinSupplierValidator validator;
@@ -29,11 +32,15 @@ public class PinSupplierServiceTest {
     @Test
     public void test_add() {
         PinSupplier supplier = new PinSupplier();
-        tested.add(supplier);
+        supplier.setPinSupplierId(55);
+        supplier.setHardwareId(HARDWARE_ID);
+
+        when(supplierDao.insertSupplier(supplier)).thenReturn(supplier);
+        assertNotNull(tested.add(supplier));
 
         verify(validator).validate(supplier);
         verify(validator).validateHardwareConnected(supplier);
-        verify(validator).validateHardwareIdNotUsed(supplier);
+        verify(validator).validateHardwareIdNotUsed(-1, HARDWARE_ID);
 
         verify(supplierDao).insertSupplier(supplier);
     }

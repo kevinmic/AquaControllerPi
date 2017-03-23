@@ -1,8 +1,10 @@
 package com.kevin_mic.aqua.dbi;
 
+import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
+import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapperFactory;
@@ -33,4 +35,6 @@ public interface PinSupplierDbi {
     @SqlQuery("select nextval('id_seq')")
     int getNextId();
 
+    @SqlQuery("select * from pin where pinId = :pinId")
+    Pin getPin(@Bind("pinId") int pinId);
 }

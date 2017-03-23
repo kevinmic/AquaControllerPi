@@ -35,8 +35,9 @@ public class PinSupplierValidator {
         // TODO
     }
 
-    void validateHardwareIdNotUsed(PinSupplier pinSupplier) {
-        if (pinSupplierDao.findByHardwareId(pinSupplier.getHardwareId()) != null) {
+    void validateHardwareIdNotUsed(int pinSupplierId, String hardwareId) {
+        PinSupplier byHardwareId = pinSupplierDao.findByHardwareId(hardwareId);
+        if (byHardwareId != null && byHardwareId.getPinSupplierId() != pinSupplierId) {
             throw new AquaException(ErrorType.SupplierHardwareIdAlreadyUsed);
         }
     }

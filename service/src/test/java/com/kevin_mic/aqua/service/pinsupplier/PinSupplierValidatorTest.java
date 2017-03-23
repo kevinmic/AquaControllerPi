@@ -16,6 +16,7 @@ import static org.mockito.Mockito.when;
 public class PinSupplierValidatorTest {
     public static final String HARDWARE_ID = "HARDWARE_ID";
     public static final String NAME = "NAME";
+    public static final int PIN_SUPPLIER_ID = 1;
     PinSupplierValidator tested;
     PinSupplierDao supplierDao;
 
@@ -57,19 +58,28 @@ public class PinSupplierValidatorTest {
     }
 
     @Test
-    public void test_validateHardwareidNotUsed_found() {
-        when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(getValidPinSupplier());
-        assertThatThrownBy(() -> tested.validateHardwareIdNotUsed(getValidPinSupplier())).hasMessage(ErrorType.SupplierHardwareIdAlreadyUsed.name());
+    public void test_validateHardwareidNotUsed_found_invalid() {
+        PinSupplier byHardwareId = getValidPinSupplier();
+        byHardwareId.setPinSupplierId(55);
+        when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(byHardwareId);
+        assertThatThrownBy(() -> tested.validateHardwareIdNotUsed(1, HARDWARE_ID)).hasMessage(ErrorType.SupplierHardwareIdAlreadyUsed.name());
     }
 
     @Test
-    public void test_validateHardwareidNotUsed_notfound() {
+    public void test_validateHardwareidNotUsed_found_valid() {
+        when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(getValidPinSupplier());
+        tested.validateHardwareIdNotUsed(1, HARDWARE_ID);
+    }
+
+    @Test
+    public void test_validateHardwareidNotUsed_notfound_valid() {
         when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(null);
-        tested.validateHardwareIdNotUsed(getValidPinSupplier());
+        tested.validateHardwareIdNotUsed(1, HARDWARE_ID);
     }
 
     private PinSupplier getValidPinSupplier() {
         PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setPinSupplierId(PIN_SUPPLIER_ID);
         pinSupplier.setHardwareId(HARDWARE_ID);
         pinSupplier.setSupplierType(PinSupplierType.PCF8574);
         pinSupplier.setName(NAME);
