@@ -2,6 +2,7 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.model.Device;
 import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.model.types.DeviceType;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -54,7 +56,7 @@ public class DeviceDaoTest extends BaseTest {
     @Test
     public void test_crud_wPin() {
         int supplierId = createPin();
-        int pinId = getPinId(supplierId);
+        int pinId = getPin(supplierId, 0).getPinId();
 
         Device createDevice = createDevice(pinId);
         tested.addDevice(createDevice);
@@ -63,20 +65,61 @@ public class DeviceDaoTest extends BaseTest {
         Device findDevice = tested.getDevice(deviceId);
         assertEquals(createDevice, findDevice);
 
-        Pin pin = pinSupplierDao.getPins(supplierId).get(0);
+        Pin pin = pinSupplierDao.findPin(pinId);
         assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
 
         assertEquals(1, tested.getAllDevices().size());
 
         tested.removeDevice(deviceId);
 
-        findDevice = tested.getDevice(deviceId);
-        assertNull(findDevice);
+        try {
+            tested.getDevice(deviceId);
+            fail();
+        }
+        catch (EntityNotFoundException e) {
+        }
 
         pin = pinSupplierDao.getPins(supplierId).get(0);
         assertNull(pin.getOwnedByDeviceId());
 
         deletePin(supplierId);
+    }
+
+    @Test
+    public void test_update() {
+        int supplierId = createPin();
+        int pinIdA = getPin(supplierId, 0).getPinId();
+
+        Device createDevice = createDevice(pinIdA);
+        tested.addDevice(createDevice);
+
+        int deviceId = createDevice.getDeviceId();
+
+        Pin pin = pinSupplierDao.findPin(pinIdA);
+        assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
+
+
+        int pinIdB = getPin(supplierId, 1).getPinId();
+        List<DevicePin> pins = new ArrayList<>();
+        pins.add(new DevicePin(pinIdB, -1, PinType.SN74HC595_Clock));
+
+        Device updateDevice = tested.getDevice(deviceId);
+        updateDevice.setPins(pins);
+        updateDevice.setName("NEW_NAME");
+        updateDevice.setHardwareId("NEW_HARDWARE");
+        updateDevice.setType(DeviceType.I2C_BUS);
+
+        Device checkDevice = tested.updateDevice(updateDevice);
+        assertNotEquals(checkDevice, updateDevice);
+        assertEquals(checkDevice.getHardwareId(), updateDevice.getHardwareId());
+        assertEquals(checkDevice.getName(), updateDevice.getName());
+        assertNotEquals(checkDevice.getType(), updateDevice.getType());
+
+        pin = pinSupplierDao.findPin(pinIdA);
+        assertNull(pin.getOwnedByDeviceId());
+
+        pin = pinSupplierDao.findPin(pinIdB);
+        assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
     }
 
     @Test
@@ -96,7 +139,7 @@ public class DeviceDaoTest extends BaseTest {
     @Test
     public void test_devicePinFK_pinAlreadyUsed() {
         int supplierId = createPin();
-        int pinId = getPinId(supplierId);
+        int pinId = getPin(supplierId, 0).getPinId();
         {
             Device device1 = createDevice(pinId);
             tested.addDevice(device1);
@@ -125,7 +168,7 @@ public class DeviceDaoTest extends BaseTest {
     @Test
     public void test_devicePinFK() {
         int supplierId = createPin();
-        int pinId = getPinId(supplierId);
+        int pinId = getPin(supplierId, 0).getPinId();
 
         Device device1 = createDevice(pinId);
         tested.addDevice(device1);
@@ -163,8 +206,8 @@ public class DeviceDaoTest extends BaseTest {
         return pinSupplier.getPinSupplierId();
     }
 
-    private int getPinId(int supplierId) {
-        return pinSupplierDao.getPins(supplierId).get(0).getPinId();
+    private Pin getPin(int supplierId, int pinNumber) {
+        return pinSupplierDao.getPins(supplierId).stream().filter(p -> p.getPinNumber() == pinNumber).findFirst().get();
     }
 
 

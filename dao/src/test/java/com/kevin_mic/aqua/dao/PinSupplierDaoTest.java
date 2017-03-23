@@ -2,6 +2,7 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.model.Device;
 import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
@@ -15,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.fail;
 
 public class PinSupplierDaoTest extends BaseTest {
     private PinSupplierDao tested;
@@ -48,11 +50,24 @@ public class PinSupplierDaoTest extends BaseTest {
 
         tested.deleteSupplier(supplierId);
 
-        foundSupplier = tested.getSupplier(supplierId);
-        assertNull(foundSupplier);
+        try {
+            tested.getSupplier(supplierId);
+            fail();
+        }
+        catch (EntityNotFoundException e) {
+            // expected
+        }
 
         foundPins = tested.getPins(supplierId);
         assertEquals(0, foundPins.size());
+
+        try {
+            tested.findPin(-1);
+            fail();
+        }
+        catch (EntityNotFoundException e) {
+            // expected
+        }
 
     }
 

@@ -32,9 +32,6 @@ public class PinSupplierService {
 
     public PinSupplier update(int supplierId, PinSupplierUpdate update) {
         PinSupplier pinSupplier = findById(supplierId);
-        if (pinSupplier == null) {
-            throw new AquaException(ErrorType.InvalidPinSupplierId);
-        }
 
         pinSupplier.setName(update.getName());
         pinSupplier.setHardwareId(update.getHardwareId());

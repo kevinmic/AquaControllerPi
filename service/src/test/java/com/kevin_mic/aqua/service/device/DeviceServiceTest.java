@@ -4,10 +4,12 @@ import com.kevin_mic.aqua.dao.DeviceDao;
 import com.kevin_mic.aqua.model.Device;
 import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.types.DeviceType;
+import com.kevin_mic.aqua.model.updates.DeviceUpdate;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -16,6 +18,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DeviceServiceTest {
+    public static final String HARDWARE_ID = "HARDWARE_ID";
+    public static final String NAME = "NAME";
     DeviceService tested;
     DeviceValidator deviceValidator;
     DeviceDao deviceDao;
@@ -59,6 +63,34 @@ public class DeviceServiceTest {
         verify(deviceValidator).validatePinsNotUsed(-1, pins);
         verify(deviceValidator).validatePinTypes(DeviceType.DosingPumpPeristalticStepper, pins);
         verify(deviceDao).addDevice(device);
+    }
+
+    @Test
+    public void test_update() {
+        Device device = mock(Device.class);
+        List<DevicePin> pins = new ArrayList<>();
+
+        DeviceUpdate update = new DeviceUpdate();
+        update.setHardwareId(HARDWARE_ID);
+        update.setName(NAME);
+        update.setPins(pins);
+
+        when(device.getDeviceId()).thenReturn(1);
+        when(device.getHardwareId()).thenReturn(HARDWARE_ID);
+        when(device.getPins()).thenReturn(pins);
+        when(device.getType()).thenReturn(DeviceType.DosingPumpPeristalticStepper);
+        when(deviceDao.getDevice(1)).thenReturn(device);
+
+        tested.update(1, update);
+
+        verify(device).setName(NAME);
+        verify(device).setHardwareId(HARDWARE_ID);
+        verify(device).setPins(pins);
+
+        verify(deviceValidator).validate(device);
+        verify(deviceValidator).validatePinsNotUsed(1, pins);
+        verify(deviceValidator).validatePinTypes(DeviceType.DosingPumpPeristalticStepper, pins);
+        verify(deviceDao).updateDevice(device);
     }
 
     @Test

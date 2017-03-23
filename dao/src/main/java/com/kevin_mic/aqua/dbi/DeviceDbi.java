@@ -18,6 +18,12 @@ public interface DeviceDbi {
     @GetGeneratedKeys
     int insert(@BindBean Device device);
 
+    @SqlUpdate("update " + Device.TABLE_NAME + " " +
+            "   set name = :name, " +
+            "       hardwareId = :hardwareId " +
+            " where deviceId = :deviceId ")
+    void update(@BindBean Device device);
+
     @SqlQuery("select * from " + Device.TABLE_NAME + " where deviceId = :deviceId")
     Device getDevice(@Bind("deviceId") int deviceId);
 
@@ -38,4 +44,5 @@ public interface DeviceDbi {
 
     @SqlUpdate("delete from " + DevicePin.TABLE_NAME + " where deviceId = :deviceId")
     void removeAllPins(@Bind("deviceId") int deviceId);
+
 }

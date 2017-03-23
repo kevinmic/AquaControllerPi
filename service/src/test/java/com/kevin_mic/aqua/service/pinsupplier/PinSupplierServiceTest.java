@@ -50,13 +50,6 @@ public class PinSupplierServiceTest {
     }
 
     @Test
-    public void test_update_notFound() {
-        PinSupplierUpdate update = new PinSupplierUpdate();
-        when(supplierDao.getSupplier(55)).thenReturn(null);
-        assertThatThrownBy(() -> tested.update(55, update)).hasMessage(ErrorType.InvalidPinSupplierId.name());
-    }
-
-    @Test
     public void test_update() {
         PinSupplier pinSupplier = mock(PinSupplier.class);
 

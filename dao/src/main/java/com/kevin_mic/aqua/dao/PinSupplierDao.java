@@ -2,6 +2,7 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.dbi.PinDbi;
 import com.kevin_mic.aqua.dbi.PinSupplierDbi;
+import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import org.skife.jdbi.v2.DBI;
@@ -56,7 +57,11 @@ public class PinSupplierDao {
     }
 
     public PinSupplier getSupplier(int pinSupplierId) {
-        return getPinSupplierDbi().getSupplier(pinSupplierId);
+        PinSupplier supplier = getPinSupplierDbi().getSupplier(pinSupplierId);
+        if (supplier == null) {
+            throw new EntityNotFoundException("PinSupplier", pinSupplierId);
+        }
+        return supplier;
     }
 
     public List<Pin> getPins(int pinSupplierId) {
@@ -84,7 +89,11 @@ public class PinSupplierDao {
     }
 
     public Pin findPin(int pinId) {
-        return getPinSupplierDbi().getPin(pinId);
+        Pin pin = getPinSupplierDbi().getPin(pinId);
+        if (pin == null) {
+            throw new EntityNotFoundException("Pin", pinId);
+        }
+        return pin;
     }
 
     public PinSupplier update(PinSupplier pinSupplier) {
