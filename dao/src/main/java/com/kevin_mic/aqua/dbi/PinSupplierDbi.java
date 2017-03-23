@@ -29,6 +29,14 @@ public interface PinSupplierDbi {
             "(:pinSupplierId, :supplierType, :name, :voltage, :hardwareId)")
     void insert(@BindBean PinSupplier pin);
 
+    @SqlUpdate(
+            "UPDATE " + PinSupplier.TABLE_NAME +
+                    " SET name = :name, " +
+                    " hardwareid = :hardwareId " +
+                    " WHERE pinSupplierId = :pinSupplierId "
+    )
+    void update(@BindBean PinSupplier pinSupplier);
+
     @SqlUpdate("delete from " + PinSupplier.TABLE_NAME + " where pinSupplierId = :supplierId")
     void delete(@Bind("supplierId") int pinSupplierId);
 
@@ -37,4 +45,5 @@ public interface PinSupplierDbi {
 
     @SqlQuery("select * from pin where pinId = :pinId")
     Pin getPin(@Bind("pinId") int pinId);
+
 }

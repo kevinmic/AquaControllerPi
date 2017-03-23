@@ -86,4 +86,9 @@ public class PinSupplierDao {
     public Pin findPin(int pinId) {
         return getPinSupplierDbi().getPin(pinId);
     }
+
+    public PinSupplier update(PinSupplier pinSupplier) {
+        getPinSupplierDbi().update(pinSupplier);
+        return getSupplier(pinSupplier.getPinSupplierId());
+    }
 }

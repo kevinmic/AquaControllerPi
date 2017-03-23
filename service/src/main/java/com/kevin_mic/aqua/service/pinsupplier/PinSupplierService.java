@@ -24,9 +24,15 @@ public class PinSupplierService {
         validator.validateHardwareConnected(pinSupplier);
 
         pinSupplier.setPinSupplierId(pinSupplierDao.getNextId());
-        pinSupplierDao.insertSupplier(pinSupplier);
+        return pinSupplierDao.insertSupplier(pinSupplier);
+    }
 
-        return pinSupplier;
+    public PinSupplier update(PinSupplier pinSupplier) {
+        validator.validate(pinSupplier);
+        validator.validateHardwareIdNotUsed(pinSupplier.getPinSupplierId(), pinSupplier.getHardwareId());
+        validator.validateHardwareConnected(pinSupplier);
+
+        return pinSupplierDao.update(pinSupplier);
     }
 
     public List<PinSupplier> list() {

@@ -46,6 +46,22 @@ public class PinSupplierServiceTest {
     }
 
     @Test
+    public void test_update() {
+        PinSupplier supplier = new PinSupplier();
+        supplier.setPinSupplierId(55);
+        supplier.setHardwareId(HARDWARE_ID);
+
+        when(supplierDao.update(supplier)).thenReturn(supplier);
+        assertNotNull(tested.update(supplier));
+
+        verify(validator).validate(supplier);
+        verify(validator).validateHardwareConnected(supplier);
+        verify(validator).validateHardwareIdNotUsed(55, HARDWARE_ID);
+
+        verify(supplierDao).update(supplier);
+    }
+
+    @Test
     public void test_findById() {
         when(supplierDao.getSupplier(1)).thenReturn(new PinSupplier());
         assertNotNull(tested.findById(1));

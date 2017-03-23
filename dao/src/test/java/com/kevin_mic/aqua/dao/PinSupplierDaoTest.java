@@ -12,6 +12,7 @@ import org.junit.Test;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -52,6 +53,29 @@ public class PinSupplierDaoTest extends BaseTest {
 
         foundPins = tested.getPins(supplierId);
         assertEquals(0, foundPins.size());
+
+    }
+
+    @Test
+    public void test_update() {
+        PinSupplier pinSupplier = getPinSupplier();
+        tested.insertSupplier(pinSupplier);
+
+        // I am modifying all fields and then checking to make sure only the ones I expected changed
+        pinSupplier.setHardwareId("NEW_HRD");
+        pinSupplier.setName("NEW_NAME");
+        pinSupplier.setSupplierType(PinSupplierType.RASBERRY_PI);
+        pinSupplier.setVoltage(Voltage._3_DC);
+
+        PinSupplier checkIt = tested.update(pinSupplier);
+
+        PinSupplier expectedSupplier = getPinSupplier();
+        expectedSupplier.setHardwareId("NEW_HRD");
+        expectedSupplier.setName("NEW_NAME");
+        expectedSupplier.setPinSupplierId(pinSupplier.getPinSupplierId());
+
+        assertNotEquals(pinSupplier, checkIt);
+        assertEquals(expectedSupplier, checkIt);
 
     }
 
