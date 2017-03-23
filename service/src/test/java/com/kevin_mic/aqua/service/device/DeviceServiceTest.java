@@ -60,4 +60,11 @@ public class DeviceServiceTest {
         verify(deviceValidator).validatePinTypes(DeviceType.DosingPumpPeristalticStepper, pins);
         verify(deviceDao).addDevice(device);
     }
+
+    @Test
+    public void test_delete() {
+        tested.delete(1);
+
+        verify(deviceDao).removeDevice(1);
+    }
 }

@@ -5,6 +5,7 @@ import com.kevin_mic.aqua.service.device.DeviceService;
 
 import javax.inject.Inject;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -38,5 +39,11 @@ public class DeviceREST {
     @Path("/{deviceId}")
     public Device getDevice(@PathParam("deviceId") int deviceId) {
         return deviceService.findById(deviceId);
+    }
+
+    @DELETE
+    @Path("/{deviceId}")
+    public void deleteDevice(@PathParam("deviceId") int deviceId) {
+        deviceService.delete(deviceId);
     }
 }

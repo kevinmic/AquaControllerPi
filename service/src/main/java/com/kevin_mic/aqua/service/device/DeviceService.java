@@ -32,4 +32,8 @@ public class DeviceService {
 
         return deviceDao.addDevice(device);
     }
+
+    public void delete(int deviceId) {
+        deviceDao.removeDevice(deviceId);
+    }
 }
