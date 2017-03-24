@@ -5,9 +5,10 @@ import com.kevin_mic.aqua.model.actions.metadata.AllowedDeviceTypes;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.actions.metadata.Required;
 import com.kevin_mic.aqua.model.types.DeviceType;
-import lombok.AllArgsConstructor;
+import lombok.Data;
 
-public class Topoff {
+@Data
+public class TopOff implements ActionInterface {
     @AllowedDeviceTypes({DeviceType.DosingPumpPeristalticTimed, DeviceType.PumpAC})
     @Required
     @Owned
@@ -25,4 +26,6 @@ public class Topoff {
 
     @Required
     private Schedule schedule;
+
+    private String name;
 }

@@ -5,15 +5,19 @@ import com.kevin_mic.aqua.model.actions.metadata.AllowedDeviceTypes;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.actions.metadata.Required;
 import com.kevin_mic.aqua.model.types.DeviceType;
+import lombok.Data;
 
 import java.util.List;
 
-public class AcLightControl {
-    @AllowedDeviceTypes(DeviceType.LightAC)
+@Data
+public class PumpSchedule implements ActionInterface {
+    @AllowedDeviceTypes(DeviceType.PumpAC)
     @Required
     @Owned
-    private List<Integer> lightIds;
+    private List<Integer> pumpIds;
 
     @Required
     private Schedule schedule;
+
+    private String name;
 }
