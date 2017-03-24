@@ -12,7 +12,7 @@ public enum DeviceType {
     SHIFT_REGISTER_BUS(false, null, SN74HC595_Clock, SN74HC595_LClock, SN74HC595_OutputEnabled, SN74HC595_Reset, SN74HC595_SER),
 
     PumpAC(Relay_120_VAC, Toggle),
-    Light(Relay_120_VAC, Toggle),
+    LightAC(Relay_120_VAC, Toggle),
     Heater(Relay_120_VAC, Toggle),
     FanAC(Relay_120_VAC, Toggle),
     FanDC(Relay_12_VDC, Toggle),
