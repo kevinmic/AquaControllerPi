@@ -1,10 +1,9 @@
 package com.kevin_mic.aqua.service.pinsupplier;
 
 import com.kevin_mic.aqua.dao.PinSupplierDao;
-import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
-import com.kevin_mic.aqua.service.AquaException;
+import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import org.junit.Before;
@@ -14,7 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -57,9 +55,17 @@ public class PinSupplierValidatorTest {
     @Test
     public void test_validate_invalid_type() {
         PinSupplier pinSupplier = getValidPinSupplier();
-        pinSupplier.setSupplierType(null);
+        pinSupplier.setType(null);
 
         assertThatThrownBy(() -> tested.validate(pinSupplier)).hasMessage(ErrorType.SupplierTypeCannotBeNull.name());
+    }
+
+    @Test
+    public void test_validate_invalid_subtype() {
+        PinSupplier pinSupplier = getValidPinSupplier();
+        pinSupplier.setSubType(null);
+
+        assertThatThrownBy(() -> tested.validate(pinSupplier)).hasMessage(ErrorType.SupplierSubTypeCannotBeNull.name());
     }
 
     @Test
@@ -102,7 +108,8 @@ public class PinSupplierValidatorTest {
         PinSupplier pinSupplier = new PinSupplier();
         pinSupplier.setPinSupplierId(PIN_SUPPLIER_ID);
         pinSupplier.setHardwareId(HARDWARE_ID);
-        pinSupplier.setSupplierType(PinSupplierType.PCF8574);
+        pinSupplier.setType(PinSupplierType.PCF8574);
+        pinSupplier.setSubType(PinSupplierSubType.Relay12VDC);
         pinSupplier.setName(NAME);
 
         return pinSupplier;

@@ -6,6 +6,7 @@ import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.model.types.DeviceType;
+import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.model.types.PinType;
 import org.junit.Before;
@@ -200,7 +201,8 @@ public class DeviceDaoTest extends BaseTest {
         PinSupplier pinSupplier = new PinSupplier();
         pinSupplier.setPinSupplierId(pinSupplierDao.getNextId());
         pinSupplier.setHardwareId("HARDWAREID");
-        pinSupplier.setSupplierType(PinSupplierType.RASBERRY_PI);
+        pinSupplier.setType(PinSupplierType.RASBERRY_PI);
+        pinSupplier.setSubType(PinSupplierSubType.PI);
         pinSupplier.setName("PI");
         pinSupplierDao.insertSupplier(pinSupplier);
         return pinSupplier.getPinSupplierId();

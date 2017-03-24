@@ -26,6 +26,8 @@ public enum DeviceType {
     FloatSwitch(Toggle),
     FluidLevelCapacitance(),
     ThermometerI2C,
+    WaterAlarm,
+    NotificationLED
     ;
 
     private final boolean canCreate;

@@ -1,12 +1,11 @@
 package com.kevin_mic.aqua.dao;
 
-import com.kevin_mic.aqua.model.Device;
 import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
-import com.kevin_mic.aqua.model.types.Voltage;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -79,8 +78,8 @@ public class PinSupplierDaoTest extends BaseTest {
         // I am modifying all fields and then checking to make sure only the ones I expected changed
         pinSupplier.setHardwareId("NEW_HRD");
         pinSupplier.setName("NEW_NAME");
-        pinSupplier.setSupplierType(PinSupplierType.RASBERRY_PI);
-        pinSupplier.setVoltage(Voltage._3_DC);
+        pinSupplier.setType(PinSupplierType.RASBERRY_PI);
+        pinSupplier.setSubType(PinSupplierSubType.SensorArray);
 
         PinSupplier checkIt = tested.update(pinSupplier);
 
@@ -99,8 +98,8 @@ public class PinSupplierDaoTest extends BaseTest {
         createSupplier.setPinSupplierId(tested.getNextId());
         createSupplier.setHardwareId("HRD1");
         createSupplier.setName("NAME");
-        createSupplier.setSupplierType(PinSupplierType.PCF8574);
-        createSupplier.setVoltage(Voltage._120_AC);
+        createSupplier.setType(PinSupplierType.PCF8574);
+        createSupplier.setSubType(PinSupplierSubType.Relay12VDC);
         return createSupplier;
     }
 

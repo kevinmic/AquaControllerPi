@@ -25,7 +25,7 @@ public class PinSupplierDao {
             PinSupplierDbi pinSupplierDbi = handle.attach(PinSupplierDbi.class);
 
             pinSupplierDbi.insert(pinSupplier);
-            for (int pinNumber = 0; pinNumber < pinSupplier.getSupplierType().getNumberOfPins(); pinNumber++) {
+            for (int pinNumber = 0; pinNumber < pinSupplier.getType().getNumberOfPins(); pinNumber++) {
                 Pin pin = new Pin();
                 pin.setPinNumber(pinNumber);
                 pin.setPinSupplierId(pinSupplier.getPinSupplierId());

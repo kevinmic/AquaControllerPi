@@ -28,8 +28,11 @@ public class PinSupplierValidator {
         if (StringUtils.isBlank(pinSupplier.getHardwareId())) {
             throw new AquaException(ErrorType.SupplierHardwareIdCannotBeNull);
         }
-        if (pinSupplier.getSupplierType() == null) {
+        if (pinSupplier.getType() == null) {
             throw new AquaException(ErrorType.SupplierTypeCannotBeNull);
+        }
+        if (pinSupplier.getSubType() == null) {
+            throw new AquaException(ErrorType.SupplierSubTypeCannotBeNull);
         }
     }
 

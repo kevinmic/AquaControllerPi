@@ -1,4 +1,4 @@
-insert into pin_supplier (pinSupplierId, supplierType, name, voltage, hardwareId) VALUES (1, 'RASBERRY_PI', 'PI', null, 'PI');
+insert into pin_supplier (pinSupplierId, type, subtype, name, hardwareId) VALUES (1, 'RASBERRY_PI', 'PI', 'PI', 'PI');
 
 insert into device (deviceId, type, name) values (2, 'I2C_BUS', 'I2C Bus');
 insert into device (deviceId, type, name) values (3, 'SHIFT_REGISTER_BUS', 'ShiftRegister BUS');

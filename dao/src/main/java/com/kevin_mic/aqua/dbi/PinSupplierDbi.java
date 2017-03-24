@@ -24,9 +24,9 @@ public interface PinSupplierDbi {
     PinSupplier getSupplierByHardwareId(@Bind("id") String hardwareId);
 
     @SqlUpdate("insert into " + PinSupplier.TABLE_NAME +
-            " (pinSupplierId, supplierType, name, voltage, hardwareId ) " +
+            " (pinSupplierId, type, subType, name, hardwareId ) " +
             "values " +
-            "(:pinSupplierId, :supplierType, :name, :voltage, :hardwareId)")
+            "(:pinSupplierId, :type, :subType, :name, :hardwareId)")
     void insert(@BindBean PinSupplier pin);
 
     @SqlUpdate(
