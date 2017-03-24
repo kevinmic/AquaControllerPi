@@ -60,8 +60,7 @@ public class DeviceServiceTest {
         tested.add(device);
 
         verify(deviceValidator).validate(device);
-        verify(deviceValidator).validatePinsNotUsed(-1, pins);
-        verify(deviceValidator).validatePinTypes(DeviceType.DosingPumpPeristalticStepper, pins);
+        verify(deviceValidator).validatePins(device);
         verify(deviceDao).addDevice(device);
     }
 
@@ -88,8 +87,7 @@ public class DeviceServiceTest {
         verify(device).setPins(pins);
 
         verify(deviceValidator).validate(device);
-        verify(deviceValidator).validatePinsNotUsed(1, pins);
-        verify(deviceValidator).validatePinTypes(DeviceType.DosingPumpPeristalticStepper, pins);
+        verify(deviceValidator).validatePins(device);
         verify(deviceDao).updateDevice(device);
     }
 

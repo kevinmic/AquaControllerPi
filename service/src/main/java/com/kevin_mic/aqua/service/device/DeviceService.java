@@ -30,8 +30,7 @@ public class DeviceService {
     public Device add(Device device) {
         device.setDeviceId(-1); // Unset the deviceid on add
         deviceValidator.validate(device);
-        deviceValidator.validatePinTypes(device.getType(), device.getPins());
-        deviceValidator.validatePinsNotUsed(device.getDeviceId(), device.getPins());
+        deviceValidator.validatePins(device);
 
         return deviceDao.addDevice(device);
     }
@@ -44,8 +43,7 @@ public class DeviceService {
         device.setPins(deviceUpdate.getPins());
 
         deviceValidator.validate(device);
-        deviceValidator.validatePinTypes(device.getType(), device.getPins());
-        deviceValidator.validatePinsNotUsed(device.getDeviceId(), device.getPins());
+        deviceValidator.validatePins(device);
 
         return deviceDao.updateDevice(device);
     }

@@ -3,6 +3,8 @@ package com.kevin_mic.aqua.service.pinsupplier;
 import com.kevin_mic.aqua.dao.PinSupplierDao;
 import com.kevin_mic.aqua.model.Pin;
 import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.types.PinSupplierSubType;
+import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
 import org.apache.commons.lang3.StringUtils;
@@ -33,6 +35,9 @@ public class PinSupplierValidator {
         }
         if (pinSupplier.getSubType() == null) {
             throw new AquaException(ErrorType.SupplierSubTypeCannotBeNull);
+        }
+        if (!pinSupplier.getType().isSubTypeAllowed(pinSupplier.getSubType())) {
+            throw new AquaException(ErrorType.SupplierSubTypeIncompatibleWithType);
         }
     }
 

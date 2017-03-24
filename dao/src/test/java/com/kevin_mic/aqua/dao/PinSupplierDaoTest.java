@@ -99,7 +99,7 @@ public class PinSupplierDaoTest extends BaseTest {
         createSupplier.setHardwareId("HRD1");
         createSupplier.setName("NAME");
         createSupplier.setType(PinSupplierType.PCF8574);
-        createSupplier.setSubType(PinSupplierSubType.Relay12VDC);
+        createSupplier.setSubType(PinSupplierSubType.Relay_12_VDC);
         return createSupplier;
     }
 

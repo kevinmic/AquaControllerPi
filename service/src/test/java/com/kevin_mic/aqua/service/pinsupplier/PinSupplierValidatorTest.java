@@ -69,6 +69,14 @@ public class PinSupplierValidatorTest {
     }
 
     @Test
+    public void test_validate_invalid_subtypeNotCompatible() {
+        PinSupplier pinSupplier = getValidPinSupplier();
+        pinSupplier.setSubType(PinSupplierSubType.StepperArray);
+
+        assertThatThrownBy(() -> tested.validate(pinSupplier)).hasMessage(ErrorType.SupplierSubTypeIncompatibleWithType.name());
+    }
+
+    @Test
     public void test_validateHardwareidNotUsed_found_invalid() {
         PinSupplier byHardwareId = getValidPinSupplier();
         byHardwareId.setPinSupplierId(55);
@@ -109,7 +117,7 @@ public class PinSupplierValidatorTest {
         pinSupplier.setPinSupplierId(PIN_SUPPLIER_ID);
         pinSupplier.setHardwareId(HARDWARE_ID);
         pinSupplier.setType(PinSupplierType.PCF8574);
-        pinSupplier.setSubType(PinSupplierSubType.Relay12VDC);
+        pinSupplier.setSubType(PinSupplierSubType.Relay_12_VDC);
         pinSupplier.setName(NAME);
 
         return pinSupplier;

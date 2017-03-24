@@ -4,7 +4,9 @@ import com.kevin_mic.aqua.dao.PinSupplierDao;
 import com.kevin_mic.aqua.model.Device;
 import com.kevin_mic.aqua.model.DevicePin;
 import com.kevin_mic.aqua.model.Pin;
+import com.kevin_mic.aqua.model.PinSupplier;
 import com.kevin_mic.aqua.model.types.DeviceType;
+import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.model.types.PinType;
 import com.kevin_mic.aqua.service.ErrorType;
 import org.junit.Before;
@@ -56,31 +58,17 @@ public class DeviceValidatorTest {
 
     @Test
     public void test_validatePinsNotUsed_valid() {
-        when(pinSupplierDao.findPin(PIN_1)).thenReturn(new Pin(PIN_1, 1, -1, null));
-        when(pinSupplierDao.findPin(PIN_2)).thenReturn(new Pin(PIN_2, 1, -1, DEVICE_ID));
-
-        tested.validatePinsNotUsed(DEVICE_ID, getPins());
+        tested.validatePinsNotUsed(DEVICE_ID, new Pin(PIN_1, 1, -1, null));
     }
 
     @Test
     public void test_validatePinsNotUsed_invalidOwner() {
-        when(pinSupplierDao.findPin(PIN_1)).thenReturn(new Pin(PIN_1, 1, -1, null));
-        when(pinSupplierDao.findPin(PIN_2)).thenReturn(new Pin(PIN_2, 1, -1, DEVICE_ID));
-
-        assertThatThrownBy(() -> tested.validatePinsNotUsed(5000, getPins())).hasMessage(ErrorType.PinAlreadyOwned.name());
-    }
-
-    @Test
-    public void test_validatePinsNotUsed_missingPin() {
-        when(pinSupplierDao.findPin(PIN_1)).thenReturn(null);
-        when(pinSupplierDao.findPin(PIN_2)).thenReturn(new Pin(PIN_2, 1, -1, DEVICE_ID));
-
-        assertThatThrownBy(() -> tested.validatePinsNotUsed(DEVICE_ID, getPins())).hasMessage(ErrorType.InvalidPinId.name());
+        assertThatThrownBy(() -> tested.validatePinsNotUsed(5000, new Pin(PIN_1, 1, -1, 5001))).hasMessage(ErrorType.PinAlreadyOwned.name());
     }
 
     @Test
     public void test_validatePinTypes_valid() {
-        tested.validatePinTypes(DeviceType.I2C_BUS, getPins());
+        tested.validatePinTypes(DeviceType.DosingPumpPeristalticStepper, getPins());
     }
 
     @Test
@@ -106,6 +94,43 @@ public class DeviceValidatorTest {
         assertThatThrownBy(() -> tested.validatePinTypes(DeviceType.I2C_BUS, pins)).hasMessage(ErrorType.InvalidPinTypes.name());
     }
 
+    @Test
+    public void test_validatePinSupplier_valid() {
+        Device device = new Device();
+        device.setType(DeviceType.FanAC);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setSubType(device.getType().getRequiredPinSupplierSubType());
+        tested.validatePinSupplier(device, pinSupplier);
+    }
+
+    @Test
+    public void test_validatePinSupplier_invalid() {
+        Device device = new Device();
+        device.setType(DeviceType.FanAC);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setSubType(PinSupplierSubType.StepperArray);
+        assertThatThrownBy(() -> tested.validatePinSupplier(device, pinSupplier)).hasMessage(ErrorType.InvalidPinSupplierSubType.name());
+    }
+
+    @Test
+    public void test_validatePins() {
+        Device device = new Device();
+        device.setPins(getPins());
+        device.setDeviceId(5000);
+        device.setType(DeviceType.DosingPumpPeristalticStepper);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setSubType(PinSupplierSubType.StepperArray);
+
+        when(pinSupplierDao.findPin(PIN_1)).thenReturn(new Pin(PIN_1, 1, 6000, 5000));
+        when(pinSupplierDao.findPin(PIN_2)).thenReturn(new Pin(PIN_2, 1, 6000, 5000));
+        when(pinSupplierDao.getSupplier(6000)).thenReturn(pinSupplier);
+
+        tested.validatePins(device);
+    }
+
     private Device getDevice() {
         Device device = new Device();
         device.setType(DeviceType.I2C_BUS);
@@ -116,8 +141,8 @@ public class DeviceValidatorTest {
 
     private List<DevicePin> getPins() {
         List<DevicePin> pins = new ArrayList<>();
-        pins.add(new DevicePin(PIN_1, DEVICE_ID, PinType.I2C_SDA1));
-        pins.add(new DevicePin(PIN_2, DEVICE_ID, PinType.I2C_SLC1));
+        pins.add(new DevicePin(PIN_1, DEVICE_ID, PinType.STEPPER_Direction));
+        pins.add(new DevicePin(PIN_2, DEVICE_ID, PinType.STEPPER_Step));
         return pins;
     }
 
