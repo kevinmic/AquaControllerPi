@@ -1,10 +1,8 @@
 package com.kevin_mic.aqua.service.device;
 
 import com.kevin_mic.aqua.dao.DeviceDao;
-import com.kevin_mic.aqua.model.Device;
+import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.updates.DeviceUpdate;
-import com.kevin_mic.aqua.service.AquaException;
-import com.kevin_mic.aqua.service.ErrorType;
 
 import javax.inject.Inject;
 import java.util.List;

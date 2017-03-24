@@ -1,10 +1,9 @@
 package com.kevin_mic.aqua.dbi;
 
-import com.kevin_mic.aqua.model.Pin;
-import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.dbobj.Pin;
+import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
-import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
 import org.skife.jdbi.v2.sqlobject.SqlQuery;
 import org.skife.jdbi.v2.sqlobject.SqlUpdate;
 import org.skife.jdbi.v2.sqlobject.customizers.RegisterMapperFactory;

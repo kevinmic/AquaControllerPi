@@ -3,8 +3,8 @@ package com.kevin_mic.aqua.dao;
 import com.kevin_mic.aqua.dbi.PinDbi;
 import com.kevin_mic.aqua.dbi.PinSupplierDbi;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
-import com.kevin_mic.aqua.model.Pin;
-import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.dbobj.Pin;
+import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import org.skife.jdbi.v2.DBI;
 
 import javax.inject.Inject;

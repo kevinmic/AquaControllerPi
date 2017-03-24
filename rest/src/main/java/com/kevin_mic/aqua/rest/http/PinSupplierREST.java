@@ -1,10 +1,8 @@
 package com.kevin_mic.aqua.rest.http;
 
-import com.kevin_mic.aqua.model.Pin;
-import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.dbobj.Pin;
+import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
-import com.kevin_mic.aqua.service.AquaException;
-import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.service.pinsupplier.PinSupplierService;
 
 import javax.inject.Inject;

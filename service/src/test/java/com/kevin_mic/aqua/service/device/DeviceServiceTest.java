@@ -1,15 +1,14 @@
 package com.kevin_mic.aqua.service.device;
 
 import com.kevin_mic.aqua.dao.DeviceDao;
-import com.kevin_mic.aqua.model.Device;
-import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.dbobj.Device;
+import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.model.updates.DeviceUpdate;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static org.junit.Assert.*;

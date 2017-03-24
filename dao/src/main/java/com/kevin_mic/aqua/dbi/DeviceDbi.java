@@ -1,7 +1,7 @@
 package com.kevin_mic.aqua.dbi;
 
-import com.kevin_mic.aqua.model.Device;
-import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.dbobj.Device;
+import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;

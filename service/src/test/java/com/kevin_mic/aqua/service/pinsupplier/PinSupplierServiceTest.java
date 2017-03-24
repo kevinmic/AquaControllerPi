@@ -1,17 +1,14 @@
 package com.kevin_mic.aqua.service.pinsupplier;
 
 import com.kevin_mic.aqua.dao.PinSupplierDao;
-import com.kevin_mic.aqua.model.Pin;
-import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.dbobj.Pin;
+import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
-import com.kevin_mic.aqua.service.ErrorType;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;

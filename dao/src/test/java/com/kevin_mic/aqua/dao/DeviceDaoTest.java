@@ -1,10 +1,10 @@
 package com.kevin_mic.aqua.dao;
 
-import com.kevin_mic.aqua.model.Device;
-import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.dbobj.Device;
+import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
-import com.kevin_mic.aqua.model.Pin;
-import com.kevin_mic.aqua.model.PinSupplier;
+import com.kevin_mic.aqua.model.dbobj.Pin;
+import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;

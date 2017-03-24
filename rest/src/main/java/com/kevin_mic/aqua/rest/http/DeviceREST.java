@@ -1,6 +1,6 @@
 package com.kevin_mic.aqua.rest.http;
 
-import com.kevin_mic.aqua.model.Device;
+import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.updates.DeviceUpdate;
 import com.kevin_mic.aqua.service.device.DeviceService;
 

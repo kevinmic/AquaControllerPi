@@ -1,6 +1,6 @@
 package com.kevin_mic.aqua.model.updates;
 
-import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import lombok.Data;
 
 import java.util.List;

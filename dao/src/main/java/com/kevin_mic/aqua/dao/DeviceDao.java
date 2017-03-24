@@ -2,8 +2,8 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.dbi.DeviceDbi;
 import com.kevin_mic.aqua.dbi.PinDbi;
-import com.kevin_mic.aqua.model.Device;
-import com.kevin_mic.aqua.model.DevicePin;
+import com.kevin_mic.aqua.model.dbobj.Device;
+import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
 import org.apache.commons.collections.CollectionUtils;
 import org.skife.jdbi.v2.DBI;

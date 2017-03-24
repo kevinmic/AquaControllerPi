@@ -1,4 +1,4 @@
-package com.kevin_mic.aqua.model;
+package com.kevin_mic.aqua.model.dbobj;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
