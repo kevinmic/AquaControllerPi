@@ -34,9 +34,13 @@ public interface ActionDbi {
     @SqlQuery("select * from " + ActionDevice.TABLE_NAME + " where actionId = :actionId")
     List<ActionDevice> findAllDevices(@Bind("actionId") int actionId);
 
+    @SqlQuery("select * from " + ActionDevice.TABLE_NAME + " where deviceId = :deviceId")
+    ActionDevice getActionForDeviceId(@Bind("deviceId") int deviceId);
+
     @SqlUpdate("insert into " + ActionDevice.TABLE_NAME + " (actionid, deviceId) values (:actionId, :deviceId)")
     void insertActionDevice(@BindBean ActionDevice actionDevice);
 
     @SqlUpdate("delete from " + ActionDevice.TABLE_NAME + " where actionId = :actionId")
     void deleteActionDevicesForActionId(@Bind("actionId") int actionId);
+
 }

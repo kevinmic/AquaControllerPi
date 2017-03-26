@@ -8,11 +8,12 @@ import com.kevin_mic.aqua.model.actions.ActionInterface;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.dbobj.ActionDB;
 import com.kevin_mic.aqua.model.dbobj.ActionDevice;
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.skife.jdbi.v2.DBI;
 
 import javax.inject.Inject;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -30,7 +31,7 @@ public class ActionDao {
         this.mapper = objectMapper;
     }
 
-    public ActionInterface insert(ActionInterface action) {
+    public <T extends ActionInterface> T insert(T action) {
         action.setActionId(getActionDbi().getNextId());
         ActionDB actionEntity = mapModelToDB(action);
 
@@ -65,9 +66,9 @@ public class ActionDao {
         List<Field> ownedDeviceIds = FieldUtils.getFieldsListWithAnnotation(action.getClass(), Owned.class);
         ownedDeviceIds.forEach(field -> {
             try {
-                Integer deviceId = Integer.parseInt(BeanUtils.getProperty(action, field.getName()));
+                Integer deviceId = (Integer) new PropertyDescriptor(field.getName(), action.getClass()).getReadMethod().invoke(action);
                 actionDbi.insertActionDevice(new ActionDevice(action.getActionId(), deviceId));
-            } catch (InvocationTargetException | NoSuchMethodException | IllegalAccessException e) {
+            } catch (IllegalAccessException | IntrospectionException | InvocationTargetException e ) {
                 throw new RuntimeException(e);
             }
         });
@@ -84,6 +85,15 @@ public class ActionDao {
         }
 
         return mapDbToModel(action);
+    }
+
+    public Integer getActionIdThatOwnsDevice(int deviceId) {
+        ActionDevice actionDevice = getActionDbi().getActionForDeviceId(deviceId);
+        if (actionDevice != null) {
+            return actionDevice.getActionId();
+        }
+
+        return null;
     }
 
     public void delete(int actionId) {

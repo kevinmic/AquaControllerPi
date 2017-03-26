@@ -13,13 +13,13 @@ public class DosingTimed implements ActionInterface {
     @AllowedDeviceTypes(DeviceType.DosingPumpPeristalticTimed)
     @Required
     @Owned
-    private int pumpId;
+    private Integer pumpId;
 
     @Required
     private Dosage dosage;
 
     @Required
-    private int runOnMinute;
+    private Integer runOnMinute;
 
     private String name;
     private int actionId;
