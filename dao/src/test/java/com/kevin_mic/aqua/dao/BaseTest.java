@@ -1,6 +1,8 @@
 package com.kevin_mic.aqua.dao;
 
 import com.codahale.metrics.MetricRegistry;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.joda.JodaMapper;
 import io.dropwizard.db.DataSourceFactory;
 import io.dropwizard.db.ManagedDataSource;
@@ -15,6 +17,7 @@ import org.skife.jdbi.v2.Handle;
 public abstract class BaseTest {
     static Environment env;
     static DBI dbi;
+    static ObjectMapper mapper = new ObjectMapper().configure(SerializationFeature.INDENT_OUTPUT, true);
 
     @BeforeClass
     public static void before() {

@@ -1,5 +1,11 @@
 package com.kevin_mic.aqua.rest.setup;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.reflect.ClassPath;
 import com.google.inject.AbstractModule;
@@ -14,6 +20,7 @@ import org.quartz.SchedulerException;
 import org.quartz.impl.StdSchedulerFactory;
 import org.skife.jdbi.v2.DBI;
 
+import javax.inject.Singleton;
 import java.io.IOException;
 
 public class AquaControllerModule extends AbstractModule {
@@ -38,6 +45,21 @@ public class AquaControllerModule extends AbstractModule {
         catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("Error while looking up dao classes", e);
         }
+    }
+
+    @Provides
+    @Singleton
+    public ObjectMapper provideObjectMapper() {
+        ObjectMapper mapper = new ObjectMapper()
+                .registerModule(new ParameterNamesModule())
+                .registerModule(new Jdk8Module())
+                .registerModule(new JavaTimeModule())
+                .configure(SerializationFeature.INDENT_OUTPUT, true)
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+                .configure(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_AS_NULL, true)
+                ;
+
+        return mapper;
     }
 
     @Provides
