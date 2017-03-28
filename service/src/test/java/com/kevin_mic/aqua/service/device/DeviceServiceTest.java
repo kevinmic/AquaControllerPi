@@ -5,8 +5,10 @@ import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.model.updates.DeviceUpdate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +30,11 @@ public class DeviceServiceTest {
         deviceDao = mock(DeviceDao.class);
         deviceValidator = mock(DeviceValidator.class);
         tested = new DeviceService(deviceDao, deviceValidator);
+    }
+
+    @After
+    public void after() {
+        Mockito.verifyNoMoreInteractions(deviceDao, deviceValidator);
     }
 
     @Test
@@ -88,6 +95,7 @@ public class DeviceServiceTest {
         verify(deviceValidator).validate(device);
         verify(deviceValidator).validatePins(device);
         verify(deviceDao).updateDevice(device);
+        verify(deviceDao).getDevice(1);
     }
 
     @Test

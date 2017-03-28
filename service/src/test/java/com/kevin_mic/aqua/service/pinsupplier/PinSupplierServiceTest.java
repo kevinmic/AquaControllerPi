@@ -4,8 +4,10 @@ import com.kevin_mic.aqua.dao.PinSupplierDao;
 import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
@@ -30,6 +32,11 @@ public class PinSupplierServiceTest {
         tested = new PinSupplierService(supplierDao, validator);
     }
 
+    @After
+    public void after() {
+        Mockito.verifyNoMoreInteractions(supplierDao, validator);
+    }
+
     @Test
     public void test_add() {
         PinSupplier supplier = new PinSupplier();
@@ -42,6 +49,7 @@ public class PinSupplierServiceTest {
         verify(validator).validate(supplier);
         verify(validator).validateHardwareConnected(supplier);
         verify(validator).validateHardwareIdNotUsed(-1, HARDWARE_ID);
+        verify(supplierDao).getNextId();
 
         verify(supplierDao).insertSupplier(supplier);
     }
@@ -67,6 +75,7 @@ public class PinSupplierServiceTest {
         verify(validator).validateHardwareConnected(pinSupplier);
         verify(validator).validateHardwareIdNotUsed(55, HARDWARE_ID);
 
+        verify(supplierDao).getSupplier(55);
         verify(supplierDao).update(pinSupplier);
     }
 
@@ -98,6 +107,7 @@ public class PinSupplierServiceTest {
     public void test_delete() {
         tested.delete(1);
         verify(validator).validatePinsNotOwned(1);
+        verify(supplierDao).deleteSupplier(1);
     }
 
 }

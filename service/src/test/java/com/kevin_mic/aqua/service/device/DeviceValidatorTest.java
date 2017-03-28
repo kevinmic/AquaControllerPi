@@ -11,6 +11,7 @@ import com.kevin_mic.aqua.model.types.PinType;
 import com.kevin_mic.aqua.service.ErrorType;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +39,8 @@ public class DeviceValidatorTest {
     public void test_validate_valid() {
         Device device = getValidDevice();
         tested.validate(device);
+
+        Mockito.verifyNoMoreInteractions(pinSupplierDao);
     }
 
     @Test
@@ -69,6 +72,8 @@ public class DeviceValidatorTest {
     @Test
     public void test_validatePinTypes_valid() {
         tested.validatePinTypes(DeviceType.DosingPumpPeristalticStepper, getPins());
+
+        Mockito.verifyNoMoreInteractions(pinSupplierDao);
     }
 
     @Test
@@ -102,6 +107,8 @@ public class DeviceValidatorTest {
         PinSupplier pinSupplier = new PinSupplier();
         pinSupplier.setSubType(device.getType().getRequiredPinSupplierSubType());
         tested.validatePinSupplier(device, pinSupplier);
+
+        Mockito.verifyNoMoreInteractions(pinSupplierDao);
     }
 
     @Test
@@ -129,6 +136,8 @@ public class DeviceValidatorTest {
         when(pinSupplierDao.getSupplier(6000)).thenReturn(pinSupplier);
 
         tested.validatePins(device);
+
+        Mockito.verifyNoMoreInteractions(pinSupplierDao);
     }
 
     private Device getDevice() {

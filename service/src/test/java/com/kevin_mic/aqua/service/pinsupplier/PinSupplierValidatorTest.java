@@ -8,12 +8,14 @@ import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PinSupplierValidatorTest {
@@ -34,6 +36,8 @@ public class PinSupplierValidatorTest {
     public void test_validate_valid() {
         PinSupplier pinSupplier = getValidPinSupplier();
         tested.validate(pinSupplier);
+
+        Mockito.verifyNoMoreInteractions(supplierDao);
     }
 
     @Test
@@ -88,6 +92,9 @@ public class PinSupplierValidatorTest {
     public void test_validateHardwareidNotUsed_found_valid() {
         when(supplierDao.findByHardwareId(HARDWARE_ID)).thenReturn(getValidPinSupplier());
         tested.validateHardwareIdNotUsed(1, HARDWARE_ID);
+
+        verify(supplierDao).findByHardwareId(HARDWARE_ID);
+        Mockito.verifyNoMoreInteractions(supplierDao);
     }
 
     @Test
@@ -101,6 +108,9 @@ public class PinSupplierValidatorTest {
         List<Pin> pins = new ArrayList<>();
         when(supplierDao.getPins(1)).thenReturn(pins);
         tested.validatePinsNotOwned(1);
+
+        verify(supplierDao).getPins(1);
+        Mockito.verifyNoMoreInteractions(supplierDao);
     }
 
     @Test

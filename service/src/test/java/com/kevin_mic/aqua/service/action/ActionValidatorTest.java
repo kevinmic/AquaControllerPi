@@ -9,14 +9,17 @@ import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.service.device.DeviceService;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class ActionValidatorTest {
@@ -32,10 +35,13 @@ public class ActionValidatorTest {
         tested = new ActionValidator(deviceService, actionDao);
     }
 
+
     @Test
     public void test_validate_valid() {
         ActionInterface action = getValidAction();
         tested.validate(action);
+
+        Mockito.verifyNoMoreInteractions(actionDao, deviceService);
     }
 
     @Test
@@ -86,6 +92,8 @@ public class ActionValidatorTest {
         action.setPumpIds(Arrays.asList(new Integer[] {1}));
 
         tested.validateRequired(action);
+
+        Mockito.verifyNoMoreInteractions(actionDao, deviceService);
     }
 
     @Test
@@ -124,6 +132,8 @@ public class ActionValidatorTest {
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(11);
 
         assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.DeviceAlreadyOwnedByAnotherAction + ":pumpIds:1");
+
+        verify(deviceService).findById(1);
     }
 
     @Test
@@ -138,6 +148,11 @@ public class ActionValidatorTest {
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(10);
 
         tested.validateDevices(action);
+
+        verify(deviceService).findById(1);
+        verify(actionDao).getActionIdThatOwnsDevice(1);
+
+        Mockito.verifyNoMoreInteractions(actionDao, deviceService);
     }
 
     @Test
@@ -152,6 +167,11 @@ public class ActionValidatorTest {
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(null);
 
         tested.validateDevices(action);
+
+        verify(deviceService).findById(1);
+        verify(actionDao).getActionIdThatOwnsDevice(1);
+
+        Mockito.verifyNoMoreInteractions(actionDao, deviceService);
     }
 
 }
