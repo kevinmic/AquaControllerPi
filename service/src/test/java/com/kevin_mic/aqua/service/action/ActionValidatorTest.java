@@ -1,11 +1,11 @@
 package com.kevin_mic.aqua.service.action;
 
 import com.kevin_mic.aqua.dao.ActionDao;
-import com.kevin_mic.aqua.model.Schedule;
 import com.kevin_mic.aqua.model.actions.ActionInterface;
 import com.kevin_mic.aqua.model.actions.DosingTimed;
 import com.kevin_mic.aqua.model.actions.PumpSchedule;
 import com.kevin_mic.aqua.model.dbobj.Device;
+import com.kevin_mic.aqua.model.schedule.AlwaysOnSchedule;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.service.device.DeviceService;
@@ -60,7 +60,7 @@ public class ActionValidatorTest {
     @Test
     public void test_validateRequired_emptyList() {
         PumpSchedule action = new PumpSchedule();
-        action.setSchedule(new Schedule());
+        action.setSchedule(new AlwaysOnSchedule());
         action.setPumpIds(new ArrayList<>());
 
         assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeEmpty + ":pumpIds");
@@ -78,7 +78,7 @@ public class ActionValidatorTest {
     @Test
     public void test_validateRequired_list_null() {
         PumpSchedule action = new PumpSchedule();
-        action.setSchedule(new Schedule());
+        action.setSchedule(new AlwaysOnSchedule());
         action.setPumpIds(null);
 
         assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeNull + ":pumpIds");
@@ -87,7 +87,7 @@ public class ActionValidatorTest {
     @Test
     public void test_validateRequired_valid() {
         PumpSchedule action = new PumpSchedule();
-        action.setSchedule(new Schedule());
+        action.setSchedule(new AlwaysOnSchedule());
         action.setPumpIds(Arrays.asList(new Integer[] {1}));
 
         tested.validateRequired(action);
