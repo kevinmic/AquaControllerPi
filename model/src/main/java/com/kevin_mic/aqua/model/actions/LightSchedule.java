@@ -20,7 +20,7 @@ public class LightSchedule implements ActionInterface {
     private List<Integer> lightIds;
 
     @Required
-    @AllowedScheduleTypes({ScheduleType.AlwaysOn,ScheduleType.DailyOnOff})
+    @AllowedScheduleTypes({ScheduleType.AlwaysOn,ScheduleType.OnOff})
     private ScheduleInterface schedule;
 
     private String name;

@@ -9,7 +9,7 @@ import java.util.Set;
 
 @Data
 public class OnOffSchedule implements ScheduleInterface {
-    private final ScheduleType type = ScheduleType.DailyOnOff;
+    private final ScheduleType type = ScheduleType.OnOff;
 
     Set<DayOfWeek> days;
     List<OnOffTime> onOffTimes;

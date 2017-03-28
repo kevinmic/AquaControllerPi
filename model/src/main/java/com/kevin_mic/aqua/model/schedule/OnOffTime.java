@@ -6,4 +6,15 @@ import lombok.Data;
 public class OnOffTime {
     HourMinute on;
     HourMinute off;
+
+    public boolean isValid() {
+        if (on == null || off == null) {
+            return false;
+        }
+        if (on.equals(off)) {
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -1,7 +1,7 @@
 package com.kevin_mic.aqua.model.types;
 
 public enum ScheduleType {
-    DailyOnOff,
+    OnOff,
     AlwaysOn,
     Interval
 }
