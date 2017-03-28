@@ -20,5 +20,5 @@ public enum ErrorType {
     DeviceAlreadyOwnedByAnotherAction,
     ActionFieldCannotBeNull,
     InvalidDeviceType,
-    SupplierCannotBeNull, ActionFieldCannotBeEmpty,
+    SupplierCannotBeNull, ActionFieldCannotBeEmpty, CannotChangeActionType,
 }

@@ -98,4 +98,10 @@ public class ActionValidator {
             throw new AquaException(ErrorType.DeviceAlreadyOwnedByAnotherAction, fieldName + ":" + deviceId);
         }
     }
+
+    public void validateNotChanged(ActionInterface foundAction, ActionInterface action) {
+        if (foundAction.getActionType() != action.getActionType()) {
+            throw new AquaException(ErrorType.CannotChangeActionType);
+        }
+    }
 }
