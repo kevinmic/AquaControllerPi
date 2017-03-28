@@ -1,7 +1,6 @@
 package com.kevin_mic.aqua.rest.http;
 
 import com.kevin_mic.aqua.model.actions.ActionInterface;
-import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.service.action.ActionService;
 
 import javax.inject.Inject;
@@ -52,6 +51,6 @@ public class ActionREST {
     @DELETE
     @Path("/{actionId}")
     public void deleteDevice(@PathParam("actionId") int actionId) {
-        actionService.delete(actionId);
+        actionService.deleteAction(actionId);
     }
 }

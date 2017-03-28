@@ -43,15 +43,15 @@ public class PinSupplierServiceTest {
         supplier.setPinSupplierId(55);
         supplier.setHardwareId(HARDWARE_ID);
 
-        when(supplierDao.insertSupplier(supplier)).thenReturn(supplier);
-        assertNotNull(tested.add(supplier));
+        when(supplierDao.addPinSupplier(supplier)).thenReturn(supplier);
+        assertNotNull(tested.addPinSupplier(supplier));
 
         verify(validator).validate(supplier);
         verify(validator).validateHardwareConnected(supplier);
         verify(validator).validateHardwareIdNotUsed(-1, HARDWARE_ID);
         verify(supplierDao).getNextId();
 
-        verify(supplierDao).insertSupplier(supplier);
+        verify(supplierDao).addPinSupplier(supplier);
     }
 
     @Test
@@ -62,12 +62,12 @@ public class PinSupplierServiceTest {
         update.setHardwareId(HARDWARE_ID);
         update.setName(NAME);
 
-        when(supplierDao.getSupplier(55)).thenReturn(pinSupplier);
+        when(supplierDao.getPinSupplier(55)).thenReturn(pinSupplier);
         when(pinSupplier.getPinSupplierId()).thenReturn(55);
         when(pinSupplier.getHardwareId()).thenReturn(HARDWARE_ID);
 
-        when(supplierDao.update(pinSupplier)).thenReturn(pinSupplier);
-        assertNotNull(tested.update(55, update));
+        when(supplierDao.updatePinSupplier(pinSupplier)).thenReturn(pinSupplier);
+        assertNotNull(tested.updatePinSupplier(55, update));
 
         verify(pinSupplier).setName(NAME);
         verify(pinSupplier).setHardwareId(HARDWARE_ID);
@@ -75,22 +75,22 @@ public class PinSupplierServiceTest {
         verify(validator).validateHardwareConnected(pinSupplier);
         verify(validator).validateHardwareIdNotUsed(55, HARDWARE_ID);
 
-        verify(supplierDao).getSupplier(55);
-        verify(supplierDao).update(pinSupplier);
+        verify(supplierDao).getPinSupplier(55);
+        verify(supplierDao).updatePinSupplier(pinSupplier);
     }
 
     @Test
     public void test_findById() {
-        when(supplierDao.getSupplier(1)).thenReturn(new PinSupplier());
-        assertNotNull(tested.findById(1));
+        when(supplierDao.getPinSupplier(1)).thenReturn(new PinSupplier());
+        assertNotNull(tested.getPinSupplier(1));
 
-        verify(supplierDao).getSupplier(1);
+        verify(supplierDao).getPinSupplier(1);
     }
 
     @Test
     public void test_list() {
         when(supplierDao.getPinSuppliers()).thenReturn(new ArrayList<PinSupplier>());
-        assertNotNull(tested.list());
+        assertNotNull(tested.listPinSuppliers());
 
         verify(supplierDao).getPinSuppliers();
     }
@@ -105,9 +105,9 @@ public class PinSupplierServiceTest {
 
     @Test
     public void test_delete() {
-        tested.delete(1);
+        tested.deletePinSupplier(1);
         verify(validator).validatePinsNotOwned(1);
-        verify(supplierDao).deleteSupplier(1);
+        verify(supplierDao).deletePinSupplier(1);
     }
 
 }

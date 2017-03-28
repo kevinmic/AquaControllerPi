@@ -19,7 +19,7 @@ public class PinSupplierDao {
         this.dbi = dbi;
     }
 
-    public PinSupplier insertSupplier(PinSupplier pinSupplier) {
+    public PinSupplier addPinSupplier(PinSupplier pinSupplier) {
         return dbi.inTransaction((handle,transactionStatus) -> {
             PinDbi pinDbi = handle.attach(PinDbi.class);
             PinSupplierDbi pinSupplierDbi = handle.attach(PinSupplierDbi.class);
@@ -35,7 +35,7 @@ public class PinSupplierDao {
         });
     }
 
-    public void deleteSupplier(int pinSupplierId) {
+    public void deletePinSupplier(int pinSupplierId) {
         dbi.inTransaction((handle,ts) -> {
             PinDbi pinDbi = handle.attach(PinDbi.class);
             PinSupplierDbi pinSupplierDbi = handle.attach(PinSupplierDbi.class);
@@ -56,7 +56,7 @@ public class PinSupplierDao {
         });
     }
 
-    public PinSupplier getSupplier(int pinSupplierId) {
+    public PinSupplier getPinSupplier(int pinSupplierId) {
         PinSupplier supplier = getPinSupplierDbi().getSupplier(pinSupplierId);
         if (supplier == null) {
             throw new EntityNotFoundException("PinSupplier", pinSupplierId);
@@ -88,7 +88,7 @@ public class PinSupplierDao {
         return getPinSupplierDbi().getSuppliers();
     }
 
-    public Pin findPin(int pinId) {
+    public Pin getPin(int pinId) {
         Pin pin = getPinSupplierDbi().getPin(pinId);
         if (pin == null) {
             throw new EntityNotFoundException("Pin", pinId);
@@ -96,8 +96,8 @@ public class PinSupplierDao {
         return pin;
     }
 
-    public PinSupplier update(PinSupplier pinSupplier) {
+    public PinSupplier updatePinSupplier(PinSupplier pinSupplier) {
         getPinSupplierDbi().update(pinSupplier);
-        return getSupplier(pinSupplier.getPinSupplierId());
+        return getPinSupplier(pinSupplier.getPinSupplierId());
     }
 }

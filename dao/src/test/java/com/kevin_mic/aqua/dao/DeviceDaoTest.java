@@ -66,12 +66,12 @@ public class DeviceDaoTest extends BaseTest {
         Device findDevice = tested.getDevice(deviceId);
         assertEquals(createDevice, findDevice);
 
-        Pin pin = pinSupplierDao.findPin(pinId);
+        Pin pin = pinSupplierDao.getPin(pinId);
         assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
 
-        assertEquals(1, tested.getAllDevices().size());
+        assertEquals(1, tested.getDevices().size());
 
-        tested.removeDevice(deviceId);
+        tested.deleteDevice(deviceId);
 
         try {
             tested.getDevice(deviceId);
@@ -96,7 +96,7 @@ public class DeviceDaoTest extends BaseTest {
 
         int deviceId = createDevice.getDeviceId();
 
-        Pin pin = pinSupplierDao.findPin(pinIdA);
+        Pin pin = pinSupplierDao.getPin(pinIdA);
         assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
 
 
@@ -116,10 +116,10 @@ public class DeviceDaoTest extends BaseTest {
         assertEquals(checkDevice.getName(), updateDevice.getName());
         assertNotEquals(checkDevice.getType(), updateDevice.getType());
 
-        pin = pinSupplierDao.findPin(pinIdA);
+        pin = pinSupplierDao.getPin(pinIdA);
         assertNull(pin.getOwnedByDeviceId());
 
-        pin = pinSupplierDao.findPin(pinIdB);
+        pin = pinSupplierDao.getPin(pinIdB);
         assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
     }
 
@@ -175,7 +175,7 @@ public class DeviceDaoTest extends BaseTest {
         tested.addDevice(device1);
 
         try {
-            pinSupplierDao.deleteSupplier(supplierId);
+            pinSupplierDao.deletePinSupplier(supplierId);
             fail("Should not have been allowed");
         }
         catch (CallbackFailedException e) {
@@ -194,7 +194,7 @@ public class DeviceDaoTest extends BaseTest {
     }
 
     private void deletePin(int supplierId) {
-        pinSupplierDao.deleteSupplier(supplierId);
+        pinSupplierDao.deletePinSupplier(supplierId);
     }
 
     private int createPin() {
@@ -204,7 +204,7 @@ public class DeviceDaoTest extends BaseTest {
         pinSupplier.setType(PinSupplierType.RASBERRY_PI);
         pinSupplier.setSubType(PinSupplierSubType.PI);
         pinSupplier.setName("PI");
-        pinSupplierDao.insertSupplier(pinSupplier);
+        pinSupplierDao.addPinSupplier(pinSupplier);
         return pinSupplier.getPinSupplierId();
     }
 

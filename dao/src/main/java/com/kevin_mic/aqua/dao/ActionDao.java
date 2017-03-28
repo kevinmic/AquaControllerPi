@@ -31,7 +31,7 @@ public class ActionDao {
         this.mapper = objectMapper;
     }
 
-    public <T extends ActionInterface> T insert(T action) {
+    public <T extends ActionInterface> T addAction(T action) {
         action.setActionId(getActionDbi().getNextId());
         ActionDB actionEntity = mapModelToDB(action);
 
@@ -47,7 +47,7 @@ public class ActionDao {
         return action;
     }
 
-    public ActionInterface update(ActionInterface action) {
+    public ActionInterface updateAction(ActionInterface action) {
         ActionDB actionEntity = mapModelToDB(action);
         dbi.inTransaction((handle, ts) -> {
             ActionDbi actionDbi = handle.attach(ActionDbi.class);
@@ -96,7 +96,7 @@ public class ActionDao {
         return null;
     }
 
-    public void delete(int actionId) {
+    public void deleteAction(int actionId) {
         dbi.inTransaction((handle, ts) -> {
             ActionDbi dbi = handle.attach(ActionDbi.class);
             dbi.deleteActionDevicesForActionId(actionId);

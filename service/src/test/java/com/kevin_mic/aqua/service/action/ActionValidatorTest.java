@@ -9,7 +9,6 @@ import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.service.device.DeviceService;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -103,7 +102,7 @@ public class ActionValidatorTest {
 
         Device device = new Device();
         device.setType(DeviceType.FanAC);
-        when(deviceService.findById(1)).thenReturn(device);
+        when(deviceService.getDevice(1)).thenReturn(device);
 
         assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.InvalidDeviceType + ":pumpIds:1");
     }
@@ -115,7 +114,7 @@ public class ActionValidatorTest {
 
         Device device = new Device();
         device.setType(DeviceType.FanAC);
-        when(deviceService.findById(1)).thenReturn(device);
+        when(deviceService.getDevice(1)).thenReturn(device);
 
         assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.InvalidDeviceType + ":pumpId:1");
     }
@@ -128,12 +127,12 @@ public class ActionValidatorTest {
 
         Device device = new Device();
         device.setType(DeviceType.PumpAC);
-        when(deviceService.findById(1)).thenReturn(device);
+        when(deviceService.getDevice(1)).thenReturn(device);
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(11);
 
         assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.DeviceAlreadyOwnedByAnotherAction + ":pumpIds:1");
 
-        verify(deviceService).findById(1);
+        verify(deviceService).getDevice(1);
     }
 
     @Test
@@ -144,12 +143,12 @@ public class ActionValidatorTest {
 
         Device device = new Device();
         device.setType(DeviceType.PumpAC);
-        when(deviceService.findById(1)).thenReturn(device);
+        when(deviceService.getDevice(1)).thenReturn(device);
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(10);
 
         tested.validateDevices(action);
 
-        verify(deviceService).findById(1);
+        verify(deviceService).getDevice(1);
         verify(actionDao).getActionIdThatOwnsDevice(1);
 
         Mockito.verifyNoMoreInteractions(actionDao, deviceService);
@@ -163,12 +162,12 @@ public class ActionValidatorTest {
 
         Device device = new Device();
         device.setType(DeviceType.PumpAC);
-        when(deviceService.findById(1)).thenReturn(device);
+        when(deviceService.getDevice(1)).thenReturn(device);
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(null);
 
         tested.validateDevices(action);
 
-        verify(deviceService).findById(1);
+        verify(deviceService).getDevice(1);
         verify(actionDao).getActionIdThatOwnsDevice(1);
 
         Mockito.verifyNoMoreInteractions(actionDao, deviceService);

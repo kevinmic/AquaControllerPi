@@ -29,29 +29,29 @@ public class DeviceREST {
 
     @GET
     public List<Device> listDevices() {
-        return deviceService.list();
+        return deviceService.listDevices();
     }
 
     @POST
     public Device create(Device device) {
-        return deviceService.add(device);
+        return deviceService.addDevice(device);
     }
 
     @GET
     @Path("/{deviceId}")
     public Device getDevice(@PathParam("deviceId") int deviceId) {
-        return deviceService.findById(deviceId);
+        return deviceService.getDevice(deviceId);
     }
 
     @PUT
     @Path("/{deviceId}")
     public Device updateDevice(@PathParam("deviceId") int deviceId, DeviceUpdate update) {
-        return deviceService.update(deviceId, update);
+        return deviceService.updateDevice(deviceId, update);
     }
 
     @DELETE
     @Path("/{deviceId}")
     public void deleteDevice(@PathParam("deviceId") int deviceId) {
-        deviceService.delete(deviceId);
+        deviceService.deleteDevice(deviceId);
     }
 }

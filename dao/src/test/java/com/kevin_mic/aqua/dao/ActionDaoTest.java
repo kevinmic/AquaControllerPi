@@ -45,7 +45,7 @@ public class ActionDaoTest extends BaseTest {
         topOff.setRefillReserviorFloat(8);
         topOff.setTankWaterLevelFloat(9);
 
-        tested.insert(topOff);
+        tested.addAction(topOff);
 
         assertNotEquals(5, topOff.getActionId());
 
@@ -57,12 +57,12 @@ public class ActionDaoTest extends BaseTest {
 
         topOff.setTankWaterLevelFloat(100);
         topOff.setName("NAME_2");
-        tested.update(topOff);
+        tested.updateAction(topOff);
 
         foundAction = tested.getAction(topOff.getActionId());
         assertEquals(foundAction, topOff);
 
-        tested.delete(topOff.getActionId());
+        tested.deleteAction(topOff.getActionId());
 
         assertEquals(0, tested.getActions().size());
 
@@ -81,7 +81,7 @@ public class ActionDaoTest extends BaseTest {
         topOff.setPumpId(15);
 
         try {
-            tested.insert(topOff);
+            tested.addAction(topOff);
             fail();
         }
         catch (CallbackFailedException e) {

@@ -17,24 +17,24 @@ public class DeviceService {
         this.deviceValidator = deviceValidator;
     }
 
-    public List<Device> list() {
-        return deviceDao.getAllDevices();
+    public List<Device> listDevices() {
+        return deviceDao.getDevices();
     }
 
-    public Device findById(int deviceId) {
+    public Device getDevice(int deviceId) {
         return deviceDao.getDevice(deviceId);
     }
 
-    public Device add(Device device) {
-        device.setDeviceId(-1); // Unset the deviceid on add
+    public Device addDevice(Device device) {
+        device.setDeviceId(-1); // Unset the deviceid on addDevice
         deviceValidator.validate(device);
         deviceValidator.validatePins(device);
 
         return deviceDao.addDevice(device);
     }
 
-    public Device update(int deviceId, DeviceUpdate deviceUpdate) {
-        Device device = findById(deviceId);
+    public Device updateDevice(int deviceId, DeviceUpdate deviceUpdate) {
+        Device device = getDevice(deviceId);
 
         device.setName(deviceUpdate.getName());
         device.setHardwareId(deviceUpdate.getHardwareId());
@@ -46,7 +46,7 @@ public class DeviceService {
         return deviceDao.updateDevice(device);
     }
 
-    public void delete(int deviceId) {
-        deviceDao.removeDevice(deviceId);
+    public void deleteDevice(int deviceId) {
+        deviceDao.deleteDevice(deviceId);
     }
 }

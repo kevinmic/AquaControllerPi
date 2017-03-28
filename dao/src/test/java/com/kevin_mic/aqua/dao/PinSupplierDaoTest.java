@@ -30,9 +30,9 @@ public class PinSupplierDaoTest extends BaseTest {
         PinSupplier createSupplier = getPinSupplier();
         int supplierId = createSupplier.getPinSupplierId();
 
-        tested.insertSupplier(createSupplier);
+        tested.addPinSupplier(createSupplier);
 
-        PinSupplier foundSupplier = tested.getSupplier(supplierId);
+        PinSupplier foundSupplier = tested.getPinSupplier(supplierId);
         assertEquals(createSupplier, foundSupplier);
 
         List<Pin> foundPins = tested.getPins(supplierId);
@@ -42,15 +42,15 @@ public class PinSupplierDaoTest extends BaseTest {
         assertEquals(supplierId, test_1_1.getPinSupplierId());
         assertNull(test_1_1.getOwnedByDeviceId());
 
-        Pin checkPin = tested.findPin(test_1_1.getPinId());
+        Pin checkPin = tested.getPin(test_1_1.getPinId());
         assertEquals(test_1_1, checkPin);
 
         assertEquals(1, tested.getPinSuppliers().size());
 
-        tested.deleteSupplier(supplierId);
+        tested.deletePinSupplier(supplierId);
 
         try {
-            tested.getSupplier(supplierId);
+            tested.getPinSupplier(supplierId);
             fail();
         }
         catch (EntityNotFoundException e) {
@@ -61,7 +61,7 @@ public class PinSupplierDaoTest extends BaseTest {
         assertEquals(0, foundPins.size());
 
         try {
-            tested.findPin(-1);
+            tested.getPin(-1);
             fail();
         }
         catch (EntityNotFoundException e) {
@@ -73,7 +73,7 @@ public class PinSupplierDaoTest extends BaseTest {
     @Test
     public void test_update() {
         PinSupplier pinSupplier = getPinSupplier();
-        tested.insertSupplier(pinSupplier);
+        tested.addPinSupplier(pinSupplier);
 
         // I am modifying all fields and then checking to make sure only the ones I expected changed
         pinSupplier.setHardwareId("NEW_HRD");
@@ -81,7 +81,7 @@ public class PinSupplierDaoTest extends BaseTest {
         pinSupplier.setType(PinSupplierType.RASBERRY_PI);
         pinSupplier.setSubType(PinSupplierSubType.SensorArray);
 
-        PinSupplier checkIt = tested.update(pinSupplier);
+        PinSupplier checkIt = tested.updatePinSupplier(pinSupplier);
 
         PinSupplier expectedSupplier = getPinSupplier();
         expectedSupplier.setHardwareId("NEW_HRD");

@@ -18,6 +18,7 @@ import java.util.List;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class DeviceValidatorTest {
@@ -131,12 +132,15 @@ public class DeviceValidatorTest {
         PinSupplier pinSupplier = new PinSupplier();
         pinSupplier.setSubType(PinSupplierSubType.StepperArray);
 
-        when(pinSupplierDao.findPin(PIN_1)).thenReturn(new Pin(PIN_1, 1, 6000, 5000));
-        when(pinSupplierDao.findPin(PIN_2)).thenReturn(new Pin(PIN_2, 1, 6000, 5000));
-        when(pinSupplierDao.getSupplier(6000)).thenReturn(pinSupplier);
+        when(pinSupplierDao.getPin(PIN_1)).thenReturn(new Pin(PIN_1, 1, 6000, 5000));
+        when(pinSupplierDao.getPin(PIN_2)).thenReturn(new Pin(PIN_2, 1, 6000, 5000));
+        when(pinSupplierDao.getPinSupplier(6000)).thenReturn(pinSupplier);
 
         tested.validatePins(device);
 
+        verify(pinSupplierDao).getPin(PIN_1);
+        verify(pinSupplierDao).getPin(PIN_2);
+        verify(pinSupplierDao).getPinSupplier(6000);
         Mockito.verifyNoMoreInteractions(pinSupplierDao);
     }
 

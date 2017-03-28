@@ -39,17 +39,17 @@ public class DeviceServiceTest {
 
     @Test
     public void test_list() {
-        when(deviceDao.getAllDevices()).thenReturn(new ArrayList<Device>());
-        assertNotNull(tested.list());
+        when(deviceDao.getDevices()).thenReturn(new ArrayList<Device>());
+        assertNotNull(tested.listDevices());
 
 
-        verify(deviceDao).getAllDevices();
+        verify(deviceDao).getDevices();
     }
 
     @Test
     public void test_get() {
         when(deviceDao.getDevice(1)).thenReturn(new Device());
-        assertNotNull(tested.findById(1));
+        assertNotNull(tested.getDevice(1));
 
 
         verify(deviceDao).getDevice(1);
@@ -63,7 +63,7 @@ public class DeviceServiceTest {
         device.setPins(pins);
         device.setType(DeviceType.DosingPumpPeristalticStepper);
 
-        tested.add(device);
+        tested.addDevice(device);
 
         verify(deviceValidator).validate(device);
         verify(deviceValidator).validatePins(device);
@@ -86,7 +86,7 @@ public class DeviceServiceTest {
         when(device.getType()).thenReturn(DeviceType.DosingPumpPeristalticStepper);
         when(deviceDao.getDevice(1)).thenReturn(device);
 
-        tested.update(1, update);
+        tested.updateDevice(1, update);
 
         verify(device).setName(NAME);
         verify(device).setHardwareId(HARDWARE_ID);
@@ -100,8 +100,8 @@ public class DeviceServiceTest {
 
     @Test
     public void test_delete() {
-        tested.delete(1);
+        tested.deleteDevice(1);
 
-        verify(deviceDao).removeDevice(1);
+        verify(deviceDao).deleteDevice(1);
     }
 }

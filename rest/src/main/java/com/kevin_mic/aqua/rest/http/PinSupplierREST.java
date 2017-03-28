@@ -30,30 +30,30 @@ public class PinSupplierREST {
 
     @GET
     public List<PinSupplier> listPins() {
-        return supplierService.list();
+        return supplierService.listPinSuppliers();
     }
 
     @POST
     public PinSupplier add(PinSupplier supplier) {
-        return supplierService.add(supplier);
+        return supplierService.addPinSupplier(supplier);
     }
 
     @GET
     @Path("/{supplierId}")
     public PinSupplier getPinSupplier(@PathParam("supplierId") int supplierId) {
-        return supplierService.findById(supplierId);
+        return supplierService.getPinSupplier(supplierId);
     }
 
     @PUT
     @Path("/{supplierId}")
     public PinSupplier updatePinSupplier(@PathParam("supplierId") int supplierId, PinSupplierUpdate update) {
-        return supplierService.update(supplierId, update);
+        return supplierService.updatePinSupplier(supplierId, update);
     }
 
     @DELETE
     @Path("/{supplierId}")
     public void deletePinSupplier(@PathParam("supplierId") int supplierId) {
-        supplierService.delete(supplierId);
+        supplierService.deletePinSupplier(supplierId);
     }
 
     @GET

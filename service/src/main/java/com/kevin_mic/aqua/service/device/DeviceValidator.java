@@ -39,7 +39,7 @@ public class DeviceValidator {
         validatePinTypes(device.getType(), device.getPins());
 
         List<Pin> pins = device.getPins().stream()
-                .map(p -> pinSupplierDao.findPin(p.getPinId()))
+                .map(p -> pinSupplierDao.getPin(p.getPinId()))
                 .collect(Collectors.toList());
 
         pins.forEach(p -> validatePinsNotUsed(device.getDeviceId(), p));
@@ -47,7 +47,7 @@ public class DeviceValidator {
         pins.stream()
                 .map(Pin::getPinSupplierId)
                 .distinct()
-                .map(pinSupplierId -> pinSupplierDao.getSupplier(pinSupplierId))
+                .map(pinSupplierId -> pinSupplierDao.getPinSupplier(pinSupplierId))
                 .forEach(pinSupplier -> validatePinSupplier(device, pinSupplier));
     }
 

@@ -88,7 +88,7 @@ public class ActionValidator {
     }
 
     private void validateDevice(ActionInterface action, Integer deviceId, Set<DeviceType> allowedTypes, boolean owned, String fieldName) {
-        Device device = deviceService.findById(deviceId);
+        Device device = deviceService.getDevice(deviceId);
         if (!allowedTypes.contains(device.getType())) {
             throw new AquaException(ErrorType.InvalidDeviceType, fieldName + ":" + deviceId);
         }

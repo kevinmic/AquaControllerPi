@@ -21,7 +21,7 @@ public class ActionService {
         actionValidator.validateRequired(action);
         actionValidator.validateDevices(action);
 
-        return (T) actionDao.insert(action);
+        return (T) actionDao.addAction(action);
     }
 
     public <T extends ActionInterface> T updateAction(int actionId, T action) {
@@ -31,7 +31,7 @@ public class ActionService {
         actionValidator.validateRequired(action);
         actionValidator.validateDevices(action);
 
-        return (T) actionDao.update(action);
+        return (T) actionDao.updateAction(action);
     }
 
     public List<ActionInterface> listActions() {
@@ -42,7 +42,7 @@ public class ActionService {
         return actionDao.getAction(actionId);
     }
 
-    public void delete(int actionId) {
-        actionDao.delete(actionId);
+    public void deleteAction(int actionId) {
+        actionDao.deleteAction(actionId);
     }
 }

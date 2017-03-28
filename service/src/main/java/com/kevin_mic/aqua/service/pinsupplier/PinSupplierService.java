@@ -18,18 +18,18 @@ public class PinSupplierService {
         this.validator = validator;
     }
 
-    public PinSupplier add(PinSupplier pinSupplier) {
+    public PinSupplier addPinSupplier(PinSupplier pinSupplier) {
         pinSupplier.setPinSupplierId(-1);
         validator.validate(pinSupplier);
         validator.validateHardwareIdNotUsed(pinSupplier.getPinSupplierId(), pinSupplier.getHardwareId());
         validator.validateHardwareConnected(pinSupplier);
 
         pinSupplier.setPinSupplierId(pinSupplierDao.getNextId());
-        return pinSupplierDao.insertSupplier(pinSupplier);
+        return pinSupplierDao.addPinSupplier(pinSupplier);
     }
 
-    public PinSupplier update(int supplierId, PinSupplierUpdate update) {
-        PinSupplier pinSupplier = findById(supplierId);
+    public PinSupplier updatePinSupplier(int supplierId, PinSupplierUpdate update) {
+        PinSupplier pinSupplier = getPinSupplier(supplierId);
 
         pinSupplier.setName(update.getName());
         pinSupplier.setHardwareId(update.getHardwareId());
@@ -38,10 +38,10 @@ public class PinSupplierService {
         validator.validateHardwareIdNotUsed(pinSupplier.getPinSupplierId(), pinSupplier.getHardwareId());
         validator.validateHardwareConnected(pinSupplier);
 
-        return pinSupplierDao.update(pinSupplier);
+        return pinSupplierDao.updatePinSupplier(pinSupplier);
     }
 
-    public List<PinSupplier> list() {
+    public List<PinSupplier> listPinSuppliers() {
         return pinSupplierDao.getPinSuppliers();
     }
 
@@ -49,13 +49,13 @@ public class PinSupplierService {
         return pinSupplierDao.getPins(supplierId);
     }
 
-    public PinSupplier findById(int supplierId) {
-        return pinSupplierDao.getSupplier(supplierId);
+    public PinSupplier getPinSupplier(int supplierId) {
+        return pinSupplierDao.getPinSupplier(supplierId);
     }
 
-    public void delete(int pinSupplierId) {
+    public void deletePinSupplier(int pinSupplierId) {
         validator.validatePinsNotOwned(pinSupplierId);
-        pinSupplierDao.deleteSupplier(pinSupplierId);
+        pinSupplierDao.deletePinSupplier(pinSupplierId);
     }
 
 }

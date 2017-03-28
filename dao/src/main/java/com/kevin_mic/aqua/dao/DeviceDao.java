@@ -82,7 +82,7 @@ public class DeviceDao {
         return dbi.onDemand(DeviceDbi.class);
     }
 
-    public void removeDevice(int deviceId) {
+    public void deleteDevice(int deviceId) {
         dbi.inTransaction((handle,ts) -> {
             PinDbi pinDbi = handle.attach(PinDbi.class);
             DeviceDbi deviceDbi = handle.attach(DeviceDbi.class);
@@ -95,7 +95,7 @@ public class DeviceDao {
         });
     }
 
-    public List<Device> getAllDevices() {
+    public List<Device> getDevices() {
         return getDeviceDbi().getAllDevices();
     }
 

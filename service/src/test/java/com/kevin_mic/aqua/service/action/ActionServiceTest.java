@@ -38,13 +38,13 @@ public class ActionServiceTest {
     @Test
     public void test_add() {
         PumpSchedule action = new PumpSchedule();
-        when(actionDao.insert(action)).thenReturn(action);
+        when(actionDao.addAction(action)).thenReturn(action);
         assertNotNull(tested.addAction(action));
 
         verify(actionValidator).validateDevices(action);
         verify(actionValidator).validate(action);
         verify(actionValidator).validateRequired(action);
-        verify(actionDao).insert(action);
+        verify(actionDao).addAction(action);
     }
 
     @Test
@@ -52,14 +52,14 @@ public class ActionServiceTest {
         PumpSchedule foundAction = new PumpSchedule();
         PumpSchedule action = new PumpSchedule();
         when(actionDao.getAction(5)).thenReturn(foundAction);
-        when(actionDao.update(action)).thenReturn(action);
+        when(actionDao.updateAction(action)).thenReturn(action);
         assertNotNull(tested.updateAction(5, action));
 
         verify(actionValidator).validateNotChanged(foundAction, action);
         verify(actionValidator).validateDevices(action);
         verify(actionValidator).validate(action);
         verify(actionValidator).validateRequired(action);
-        verify(actionDao).update(action);
+        verify(actionDao).updateAction(action);
         verify(actionDao).getAction(5);
     }
 
@@ -87,8 +87,8 @@ public class ActionServiceTest {
 
     @Test
     public void test_delete() {
-        tested.delete(5);
-        verify(actionDao).delete(5);
+        tested.deleteAction(5);
+        verify(actionDao).deleteAction(5);
     }
 
 }
