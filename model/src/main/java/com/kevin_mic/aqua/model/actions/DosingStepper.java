@@ -23,7 +23,7 @@ public class DosingStepper implements ActionInterface {
     private Dosage dosage;
 
     @SystemProvided
-    @AllowedScheduleTypes({ScheduleType.Interval})
+    @AllowedScheduleTypes({ScheduleType.Interval, ScheduleType.Run})
     private ScheduleInterface dosingSchedule;
 
     private String name;

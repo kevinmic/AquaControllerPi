@@ -20,7 +20,7 @@ public class PumpSchedule implements ActionInterface {
     private List<Integer> pumpIds;
 
     @Required
-    @AllowedScheduleTypes({ScheduleType.AlwaysOn, ScheduleType.OnOff, ScheduleType.Interval})
+    @AllowedScheduleTypes({ScheduleType.AlwaysOn, ScheduleType.OnOff})
     private ScheduleInterface schedule;
 
     private String name;

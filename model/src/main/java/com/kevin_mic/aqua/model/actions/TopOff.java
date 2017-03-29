@@ -28,7 +28,7 @@ public class TopOff implements ActionInterface {
     private int maxRunTimeSeconds;
 
     @Required
-    @AllowedScheduleTypes({ScheduleType.Interval})
+    @AllowedScheduleTypes({ScheduleType.Interval, ScheduleType.Run})
     private ScheduleInterface schedule;
 
     private String name;

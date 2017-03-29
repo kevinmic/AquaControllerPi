@@ -5,8 +5,8 @@ import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
 
 public class IntervalScheduleService implements ScheduleServiceInterface<IntervalSchedule> {
-    private static final int MAX_MINUTE_REPEAT_INTERVAL = 60*3;
-    private static final int MAX_HOUR_REPEAT_INTERVAL = 48;
+    public static final int MAX_MINUTE_REPEAT_INTERVAL = 60*3;
+    public static final int MAX_HOUR_REPEAT_INTERVAL = 48;
 
     @Override
     public void validate(String fieldName, IntervalSchedule schedule) {

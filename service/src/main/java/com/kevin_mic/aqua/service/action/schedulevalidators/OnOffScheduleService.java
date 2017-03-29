@@ -8,12 +8,15 @@ import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
 import org.apache.commons.collections.CollectionUtils;
 
+import java.util.Collections;
+import java.util.Set;
+
 public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSchedule> {
     private static final int MAX_ON_OFF = 6;
 
     @Override
     public void validate(String fieldName, OnOffSchedule schedule) {
-        validateDays(fieldName, schedule);
+        validateDays(fieldName, schedule.getDays());
         validateOnOff(fieldName, schedule);
         validateOnOffOrder(fieldName, schedule);
     }
@@ -30,9 +33,26 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
         if (schedule.getOnOffTimes().stream().filter(onOff -> !onOff.isValid()).findAny().isPresent()) {
             throw new AquaException(ErrorType.ScheduleOnOffInvalid, fieldName);
         }
+
+        schedule.getOnOffTimes().forEach(onOff -> {
+            validateHourMinute(fieldName, onOff.getOn());
+            validateHourMinute(fieldName, onOff.getOff());
+        });
+    }
+
+    public void validateHourMinute(String fieldName, HourMinute hourMinute) {
+        if (hourMinute.getHour() < 0 || hourMinute.getHour() > 23) {
+            throw new AquaException(ErrorType.InvalidHour, fieldName);
+        }
+        if (hourMinute.getMinute() < 0 || hourMinute.getMinute() > 59) {
+            throw new AquaException(ErrorType.InvalidMinute, fieldName);
+        }
     }
 
     void validateOnOffOrder(String fieldName, OnOffSchedule schedule) {
+        // Sort by On time
+        Collections.sort(schedule.getOnOffTimes());
+
         // Assumptions
         // 1. All ON OFF times will be in order
         // 2a. ON will always be before OFF
@@ -43,7 +63,7 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
         for (int i = 0; i < schedule.getOnOffTimes().size(); i++) {
             OnOffTime onOffTime = schedule.getOnOffTimes().get(i);
             HourMinute on = onOffTime.getOn();
-            HourMinute off = onOffTime.getOn();
+            HourMinute off = onOffTime.getOff();
 
             if (firstOn == null) {
                 firstOn = on;
@@ -51,10 +71,10 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
 
             if (lastTime != null) {
                 if (on.equals(lastTime)) {
-                    throw new AquaException(ErrorType.ScheduleOnOff_On_Duplicate, fieldName);
+                    throw new AquaException(ErrorType.ScheduleOnOff_On_SameAsOff, fieldName);
                 }
                 if (on.isBefore(lastTime)) {
-                    throw new AquaException(ErrorType.ScheduleOnOff_On_OutOfOrder, fieldName);
+                    throw new AquaException(ErrorType.ScheduleOnOff_On_ConflictsWithPreviousOff, fieldName);
                 }
             }
             lastTime = on;
@@ -74,11 +94,11 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
         }
     }
 
-    void validateDays(String fieldName, OnOffSchedule schedule) {
-        if (CollectionUtils.isEmpty(schedule.getDays())) {
+    void validateDays(String fieldName, Set<DayOfWeek> days) {
+        if (CollectionUtils.isEmpty(days)) {
             throw new AquaException(ErrorType.ScheduleDaysRequired, fieldName);
         }
-        else if (schedule.getDays().contains(DayOfWeek.ALL_DAYS) && schedule.getDays().size() > 1) {
+        else if (days.contains(DayOfWeek.ALL_DAYS) && days.size() > 1) {
             throw new AquaException(ErrorType.ScheduleDays_AllDaysCannotBeWithWeekDays, fieldName);
         }
     }

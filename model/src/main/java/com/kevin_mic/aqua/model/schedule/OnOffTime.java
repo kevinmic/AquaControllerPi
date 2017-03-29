@@ -1,9 +1,13 @@
 package com.kevin_mic.aqua.model.schedule;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-public class OnOffTime {
+@AllArgsConstructor
+@NoArgsConstructor
+public class OnOffTime implements Comparable<OnOffTime> {
     HourMinute on;
     HourMinute off;
 
@@ -16,5 +20,10 @@ public class OnOffTime {
         }
 
         return true;
+    }
+
+    @Override
+    public int compareTo(OnOffTime obj) {
+        return getOn().compareTo(obj.getOn());
     }
 }
