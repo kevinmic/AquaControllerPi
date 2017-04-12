@@ -28,5 +28,5 @@ public class DosingStepper implements ActionInterface {
 
     private String name;
     private int actionId;
-    private final ActionType actionType = ActionType.DosingStepper;
+    private final ActionType type = ActionType.DosingStepper;
 }

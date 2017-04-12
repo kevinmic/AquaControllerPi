@@ -102,15 +102,4 @@ public class PinSupplierDaoTest extends BaseTest {
         createSupplier.setSubType(PinSupplierSubType.Relay_12_VDC);
         return createSupplier;
     }
-
-    @Override
-    public String[] cleanupSql() {
-        return new String[] {
-                "update " + Pin.TABLE_NAME + " set ownedByDeviceId = null",
-                "delete from " + DevicePin.TABLE_NAME,
-                "delete from " + Pin.TABLE_NAME,
-                "delete from " + PinSupplier.TABLE_NAME,
-        };
-    }
-
 }

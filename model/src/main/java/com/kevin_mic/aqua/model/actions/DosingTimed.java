@@ -28,5 +28,5 @@ public class DosingTimed implements ActionInterface {
 
     private String name;
     private int actionId;
-    private final ActionType actionType = ActionType.DosingTimed;
+    private final ActionType type = ActionType.DosingTimed;
 }

@@ -32,7 +32,7 @@ public class ActionREST {
     }
 
     @POST
-    public ActionInterface create(ActionInterface action) {
+    public ActionInterface createAction(ActionInterface action) {
         return actionService.addAction(action);
     }
 
@@ -44,13 +44,13 @@ public class ActionREST {
 
     @PUT
     @Path("/{actionId}")
-    public ActionInterface update(@PathParam("actionId") int actionId, ActionInterface update) {
+    public ActionInterface updateAction(@PathParam("actionId") int actionId, ActionInterface update) {
         return actionService.updateAction(actionId, update);
     }
 
     @DELETE
     @Path("/{actionId}")
-    public void deleteDevice(@PathParam("actionId") int actionId) {
+    public void deleteAction(@PathParam("actionId") int actionId) {
         actionService.deleteAction(actionId);
     }
 }

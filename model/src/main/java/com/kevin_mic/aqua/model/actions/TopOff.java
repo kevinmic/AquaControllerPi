@@ -34,5 +34,6 @@ public class TopOff implements ActionInterface {
     private String name;
     private int actionId;
 
-    private final ActionType actionType = ActionType.TopOff;
+    private final ActionType type = ActionType.TopOff;
+
 }

@@ -61,16 +61,16 @@ public class ActionValidatorTest {
     public void test_validateRequired_emptyList() {
         PumpSchedule action = new PumpSchedule();
         action.setSchedule(new AlwaysOnSchedule());
-        action.setPumpIds(new ArrayList<>());
+        action.setDeviceIds(new ArrayList<>());
 
-        assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeEmpty + ":pumpIds");
+        assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeEmpty + ":deviceIds");
     }
 
     @Test
     public void test_validateRequired_singular_null() {
         PumpSchedule action = new PumpSchedule();
         action.setSchedule(null);
-        action.setPumpIds(Arrays.asList(new Integer[] {1}));
+        action.setDeviceIds(Arrays.asList(new Integer[] {1}));
 
         assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeNull + ":schedule");
     }
@@ -79,17 +79,16 @@ public class ActionValidatorTest {
     public void test_validateRequired_list_null() {
         PumpSchedule action = new PumpSchedule();
         action.setSchedule(new AlwaysOnSchedule());
-        action.setPumpIds(null);
+        action.setDeviceIds(null);
 
-        assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeNull + ":pumpIds");
+        assertThatThrownBy(() -> tested.validateRequired(action)).hasMessage(ErrorType.ActionFieldCannotBeNull + ":deviceIds");
     }
 
     @Test
     public void test_validateRequired_valid() {
         PumpSchedule action = new PumpSchedule();
         action.setSchedule(new AlwaysOnSchedule());
-        action.setPumpIds(Arrays.asList(new Integer[] {1}));
-
+        action.setDeviceIds(Arrays.asList(new Integer[] {1}));
         tested.validateRequired(action);
 
         Mockito.verifyNoMoreInteractions(actionDao, deviceService);
@@ -98,13 +97,13 @@ public class ActionValidatorTest {
     @Test
     public void test_validateDevices_list_invalidDeviceType() {
         PumpSchedule action = new PumpSchedule();
-        action.setPumpIds(Arrays.asList(new Integer[] {1}));
+        action.setDeviceIds(Arrays.asList(new Integer[] {1}));
 
         Device device = new Device();
         device.setType(DeviceType.FanAC);
         when(deviceService.getDevice(1)).thenReturn(device);
 
-        assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.InvalidDeviceType + ":pumpIds:1");
+        assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.InvalidDeviceType + ":deviceIds:1");
     }
 
     @Test
@@ -123,14 +122,14 @@ public class ActionValidatorTest {
     public void test_validateDevices_deviceAlreadyOwned_ownedByAnotherAction() {
         PumpSchedule action = new PumpSchedule();
         action.setActionId(10);
-        action.setPumpIds(Arrays.asList(new Integer[] {1}));
+        action.setDeviceIds(Arrays.asList(new Integer[] {1}));
 
         Device device = new Device();
         device.setType(DeviceType.PumpAC);
         when(deviceService.getDevice(1)).thenReturn(device);
         when(actionDao.getActionIdThatOwnsDevice(1)).thenReturn(11);
 
-        assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.DeviceAlreadyOwnedByAnotherAction + ":pumpIds:1");
+        assertThatThrownBy(() -> tested.validateDevices(action)).hasMessage(ErrorType.DeviceAlreadyOwnedByAnotherAction + ":deviceIds:1");
 
         verify(deviceService).getDevice(1);
     }
@@ -139,7 +138,7 @@ public class ActionValidatorTest {
     public void test_validateDevices_deviceAlreadyOwned_ownedByOurAction() {
         PumpSchedule action = new PumpSchedule();
         action.setActionId(10);
-        action.setPumpIds(Arrays.asList(new Integer[] {1}));
+        action.setDeviceIds(Arrays.asList(new Integer[] {1}));
 
         Device device = new Device();
         device.setType(DeviceType.PumpAC);
@@ -158,7 +157,7 @@ public class ActionValidatorTest {
     public void test_validateDevices_deviceAlreadyOwned_notOwned() {
         PumpSchedule action = new PumpSchedule();
         action.setActionId(10);
-        action.setPumpIds(Arrays.asList(new Integer[] {1}));
+        action.setDeviceIds(Arrays.asList(new Integer[] {1}));
 
         Device device = new Device();
         device.setType(DeviceType.PumpAC);

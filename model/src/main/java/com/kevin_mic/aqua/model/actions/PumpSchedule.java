@@ -13,11 +13,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class PumpSchedule implements ActionInterface {
+public class PumpSchedule implements OnOffInterface {
     @AllowedDeviceTypes(DeviceType.PumpAC)
     @Required
     @Owned
-    private List<Integer> pumpIds;
+    private List<Integer> deviceIds;
 
     @Required
     @AllowedScheduleTypes({ScheduleType.AlwaysOn, ScheduleType.OnOff})
@@ -25,5 +25,5 @@ public class PumpSchedule implements ActionInterface {
 
     private String name;
     private int actionId;
-    private final ActionType actionType = ActionType.PumpSchedule;
+    private final ActionType type = ActionType.PumpSchedule;
 }

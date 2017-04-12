@@ -2,6 +2,9 @@ package com.kevin_mic.aqua.dbi;
 
 import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.dbobj.DevicePin;
+import com.kevin_mic.aqua.model.dbobj.Pin;
+import com.kevin_mic.aqua.model.dbobj.PinSupplier;
+import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
 import org.skife.jdbi.v2.sqlobject.Bind;
 import org.skife.jdbi.v2.sqlobject.BindBean;
 import org.skife.jdbi.v2.sqlobject.GetGeneratedKeys;
@@ -45,4 +48,10 @@ public interface DeviceDbi {
     @SqlUpdate("delete from " + DevicePin.TABLE_NAME + " where deviceId = :deviceId")
     void removeAllPins(@Bind("deviceId") int deviceId);
 
+    @SqlQuery("select dp.deviceId, dp.pinType, p.pinId, p.pinNumber, p.pinSupplierId, ps.type, ps.subType " +
+            " from " + DevicePin.TABLE_NAME + " dp " +
+            " INNER JOIN " + Pin.TABLE_NAME + " p ON dp.pinId = p.pinId " +
+            " INNER JOIN " + PinSupplier.TABLE_NAME + " ps ON p.pinSupplierId = ps.pinSupplierId " +
+            " where dp.deviceId = :deviceId")
+    List<DevicePinSupplierJoin> getPinsForDevice(@Bind("deviceId") Integer deviceId);
 }

@@ -5,6 +5,7 @@ import com.kevin_mic.aqua.dbi.PinDbi;
 import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
+import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
 import org.apache.commons.collections.CollectionUtils;
 import org.skife.jdbi.v2.DBI;
 
@@ -99,4 +100,7 @@ public class DeviceDao {
         return getDeviceDbi().getAllDevices();
     }
 
+    public List<DevicePinSupplierJoin> getPinsForDevice(Integer deviceId) {
+        return getDeviceDbi().getPinsForDevice(deviceId);
+    }
 }

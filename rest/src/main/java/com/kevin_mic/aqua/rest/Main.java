@@ -48,6 +48,7 @@ public class Main extends Application<AquaControllerConfig> {
 
     @Override
     public void run(AquaControllerConfig configuration, Environment environment) {
+        environment.jersey().register(AquaExceptionMapper.class);
     }
 
     public static <T> T getBean(Class<T> clazz) {

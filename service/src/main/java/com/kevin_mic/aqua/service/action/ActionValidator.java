@@ -37,7 +37,7 @@ public class ActionValidator {
         if (StringUtils.isBlank(action.getName())) {
             throw new AquaException(ErrorType.ActionNameRequried);
         }
-        if (action.getActionType() == null) {
+        if (action.getType() == null) {
             throw new AquaException(ErrorType.ActionTypeRequired);
         }
     }
@@ -100,7 +100,7 @@ public class ActionValidator {
     }
 
     public void validateNotChanged(ActionInterface foundAction, ActionInterface action) {
-        if (foundAction.getActionType() != action.getActionType()) {
+        if (foundAction.getType() != action.getType()) {
             throw new AquaException(ErrorType.CannotChangeActionType);
         }
     }

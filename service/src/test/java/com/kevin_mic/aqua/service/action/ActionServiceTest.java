@@ -1,12 +1,17 @@
 package com.kevin_mic.aqua.service.action;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin_mic.aqua.dao.ActionDao;
 import com.kevin_mic.aqua.model.actions.ActionInterface;
 import com.kevin_mic.aqua.model.actions.PumpSchedule;
+import com.kevin_mic.aqua.model.schedule.AlwaysOnSchedule;
+import com.kevin_mic.aqua.service.action.schedulevalidators.ScheduleServiceFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.quartz.Scheduler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,19 +25,22 @@ public class ActionServiceTest {
     private ActionService tested;
     private ActionDao actionDao;
     private ActionValidator actionValidator;
+    private ScheduleServiceFactory scheduleServiceFactory;
+    private Scheduler scheduler;
 
     @Before
     public void before() {
         actionDao = mock(ActionDao.class);
         actionValidator = mock(ActionValidator.class);
+        scheduleServiceFactory = mock(ScheduleServiceFactory.class);
+        scheduler = mock(Scheduler.class);
 
-        tested = new ActionService(actionDao, actionValidator);
+        tested = new ActionService(actionDao, actionValidator, scheduleServiceFactory, scheduler);
     }
 
     @After
     public void after() {
-        Mockito.verifyNoMoreInteractions(actionDao);
-        Mockito.verifyNoMoreInteractions(actionValidator);
+        Mockito.verifyNoMoreInteractions(actionDao, actionValidator, scheduleServiceFactory);
     }
 
     @Test
@@ -44,6 +52,7 @@ public class ActionServiceTest {
         verify(actionValidator).validateDevices(action);
         verify(actionValidator).validate(action);
         verify(actionValidator).validateRequired(action);
+        verify(scheduleServiceFactory).validateSchedules(action);
         verify(actionDao).addAction(action);
     }
 
@@ -59,6 +68,7 @@ public class ActionServiceTest {
         verify(actionValidator).validateDevices(action);
         verify(actionValidator).validate(action);
         verify(actionValidator).validateRequired(action);
+        verify(scheduleServiceFactory).validateSchedules(action);
         verify(actionDao).updateAction(action);
         verify(actionDao).getAction(5);
     }
@@ -89,6 +99,14 @@ public class ActionServiceTest {
     public void test_delete() {
         tested.deleteAction(5);
         verify(actionDao).deleteAction(5);
+    }
+
+    @Test
+    public void test() throws JsonProcessingException {
+        ObjectMapper mapper = new ObjectMapper();
+        PumpSchedule value = new PumpSchedule();
+        value.setSchedule(new AlwaysOnSchedule());
+        System.out.println(mapper.writeValueAsString(value));
     }
 
 }

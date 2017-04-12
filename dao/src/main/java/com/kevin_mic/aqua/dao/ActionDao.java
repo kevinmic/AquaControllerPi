@@ -66,8 +66,13 @@ public class ActionDao {
         List<Field> ownedDeviceIds = FieldUtils.getFieldsListWithAnnotation(action.getClass(), Owned.class);
         ownedDeviceIds.forEach(field -> {
             try {
-                Integer deviceId = (Integer) new PropertyDescriptor(field.getName(), action.getClass()).getReadMethod().invoke(action);
-                actionDbi.insertActionDevice(new ActionDevice(action.getActionId(), deviceId));
+                Object idField = new PropertyDescriptor(field.getName(), action.getClass()).getReadMethod().invoke(action);
+                if (idField instanceof List) {
+                    ((List<Integer>) idField).forEach(deviceId -> actionDbi.insertActionDevice(new ActionDevice(action.getActionId(), deviceId)));
+                }
+                else {
+                    actionDbi.insertActionDevice(new ActionDevice(action.getActionId(), (Integer) idField));
+                }
             } catch (IllegalAccessException | IntrospectionException | InvocationTargetException e ) {
                 throw new RuntimeException(e);
             }
@@ -126,7 +131,7 @@ public class ActionDao {
         ActionDB actionEntity = new ActionDB();
         actionEntity.setName(action.getName());
         actionEntity.setActionId(action.getActionId());
-        actionEntity.setActionType(action.getActionType());
+        actionEntity.setActionType(action.getType());
         try {
             actionEntity.setActionJson(mapper.writeValueAsString(action));
         } catch (JsonProcessingException e) {

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.kevin_mic.aqua.model.types.ActionType;
 
-@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.WRAPPER_OBJECT, property = "type")
+@JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({
         @JsonSubTypes.Type(name=ActionInterface.DOSING_STEPPER, value = DosingStepper.class),
         @JsonSubTypes.Type(name=ActionInterface.DOSING_TIMED, value = DosingTimed.class),
@@ -25,6 +25,6 @@ public interface ActionInterface {
     int getActionId();
     void setActionId(int actionId);
 
-    ActionType getActionType();
+    ActionType getType();
 
 }

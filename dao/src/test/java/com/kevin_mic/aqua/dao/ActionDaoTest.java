@@ -2,6 +2,7 @@ package com.kevin_mic.aqua.dao;
 
 import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.actions.ActionInterface;
+import com.kevin_mic.aqua.model.actions.PumpSchedule;
 import com.kevin_mic.aqua.model.actions.TopOff;
 import com.kevin_mic.aqua.model.dbobj.Device;
 import com.kevin_mic.aqua.model.types.DeviceType;
@@ -9,23 +10,13 @@ import org.junit.Before;
 import org.junit.Test;
 import org.skife.jdbi.v2.exceptions.CallbackFailedException;
 
+import java.util.ArrayList;
+
 import static org.junit.Assert.*;
 
 public class ActionDaoTest extends BaseTest {
     ActionDao tested;
     DeviceDao deviceDao;
-
-
-    @Override
-    public String[] cleanupSql() {
-        return new String[] {
-                "update pin set ownedByDeviceId = null",
-                "delete from action_device",
-                "delete from action",
-                "delete from device_pin",
-                "delete from device",
-        };
-    }
 
     @Before
     public void beforeMethod() {
@@ -72,6 +63,19 @@ public class ActionDaoTest extends BaseTest {
         }
         catch (EntityNotFoundException e) {
         }
+    }
+
+    @Test
+    public void test_multiDeviceIds() {
+        int device = createDevice();
+
+        PumpSchedule pumpSchedule = new PumpSchedule();
+        pumpSchedule.setName("NAME");
+        ArrayList<Integer> pumpIds = new ArrayList<>();
+        pumpIds.add(device);
+        pumpSchedule.setDeviceIds(pumpIds);
+
+        tested.addAction(pumpSchedule);
     }
 
     @Test

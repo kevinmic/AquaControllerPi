@@ -5,6 +5,7 @@ import com.kevin_mic.aqua.model.dbobj.DevicePin;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
+import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
 import com.kevin_mic.aqua.model.types.DeviceType;
 import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
@@ -30,17 +31,6 @@ public class DeviceDaoTest extends BaseTest {
     public void beforeMethod() {
         tested = new DeviceDao(dbi);
         pinSupplierDao = new PinSupplierDao(dbi);
-    }
-
-    @Override
-    public String[] cleanupSql() {
-        return new String[] {
-                "update " + Pin.TABLE_NAME + " set ownedByDeviceId = null",
-                "delete from " + DevicePin.TABLE_NAME,
-                "delete from " + Pin.TABLE_NAME,
-                "delete from " + PinSupplier.TABLE_NAME,
-                "delete from " + Device.TABLE_NAME
-        };
     }
 
     @Test
@@ -121,6 +111,35 @@ public class DeviceDaoTest extends BaseTest {
 
         pin = pinSupplierDao.getPin(pinIdB);
         assertEquals(new Integer(deviceId), pin.getOwnedByDeviceId());
+    }
+
+    @Test
+    public void test_join() {
+        int supplierId = createPin();
+        int pinIdA = getPin(supplierId, 0).getPinId();
+
+        Device createDevice = createDevice(pinIdA);
+        tested.addDevice(createDevice);
+
+        int deviceId = createDevice.getDeviceId();
+
+        List<DevicePinSupplierJoin> pinsForDevice = tested.getPinsForDevice(deviceId);
+        assertEquals(1, pinsForDevice.size());
+
+        DevicePinSupplierJoin pinJoin = pinsForDevice.get(0);
+        DevicePin devicePin = createDevice.getPins().get(0);
+
+        assertEquals(devicePin.getPinType(), pinJoin.getPinType());
+        assertEquals(devicePin.getDeviceId(), pinJoin.getDeviceId());
+        assertEquals(devicePin.getPinId(), pinJoin.getPinId());
+
+        Pin pin = pinSupplierDao.getPin(pinIdA);
+        assertEquals(pin.getPinNumber(), pinJoin.getPinNumber());
+        assertEquals(pin.getPinSupplierId(), pinJoin.getPinSupplierId());
+
+        PinSupplier pinSupplier = pinSupplierDao.getPinSupplier(pin.getPinSupplierId());
+        assertEquals(pinSupplier.getType(), pinJoin.getType());
+        assertEquals(pinSupplier.getSubType(), pinJoin.getSubType());
     }
 
     @Test

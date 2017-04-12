@@ -12,6 +12,8 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioFactory;
 import io.dropwizard.db.DatabaseConfiguration;
 import io.dropwizard.jdbi.DBIFactory;
 import io.dropwizard.setup.Environment;
@@ -30,6 +32,7 @@ public class AquaControllerModule extends AbstractModule {
 
     protected void configure() {
         bind(DatabaseConfiguration.class).to(AquaControllerConfig.class);
+        bind(GpioController.class).toInstance(GpioFactory.getInstance());
 
         // Bind each dao to a provider
         try {

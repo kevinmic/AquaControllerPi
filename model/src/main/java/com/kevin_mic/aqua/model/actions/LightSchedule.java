@@ -13,11 +13,11 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class LightSchedule implements ActionInterface {
+public class LightSchedule implements OnOffInterface {
     @AllowedDeviceTypes(DeviceType.LightAC)
     @Required
     @Owned
-    private List<Integer> lightIds;
+    private List<Integer> deviceIds;
 
     @Required
     @AllowedScheduleTypes({ScheduleType.AlwaysOn,ScheduleType.OnOff})
@@ -25,5 +25,5 @@ public class LightSchedule implements ActionInterface {
 
     private String name;
     private int actionId;
-    private final ActionType actionType = ActionType.LightSchedule;
+    private final ActionType type = ActionType.LightSchedule;
 }
