@@ -12,6 +12,7 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
+import com.kevin_mic.aqua.rest.mockgpio.GpioControllerMock;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import io.dropwizard.db.DatabaseConfiguration;
@@ -32,7 +33,6 @@ public class AquaControllerModule extends AbstractModule {
 
     protected void configure() {
         bind(DatabaseConfiguration.class).to(AquaControllerConfig.class);
-        bind(GpioController.class).toInstance(GpioFactory.getInstance());
 
         // Bind each dao to a provider
         try {
@@ -48,6 +48,16 @@ public class AquaControllerModule extends AbstractModule {
         catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException("Error while looking up dao classes", e);
         }
+    }
+
+    @Provides
+    @Singleton
+    public GpioController provideController(GpioControllerMock mockGpio) {
+        String mockgpio = System.getProperty("mockgpio");
+        if (Boolean.TRUE.toString().equalsIgnoreCase(mockgpio)) {
+            return mockGpio;
+        }
+        return GpioFactory.getInstance();
     }
 
     @Provides

@@ -52,7 +52,7 @@ public class ActionService {
     private <T extends ActionInterface> void createJobs(int actionId) {
         try {
             scheduler.scheduleJob(
-                    newJob(OnOffJob.class).withIdentity("1", getActionGroupName(actionId)).usingJobData("actionId", actionId).build(),
+                    newJob(OnOffJob.class).withIdentity("1", getActionGroupName(actionId)).usingJobData("actionId", actionId).usingJobData("on", true).build(),
                     newTrigger().withIdentity("1", getActionGroupName(actionId)).startNow().withSchedule(
                             simpleSchedule().withIntervalInSeconds(5).repeatForever()
                     ).build());

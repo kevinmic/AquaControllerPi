@@ -15,6 +15,9 @@ import javax.inject.Inject;
 import java.util.List;
 
 public class OnOffJob implements Job {
+    public static final String ACTION_ID = "actionId";
+    public static final String ON = "on";
+
     private final ActionDao actionDao;
     private final DeviceDao deviceDao;
     private final GpioController gpioController;
@@ -29,8 +32,8 @@ public class OnOffJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
         try {
-            int actionId = context.getJobDetail().getJobDataMap().getInt("actionId");
-            boolean on = context.getJobDetail().getJobDataMap().getBoolean("on");
+            int actionId = context.getJobDetail().getJobDataMap().getInt(ACTION_ID);
+            boolean on = context.getJobDetail().getJobDataMap().getBoolean(ON);
             OnOffInterface action = (OnOffInterface) actionDao.getAction(actionId);
             List<Integer> deviceIds = action.getDeviceIds();
             for (Integer deviceId : deviceIds) {
