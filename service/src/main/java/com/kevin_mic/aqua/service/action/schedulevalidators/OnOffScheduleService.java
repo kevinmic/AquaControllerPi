@@ -3,7 +3,6 @@ package com.kevin_mic.aqua.service.action.schedulevalidators;
 import com.kevin_mic.aqua.model.schedule.HourMinute;
 import com.kevin_mic.aqua.model.schedule.OnOffSchedule;
 import com.kevin_mic.aqua.model.schedule.OnOffTime;
-import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.model.types.DayOfWeek;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
@@ -34,8 +33,7 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
     }
 
     @Override
-    public List<ScheduleJob> getJobs(int actionId, ScheduleInterface schedule) {
-        OnOffSchedule onOffSchedule = (OnOffSchedule) schedule;
+    public List<ScheduleJob> getJobs(int actionId, OnOffSchedule onOffSchedule) {
         List<ScheduleJob> jobs = new ArrayList<>();
 
         Integer[] days = onOffSchedule.getDays()

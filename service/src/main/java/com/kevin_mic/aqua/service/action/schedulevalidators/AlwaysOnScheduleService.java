@@ -1,8 +1,8 @@
 package com.kevin_mic.aqua.service.action.schedulevalidators;
 
 import com.kevin_mic.aqua.model.schedule.AlwaysOnSchedule;
-import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class AlwaysOnScheduleService implements ScheduleServiceInterface<AlwaysOnSchedule> {
@@ -12,8 +12,8 @@ public class AlwaysOnScheduleService implements ScheduleServiceInterface<AlwaysO
     }
 
     @Override
-    public List<ScheduleJob> getJobs(int actionId, ScheduleInterface schedule) {
-        return null;
+    public List<ScheduleJob> getJobs(int actionId, AlwaysOnSchedule schedule) {
+        return new ArrayList<>();
     }
 }
 

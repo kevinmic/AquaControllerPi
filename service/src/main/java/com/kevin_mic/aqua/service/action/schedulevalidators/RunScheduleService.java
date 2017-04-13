@@ -31,7 +31,7 @@ public class RunScheduleService implements ScheduleServiceInterface<RunSchedule>
     }
 
     @Override
-    public List<ScheduleJob> getJobs(int actionId, ScheduleInterface schedule) {
+    public List<ScheduleJob> getJobs(int actionId, RunSchedule schedule) {
         throw new RuntimeException("TODO");
     }
 
