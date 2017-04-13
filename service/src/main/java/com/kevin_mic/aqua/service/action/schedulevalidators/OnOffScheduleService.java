@@ -3,13 +3,25 @@ package com.kevin_mic.aqua.service.action.schedulevalidators;
 import com.kevin_mic.aqua.model.schedule.HourMinute;
 import com.kevin_mic.aqua.model.schedule.OnOffSchedule;
 import com.kevin_mic.aqua.model.schedule.OnOffTime;
+import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.model.types.DayOfWeek;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
+import com.kevin_mic.aqua.service.jobs.OnOffJob;
 import org.apache.commons.collections.CollectionUtils;
+import org.quartz.JobDetail;
+import org.quartz.Trigger;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+
+import static com.kevin_mic.aqua.service.action.schedulevalidators.ScheduleServiceFactory.getActionGroupName;
+import static org.quartz.CronScheduleBuilder.atHourAndMinuteOnGivenDaysOfWeek;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSchedule> {
     private static final int MAX_ON_OFF = 6;
@@ -19,6 +31,62 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
         validateDays(fieldName, schedule.getDays());
         validateOnOff(fieldName, schedule);
         validateOnOffOrder(fieldName, schedule);
+    }
+
+    @Override
+    public List<ScheduleJob> getJobs(int actionId, ScheduleInterface schedule) {
+        OnOffSchedule onOffSchedule = (OnOffSchedule) schedule;
+        List<ScheduleJob> jobs = new ArrayList<>();
+
+        Integer[] days = onOffSchedule.getDays()
+                .stream()
+                .map(DayOfWeek::getCronDays)
+                .flatMap(s -> s.stream())
+                .collect(Collectors.toList())
+                .toArray(new Integer[] {});
+
+        jobs.add(loadScheduleJob(actionId, true, days, onOffSchedule.getOnOffTimes()));
+        jobs.add(loadScheduleJob(actionId, false, days, onOffSchedule.getOnOffTimes()));
+
+        return jobs;
+    }
+
+    private ScheduleJob loadScheduleJob(int actionId, boolean on, Integer[] cronDays, List<OnOffTime> onOffTimes) {
+
+        ScheduleJob scheduleJob = new ScheduleJob();
+        scheduleJob.setJobDetail(createJob(actionId, on));
+
+        List<Trigger> triggers = new ArrayList<>();
+        scheduleJob.setTriggers(triggers);
+
+        int[] counter = {0};
+        onOffTimes.stream().map(t -> on?t.getOn():t.getOff()).forEach(hm -> {
+            counter[0]++;
+            triggers.add(createTrigger(actionId, on, counter[0], hm, cronDays));
+        });
+
+        return scheduleJob;
+    }
+
+    private Trigger createTrigger(int actionId, boolean on, int counter, HourMinute hm, Integer[] cronDays) {
+        return newTrigger()
+                .withIdentity(getOnOffName(on)+ "_" + counter, getActionGroupName(actionId))
+                .startNow()
+                .withSchedule(
+                        atHourAndMinuteOnGivenDaysOfWeek(hm.getHour(), hm.getMinute(), cronDays)
+                ).build();
+    }
+
+    private JobDetail createJob(int actionId, boolean on) {
+        return newJob(OnOffJob.class)
+                .withIdentity(getOnOffName(on), getActionGroupName(actionId))
+                .usingJobData(OnOffJob.ACTION_ID, actionId)
+                .usingJobData(OnOffJob.ON, on)
+                .build();
+    }
+
+    private String getOnOffName(boolean on) {
+        return on ? "on" : "off";
     }
 
     void validateOnOff(String fieldName, OnOffSchedule schedule) {
@@ -40,7 +108,7 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
         });
     }
 
-    public void validateHourMinute(String fieldName, HourMinute hourMinute) {
+    void validateHourMinute(String fieldName, HourMinute hourMinute) {
         if (hourMinute.getHour() < 0 || hourMinute.getHour() > 23) {
             throw new AquaException(ErrorType.InvalidHour, fieldName);
         }

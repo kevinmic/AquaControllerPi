@@ -1,8 +1,11 @@
 package com.kevin_mic.aqua.service.action.schedulevalidators;
 
 import com.kevin_mic.aqua.model.schedule.IntervalSchedule;
+import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
+
+import java.util.List;
 
 public class IntervalScheduleService implements ScheduleServiceInterface<IntervalSchedule> {
     public static final int MAX_MINUTE_REPEAT_INTERVAL = 60*3;
@@ -31,6 +34,11 @@ public class IntervalScheduleService implements ScheduleServiceInterface<Interva
                 }
                 break;
         }
+    }
+
+    @Override
+    public List<ScheduleJob> getJobs(int actionId, ScheduleInterface schedule) {
+        throw new RuntimeException("TODO");
     }
 }
 

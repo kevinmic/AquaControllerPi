@@ -1,6 +1,8 @@
 package com.kevin_mic.aqua.rest.http;
 
 import com.kevin_mic.aqua.model.actions.ActionInterface;
+import com.kevin_mic.aqua.service.AquaException;
+import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.service.action.ActionService;
 
 import javax.inject.Inject;
@@ -45,6 +47,9 @@ public class ActionREST {
     @PUT
     @Path("/{actionId}")
     public ActionInterface updateAction(@PathParam("actionId") int actionId, ActionInterface update) {
+        if (actionId != update.getActionId()) {
+            throw new AquaException(ErrorType.IdMismatch);
+        }
         return actionService.updateAction(actionId, update);
     }
 

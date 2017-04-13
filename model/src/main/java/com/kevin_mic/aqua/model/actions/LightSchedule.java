@@ -4,6 +4,7 @@ import com.kevin_mic.aqua.model.actions.metadata.AllowedDeviceTypes;
 import com.kevin_mic.aqua.model.actions.metadata.AllowedScheduleTypes;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.actions.metadata.Required;
+import com.kevin_mic.aqua.model.actions.metadata.Schedule;
 import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.model.types.ActionType;
 import com.kevin_mic.aqua.model.types.DeviceType;
@@ -13,6 +14,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
+@AllowedScheduleTypes({ScheduleType.AlwaysOn,ScheduleType.OnOff})
 public class LightSchedule implements OnOffInterface {
     @AllowedDeviceTypes(DeviceType.LightAC)
     @Required
@@ -20,7 +22,7 @@ public class LightSchedule implements OnOffInterface {
     private List<Integer> deviceIds;
 
     @Required
-    @AllowedScheduleTypes({ScheduleType.AlwaysOn,ScheduleType.OnOff})
+    @Schedule
     private ScheduleInterface schedule;
 
     private String name;

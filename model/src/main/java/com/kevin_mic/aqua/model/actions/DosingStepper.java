@@ -5,6 +5,7 @@ import com.kevin_mic.aqua.model.actions.metadata.AllowedDeviceTypes;
 import com.kevin_mic.aqua.model.actions.metadata.AllowedScheduleTypes;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.actions.metadata.Required;
+import com.kevin_mic.aqua.model.actions.metadata.Schedule;
 import com.kevin_mic.aqua.model.actions.metadata.SystemProvided;
 import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.model.types.ActionType;
@@ -13,6 +14,7 @@ import com.kevin_mic.aqua.model.types.ScheduleType;
 import lombok.Data;
 
 @Data
+@AllowedScheduleTypes({ScheduleType.Interval, ScheduleType.Run})
 public class DosingStepper implements ActionInterface {
     @AllowedDeviceTypes(DeviceType.DosingPumpPeristalticStepper)
     @Required
@@ -23,7 +25,7 @@ public class DosingStepper implements ActionInterface {
     private Dosage dosage;
 
     @SystemProvided
-    @AllowedScheduleTypes({ScheduleType.Interval, ScheduleType.Run})
+    @Schedule
     private ScheduleInterface dosingSchedule;
 
     private String name;

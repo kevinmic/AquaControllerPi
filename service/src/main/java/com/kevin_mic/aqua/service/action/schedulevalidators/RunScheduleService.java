@@ -2,12 +2,14 @@ package com.kevin_mic.aqua.service.action.schedulevalidators;
 
 import com.kevin_mic.aqua.model.schedule.HourMinute;
 import com.kevin_mic.aqua.model.schedule.RunSchedule;
+import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
 import org.apache.commons.collections.CollectionUtils;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.List;
 
 public class RunScheduleService implements ScheduleServiceInterface<RunSchedule> {
     public static final int MAX_RUN = 6;
@@ -26,6 +28,11 @@ public class RunScheduleService implements ScheduleServiceInterface<RunSchedule>
 
         Collections.sort(schedule.getRunTimes());
         validateNoDuplicateRunTimes(fieldName, schedule);
+    }
+
+    @Override
+    public List<ScheduleJob> getJobs(int actionId, ScheduleInterface schedule) {
+        throw new RuntimeException("TODO");
     }
 
     void validateRun(String fieldName, RunSchedule schedule) {

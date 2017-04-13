@@ -1,12 +1,17 @@
 package com.kevin_mic.aqua.rest.setup;
 
+import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.service.TestJob;
+import com.pi4j.io.gpio.GpioController;
 import io.dropwizard.lifecycle.Managed;
 import lombok.extern.slf4j.Slf4j;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;
 
 import javax.inject.Inject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;

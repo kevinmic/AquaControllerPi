@@ -4,6 +4,7 @@ import com.kevin_mic.aqua.model.actions.metadata.AllowedDeviceTypes;
 import com.kevin_mic.aqua.model.actions.metadata.AllowedScheduleTypes;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.actions.metadata.Required;
+import com.kevin_mic.aqua.model.actions.metadata.Schedule;
 import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.model.types.ActionType;
 import com.kevin_mic.aqua.model.types.DeviceType;
@@ -11,6 +12,7 @@ import com.kevin_mic.aqua.model.types.ScheduleType;
 import lombok.Data;
 
 @Data
+@AllowedScheduleTypes({ScheduleType.Interval, ScheduleType.Run})
 public class TopOff implements ActionInterface {
     @AllowedDeviceTypes({DeviceType.DosingPumpPeristalticTimed, DeviceType.PumpAC})
     @Required
@@ -28,7 +30,7 @@ public class TopOff implements ActionInterface {
     private int maxRunTimeSeconds;
 
     @Required
-    @AllowedScheduleTypes({ScheduleType.Interval, ScheduleType.Run})
+    @Schedule
     private ScheduleInterface schedule;
 
     private String name;

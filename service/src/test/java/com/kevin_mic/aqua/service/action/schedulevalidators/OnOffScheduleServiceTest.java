@@ -1,20 +1,27 @@
 package com.kevin_mic.aqua.service.action.schedulevalidators;
 
+import com.kevin_mic.aqua.model.actions.PumpSchedule;
 import com.kevin_mic.aqua.model.schedule.HourMinute;
 import com.kevin_mic.aqua.model.schedule.OnOffSchedule;
 import com.kevin_mic.aqua.model.schedule.OnOffTime;
 import com.kevin_mic.aqua.model.types.DayOfWeek;
 import com.kevin_mic.aqua.service.ErrorType;
+import com.kevin_mic.aqua.service.jobs.OnOffJob;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.Trigger;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
+import static org.quartz.CronScheduleBuilder.atHourAndMinuteOnGivenDaysOfWeek;
+import static org.quartz.JobBuilder.newJob;
+import static org.quartz.TriggerBuilder.newTrigger;
 
 public class OnOffScheduleServiceTest {
     OnOffScheduleService tested;
@@ -165,6 +172,60 @@ public class OnOffScheduleServiceTest {
         assertThatThrownBy(() -> tested.validateHourMinute("field", new HourMinute(0, 60))).hasMessage(ErrorType.InvalidMinute + ":field");
         tested.validateHourMinute("field", new HourMinute(0,0));
         tested.validateHourMinute("field", new HourMinute(23,59));
+    }
+
+    @Test
+    public void test_createSchedule() {
+        Set<DayOfWeek> days = new HashSet<>();
+        days.add(DayOfWeek.Monday);
+        days.add(DayOfWeek.Wednesday);
+        Integer[] dayArray = {2, 4};
+
+        List<OnOffTime> onOffTimes = new ArrayList<>();
+        onOffTimes.add(new OnOffTime(new HourMinute(2, 0), new HourMinute(3,1)));
+        onOffTimes.add(new OnOffTime(new HourMinute(4, 2), new HourMinute(5,3)));
+
+        OnOffSchedule onOffSchedule = new OnOffSchedule();
+        onOffSchedule.setDays(days);
+        onOffSchedule.setOnOffTimes(onOffTimes);
+
+        List<ScheduleJob> jobs = tested.getJobs(1, onOffSchedule);
+
+        assertEquals(2, jobs.size());
+
+        ScheduleJob job = jobs.get(0);
+        verifyJob(job, "on", true);
+        verifyTrigger(job.getTriggers().get(0), "on_1", 2, 0, dayArray);
+        verifyTrigger(job.getTriggers().get(1), "on_2", 4, 2, dayArray);
+
+        job = jobs.get(1);
+        verifyJob(job, "off", false);
+        verifyTrigger(job.getTriggers().get(0), "off_1", 3, 1, dayArray);
+        verifyTrigger(job.getTriggers().get(1), "off_2", 5, 3, dayArray);
+    }
+
+    private void verifyJob(ScheduleJob job, String name, boolean on) {
+        assertEquals(
+                job.getJobDetail(),
+                newJob(OnOffJob.class)
+                        .withIdentity(name, "action_1")
+                        .usingJobData(OnOffJob.ACTION_ID, 1)
+                        .usingJobData(OnOffJob.ON, on)
+                        .build()
+        );
+
+    }
+
+    private void verifyTrigger(Trigger trigger, String name, int hour, int minute, Integer[] dayArray) {
+        assertEquals(
+                trigger,
+                newTrigger()
+                        .withIdentity(name, "action_1")
+                        .startNow()
+                        .withSchedule(
+                                atHourAndMinuteOnGivenDaysOfWeek(hour, minute, dayArray)
+                        ).build()
+        );
     }
 
 

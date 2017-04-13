@@ -11,12 +11,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.quartz.Scheduler;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -26,16 +26,14 @@ public class ActionServiceTest {
     private ActionDao actionDao;
     private ActionValidator actionValidator;
     private ScheduleServiceFactory scheduleServiceFactory;
-    private Scheduler scheduler;
 
     @Before
     public void before() {
         actionDao = mock(ActionDao.class);
         actionValidator = mock(ActionValidator.class);
         scheduleServiceFactory = mock(ScheduleServiceFactory.class);
-        scheduler = mock(Scheduler.class);
 
-        tested = new ActionService(actionDao, actionValidator, scheduleServiceFactory, scheduler);
+        tested = new ActionService(actionDao, actionValidator, scheduleServiceFactory);
     }
 
     @After
@@ -46,6 +44,7 @@ public class ActionServiceTest {
     @Test
     public void test_add() {
         PumpSchedule action = new PumpSchedule();
+        action.setActionId(5);
         when(actionDao.addAction(action)).thenReturn(action);
         assertNotNull(tested.addAction(action));
 
@@ -54,12 +53,14 @@ public class ActionServiceTest {
         verify(actionValidator).validateRequired(action);
         verify(scheduleServiceFactory).validateSchedules(action);
         verify(actionDao).addAction(action);
+        verify(scheduleServiceFactory).updateSchedules(null, action);
     }
 
     @Test
     public void test_update() {
         PumpSchedule foundAction = new PumpSchedule();
         PumpSchedule action = new PumpSchedule();
+        action.setActionId(5);
         when(actionDao.getAction(5)).thenReturn(foundAction);
         when(actionDao.updateAction(action)).thenReturn(action);
         assertNotNull(tested.updateAction(5, action));
@@ -71,6 +72,7 @@ public class ActionServiceTest {
         verify(scheduleServiceFactory).validateSchedules(action);
         verify(actionDao).updateAction(action);
         verify(actionDao).getAction(5);
+        verify(scheduleServiceFactory).updateSchedules(foundAction, action);
     }
 
     @Test
@@ -99,6 +101,7 @@ public class ActionServiceTest {
     public void test_delete() {
         tested.deleteAction(5);
         verify(actionDao).deleteAction(5);
+        verify(scheduleServiceFactory).deleteSchedules(5);
     }
 
     @Test
