@@ -1,9 +1,12 @@
 package com.kevin_mic.aqua.service.pinsupplier;
 
 import com.kevin_mic.aqua.dao.PinSupplierDao;
+import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
+import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderFactory;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,17 +22,20 @@ import static org.mockito.Mockito.when;
 
 public class PinSupplierServiceTest {
     public static final String HARDWARE_ID = "HARDWARE_ID";
+    public static final String HARDWARE_ID_2 = "HARDWARE_ID_2";
     public static final String NAME = "NAME";
     PinSupplierService tested;
     PinSupplierDao supplierDao;
     PinSupplierValidator validator;
+    PCF8574ProviderFactory pcf8574ProviderFactory;
 
     @Before
     public void before() {
         supplierDao = mock(PinSupplierDao.class);
         validator = mock(PinSupplierValidator.class);
+        pcf8574ProviderFactory = mock(PCF8574ProviderFactory.class);
 
-        tested = new PinSupplierService(supplierDao, validator);
+        tested = new PinSupplierService(supplierDao, validator, pcf8574ProviderFactory);
     }
 
     @After
@@ -64,7 +70,8 @@ public class PinSupplierServiceTest {
 
         when(supplierDao.getPinSupplier(55)).thenReturn(pinSupplier);
         when(pinSupplier.getPinSupplierId()).thenReturn(55);
-        when(pinSupplier.getHardwareId()).thenReturn(HARDWARE_ID);
+        when(pinSupplier.getHardwareId()).thenReturn(HARDWARE_ID_2);
+        when(pinSupplier.getType()).thenReturn(PinSupplierType.PCF8574);
 
         when(supplierDao.updatePinSupplier(pinSupplier)).thenReturn(pinSupplier);
         assertNotNull(tested.updatePinSupplier(55, update));
@@ -74,6 +81,7 @@ public class PinSupplierServiceTest {
         verify(validator).validate(pinSupplier);
         verify(validator).validateHardwareConnected(pinSupplier);
         verify(validator).validateHardwareIdNotUsed(55, HARDWARE_ID);
+        verify(pcf8574ProviderFactory).shutdownBus(PinSupplierType.PCF8574, HARDWARE_ID_2);
 
         verify(supplierDao).getPinSupplier(55);
         verify(supplierDao).updatePinSupplier(pinSupplier);
@@ -104,10 +112,51 @@ public class PinSupplierServiceTest {
     }
 
     @Test
-    public void test_delete() {
+    public void test_delete_PCF8574() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("123");
+        pinSupplier.setType(PinSupplierType.PCF8574);
+
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
         tested.deletePinSupplier(1);
+        verify(supplierDao).getPinSupplier(1);
         verify(validator).validatePinsNotOwned(1);
         verify(supplierDao).deletePinSupplier(1);
+        verify(pcf8574ProviderFactory).shutdownBus(PinSupplierType.PCF8574, "123");
+    }
+
+    @Test
+    public void test_delete_PCF8574A() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("123");
+        pinSupplier.setType(PinSupplierType.PCF8574A);
+
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
+        tested.deletePinSupplier(1);
+        verify(supplierDao).getPinSupplier(1);
+        verify(validator).validatePinsNotOwned(1);
+        verify(supplierDao).deletePinSupplier(1);
+        verify(pcf8574ProviderFactory).shutdownBus(PinSupplierType.PCF8574A, "123");
+    }
+
+    @Test
+    public void test_delete_other() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("123");
+        pinSupplier.setType(PinSupplierType.RASBERRY_PI);
+
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
+        tested.deletePinSupplier(1);
+        verify(supplierDao).getPinSupplier(1);
+        verify(validator).validatePinsNotOwned(1);
+        verify(supplierDao).deletePinSupplier(1);
+    }
+
+    @Test
+    public void test_delete_entityNotFound() {
+        when(supplierDao.getPinSupplier(1)).thenThrow(new EntityNotFoundException("", 1));
+        tested.deletePinSupplier(1);
+        verify(supplierDao).getPinSupplier(1);
     }
 
 }
