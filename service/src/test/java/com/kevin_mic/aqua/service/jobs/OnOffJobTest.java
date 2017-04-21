@@ -5,8 +5,10 @@ import com.kevin_mic.aqua.dao.DeviceDao;
 import com.kevin_mic.aqua.model.actions.PumpSchedule;
 import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
+import com.kevin_mic.aqua.service.gpio.PinController;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
+import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.JobDataMap;
@@ -16,7 +18,7 @@ import org.quartz.JobExecutionException;
 
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -25,21 +27,22 @@ public class OnOffJobTest {
     public static final int ACTION_ID = 1;
     public static final int DEVICEID_2 = 2;
     public static final int DEVICEID_3 = 3;
+    public static final int DEVICEID_ERROR = -1;
     public static final int PINID_4 = 4;
     public static final int PINID_5 = 5;
     OnOffJob tested;
 
     private ActionDao actionDao;
     private DeviceDao deviceDao;
-    private GpioController gpioController;
+    private PinController pinController;
 
     @Before
     public void before() {
         actionDao = mock(ActionDao.class);
         deviceDao = mock(DeviceDao.class);
-        gpioController = mock(GpioController.class);
+        pinController = mock(PinController.class);
 
-        tested = new OnOffJob(actionDao, deviceDao, gpioController);
+        tested = new OnOffJob(actionDao, deviceDao, pinController);
     }
 
     @Test
@@ -57,41 +60,37 @@ public class OnOffJobTest {
         JobDetail jobDetail = mock(JobDetail.class);
         JobDataMap jobDataMap = mock(JobDataMap.class);
 
-        GpioPinDigitalOutput pin4 = mock(GpioPinDigitalOutput.class);
-        GpioPinDigitalOutput pin5 = mock(GpioPinDigitalOutput.class);
-
         when(context.getJobDetail()).thenReturn(jobDetail);
         when(jobDetail.getJobDataMap()).thenReturn(jobDataMap);
         when(jobDataMap.getInt(OnOffJob.ACTION_ID)).thenReturn(ACTION_ID);
         when(jobDataMap.getBoolean(OnOffJob.ON)).thenReturn(on);
 
         PumpSchedule pumpSchedule = new PumpSchedule();
-        pumpSchedule.setDeviceIds(Arrays.asList(new Integer[]{DEVICEID_2, DEVICEID_3}));
+        pumpSchedule.setDeviceIds(Arrays.asList(new Integer[]{DEVICEID_2, DEVICEID_ERROR, DEVICEID_3}));
         when(actionDao.getAction(ACTION_ID)).thenReturn(pumpSchedule);
 
-        DevicePinSupplierJoin devicePin24 = new DevicePinSupplierJoin();
-        devicePin24.setPinId(PINID_4);
-        devicePin24.setType(PinSupplierType.RASBERRY_PI);
+        DevicePinSupplierJoin devicePin24 = mock(DevicePinSupplierJoin.class);
+        DevicePinSupplierJoin devicePinError = mock(DevicePinSupplierJoin.class);
+        DevicePinSupplierJoin devicePin35 = mock(DevicePinSupplierJoin.class);
 
-        DevicePinSupplierJoin devicePin35 = new DevicePinSupplierJoin();
-        devicePin35.setPinId(PINID_5);
-        devicePin35.setType(PinSupplierType.PCF8574);
+        when(deviceDao.getPinsForDevice(DEVICEID_2)).thenReturn(Lists.newArrayList(devicePin24));
+        when(deviceDao.getPinsForDevice(DEVICEID_ERROR)).thenReturn(Lists.newArrayList(devicePinError));
+        when(deviceDao.getPinsForDevice(DEVICEID_3)).thenReturn(Lists.newArrayList(devicePin35));
 
-        when(deviceDao.getPinsForDevice(DEVICEID_2)).thenReturn(Arrays.asList(new DevicePinSupplierJoin[] {devicePin24}));
-        when(deviceDao.getPinsForDevice(DEVICEID_3)).thenReturn(Arrays.asList(new DevicePinSupplierJoin[] {devicePin35}));
-
-        when(gpioController.getProvisionedPin("pin_" + PINID_4)).thenReturn(pin4);
-        when(gpioController.getProvisionedPin("pin_" + PINID_5)).thenReturn(pin5);
+        doThrow(new RuntimeException("Test Error")).when(pinController).on(devicePinError);
+        doThrow(new RuntimeException("Test Error")).when(pinController).off(devicePinError);
 
         tested.execute(context);
 
         if (on) {
-            verify(pin4).high();
-            verify(pin5).low();
+            verify(pinController).on(devicePin24);
+            verify(pinController).on(devicePinError);
+            verify(pinController).on(devicePin35);
         }
         else {
-            verify(pin4).low();
-            verify(pin5).high();
+            verify(pinController).off(devicePin24);
+            verify(pinController).off(devicePinError);
+            verify(pinController).off(devicePin35);
         }
     }
 }

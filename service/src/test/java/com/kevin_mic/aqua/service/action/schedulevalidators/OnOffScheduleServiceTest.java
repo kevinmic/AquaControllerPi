@@ -10,6 +10,7 @@ import com.kevin_mic.aqua.service.jobs.OnOffJob;
 import org.junit.Before;
 import org.junit.Test;
 import org.quartz.Trigger;
+import org.quartz.TriggerKey;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -191,14 +192,19 @@ public class OnOffScheduleServiceTest {
 
         List<ScheduleJob> jobs = tested.getJobs(1, onOffSchedule);
 
-        assertEquals(2, jobs.size());
+        assertEquals(3, jobs.size());
 
         ScheduleJob job = jobs.get(0);
+        verifyJob(job, onOffSchedule.isOnNow()?"on_IMMEDIATE":"off_IMMEDIATE", true);
+        assertEquals(1, job.getTriggers().size());
+        assertEquals(new TriggerKey("IMMEDIATE", "action_1"), job.getTriggers().get(0).getKey());
+
+        job = jobs.get(1);
         verifyJob(job, "on", true);
         verifyTrigger(job.getTriggers().get(0), "on_1", 2, 0, dayArray);
         verifyTrigger(job.getTriggers().get(1), "on_2", 4, 2, dayArray);
 
-        job = jobs.get(1);
+        job = jobs.get(2);
         verifyJob(job, "off", false);
         verifyTrigger(job.getTriggers().get(0), "off_1", 3, 1, dayArray);
         verifyTrigger(job.getTriggers().get(1), "off_2", 5, 3, dayArray);

@@ -48,7 +48,7 @@ public interface DeviceDbi {
     @SqlUpdate("delete from " + DevicePin.TABLE_NAME + " where deviceId = :deviceId")
     void removeAllPins(@Bind("deviceId") int deviceId);
 
-    @SqlQuery("select dp.deviceId, dp.pinType, p.pinId, p.pinNumber, p.pinSupplierId, ps.type, ps.subType " +
+    @SqlQuery("select dp.deviceId, dp.pinType, p.pinId, p.pinNumber, p.pinSupplierId, ps.type as pinSupplierType, ps.subType as pinSupplierSubType, ps.hardwareId as pinSupplierHardwareId" +
             " from " + DevicePin.TABLE_NAME + " dp " +
             " INNER JOIN " + Pin.TABLE_NAME + " p ON dp.pinId = p.pinId " +
             " INNER JOIN " + PinSupplier.TABLE_NAME + " ps ON p.pinSupplierId = ps.pinSupplierId " +

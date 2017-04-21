@@ -138,8 +138,9 @@ public class DeviceDaoTest extends BaseTest {
         assertEquals(pin.getPinSupplierId(), pinJoin.getPinSupplierId());
 
         PinSupplier pinSupplier = pinSupplierDao.getPinSupplier(pin.getPinSupplierId());
-        assertEquals(pinSupplier.getType(), pinJoin.getType());
-        assertEquals(pinSupplier.getSubType(), pinJoin.getSubType());
+        assertEquals(pinSupplier.getType(), pinJoin.getPinSupplierType());
+        assertEquals(pinSupplier.getSubType(), pinJoin.getPinSupplierSubType());
+        assertEquals(pinSupplier.getHardwareId(), pinJoin.getPinSupplierHardwareId());
     }
 
     @Test

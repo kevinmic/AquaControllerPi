@@ -12,6 +12,7 @@ public class DevicePinSupplierJoin {
     private int pinId;
     private int pinNumber;
     private int pinSupplierId;
-    private PinSupplierType type;
-    private PinSupplierSubType subType;
+    private PinSupplierType pinSupplierType;
+    private PinSupplierSubType pinSupplierSubType;
+    private String pinSupplierHardwareId;
 }

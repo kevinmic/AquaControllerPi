@@ -1,5 +1,6 @@
 package com.kevin_mic.aqua.service.action.schedulevalidators;
 
+import com.google.common.collect.Lists;
 import com.kevin_mic.aqua.model.schedule.HourMinute;
 import com.kevin_mic.aqua.model.schedule.OnOffSchedule;
 import com.kevin_mic.aqua.model.schedule.OnOffTime;
@@ -11,6 +12,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.quartz.JobDetail;
 import org.quartz.Trigger;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -43,10 +45,29 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
                 .collect(Collectors.toList())
                 .toArray(new Integer[] {});
 
+
+        jobs.add(loadImmediateJob(actionId, onOffSchedule));
         jobs.add(loadScheduleJob(actionId, true, days, onOffSchedule.getOnOffTimes()));
         jobs.add(loadScheduleJob(actionId, false, days, onOffSchedule.getOnOffTimes()));
 
         return jobs;
+    }
+
+    private ScheduleJob loadImmediateJob(int actionId, OnOffSchedule onOffSchedule) {
+        ScheduleJob scheduleJob = new ScheduleJob();
+
+        LocalDate now = LocalDate.now();
+
+        scheduleJob.setJobDetail(createJob(actionId, onOffSchedule.isOnNow(), "_IMMEDIATE"));
+
+        scheduleJob.setTriggers(
+                Lists.newArrayList(newTrigger()
+                        .withIdentity("IMMEDIATE", getActionGroupName(actionId))
+                        .startNow()
+                        .build())
+        );
+
+        return scheduleJob;
     }
 
     private ScheduleJob loadScheduleJob(int actionId, boolean on, Integer[] cronDays, List<OnOffTime> onOffTimes) {
@@ -69,15 +90,18 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
     private Trigger createTrigger(int actionId, boolean on, int counter, HourMinute hm, Integer[] cronDays) {
         return newTrigger()
                 .withIdentity(getOnOffName(on)+ "_" + counter, getActionGroupName(actionId))
-                .startNow()
                 .withSchedule(
                         atHourAndMinuteOnGivenDaysOfWeek(hm.getHour(), hm.getMinute(), cronDays)
                 ).build();
     }
 
     private JobDetail createJob(int actionId, boolean on) {
+        return createJob(actionId, on, "");
+    }
+
+    private JobDetail createJob(int actionId, boolean on, String extraNameInfo) {
         return newJob(OnOffJob.class)
-                .withIdentity(getOnOffName(on), getActionGroupName(actionId))
+                .withIdentity(getOnOffName(on) + extraNameInfo, getActionGroupName(actionId))
                 .usingJobData(OnOffJob.ACTION_ID, actionId)
                 .usingJobData(OnOffJob.ON, on)
                 .build();
