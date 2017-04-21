@@ -59,15 +59,16 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
         LocalDate now = LocalDate.now();
 
         scheduleJob.setJobDetail(createJob(actionId, onOffSchedule.isOnNow(), "_IMMEDIATE"));
-
-        scheduleJob.setTriggers(
-                Lists.newArrayList(newTrigger()
-                        .withIdentity("IMMEDIATE", getActionGroupName(actionId))
-                        .startNow()
-                        .build())
-        );
+        scheduleJob.setTriggers(Lists.newArrayList(loadImmediateTrigger(actionId)));
 
         return scheduleJob;
+    }
+
+    Trigger loadImmediateTrigger(int actionId) {
+        return newTrigger()
+                .withIdentity("IMMEDIATE", getActionGroupName(actionId))
+                .startNow()
+                .build();
     }
 
     private ScheduleJob loadScheduleJob(int actionId, boolean on, Integer[] cronDays, List<OnOffTime> onOffTimes) {
@@ -95,7 +96,7 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
                 ).build();
     }
 
-    private JobDetail createJob(int actionId, boolean on) {
+    JobDetail createJob(int actionId, boolean on) {
         return createJob(actionId, on, "");
     }
 
