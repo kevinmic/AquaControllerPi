@@ -2,7 +2,16 @@ package com.kevin_mic.aqua.model.actions;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import com.kevin_mic.aqua.model.actions.metadata.Schedule;
+import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
 import com.kevin_mic.aqua.model.types.ActionType;
+import org.apache.commons.lang3.reflect.FieldUtils;
+
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 
 @JsonTypeInfo(use=JsonTypeInfo.Id.NAME, include= JsonTypeInfo.As.EXISTING_PROPERTY, property = "type")
 @JsonSubTypes({
@@ -27,4 +36,15 @@ public interface ActionInterface {
 
     ActionType getType();
 
+    default ScheduleInterface findSchedule() {
+        List<Field> fieldsListWithAnnotation = FieldUtils.getFieldsListWithAnnotation(this.getClass(), Schedule.class);
+        if (fieldsListWithAnnotation.size() > 0) {
+            try {
+                return (ScheduleInterface) new PropertyDescriptor(fieldsListWithAnnotation.get(0).getName(), this.getClass()).getReadMethod().invoke(this);
+            } catch (InvocationTargetException | IntrospectionException | IllegalAccessException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return null;
+    }
 }

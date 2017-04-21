@@ -8,6 +8,8 @@ import com.kevin_mic.aqua.model.actions.ActionInterface;
 import com.kevin_mic.aqua.model.actions.metadata.Owned;
 import com.kevin_mic.aqua.model.dbobj.ActionDB;
 import com.kevin_mic.aqua.model.dbobj.ActionDevice;
+import com.kevin_mic.aqua.model.schedule.ScheduleInterface;
+import com.kevin_mic.aqua.model.types.ScheduleType;
 import org.apache.commons.lang3.reflect.FieldUtils;
 import org.skife.jdbi.v2.DBI;
 
@@ -132,11 +134,21 @@ public class ActionDao {
         actionEntity.setName(action.getName());
         actionEntity.setActionId(action.getActionId());
         actionEntity.setActionType(action.getType());
+
+        ScheduleInterface schedule = action.findSchedule();
+        if (schedule != null) {
+            actionEntity.setScheduleType(schedule.getType());
+        }
+
         try {
             actionEntity.setActionJson(mapper.writeValueAsString(action));
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
         return actionEntity;
+    }
+
+    public List<ActionInterface> findActionsByScheduleType(ScheduleType type) {
+        return getActionDbi().findActionsByScheduleType(type).stream().map(this::mapDbToModel).collect(Collectors.toList());
     }
 }

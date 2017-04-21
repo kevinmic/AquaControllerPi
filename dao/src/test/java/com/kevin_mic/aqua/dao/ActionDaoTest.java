@@ -1,16 +1,20 @@
 package com.kevin_mic.aqua.dao;
 
+import com.google.common.collect.Lists;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.actions.ActionInterface;
 import com.kevin_mic.aqua.model.actions.PumpSchedule;
 import com.kevin_mic.aqua.model.actions.TopOff;
 import com.kevin_mic.aqua.model.dbobj.Device;
+import com.kevin_mic.aqua.model.schedule.AlwaysOnSchedule;
 import com.kevin_mic.aqua.model.types.DeviceType;
+import com.kevin_mic.aqua.model.types.ScheduleType;
 import org.junit.Before;
 import org.junit.Test;
 import org.skife.jdbi.v2.exceptions.CallbackFailedException;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -35,6 +39,7 @@ public class ActionDaoTest extends BaseTest {
         topOff.setPumpId(deviceId);
         topOff.setRefillReserviorFloat(8);
         topOff.setTankWaterLevelFloat(9);
+        topOff.setSchedule(new AlwaysOnSchedule());
 
         tested.addAction(topOff);
 
@@ -45,13 +50,15 @@ public class ActionDaoTest extends BaseTest {
 
         assertEquals(1, tested.getActions().size());
 
-
         topOff.setTankWaterLevelFloat(100);
         topOff.setName("NAME_2");
         tested.updateAction(topOff);
 
         foundAction = tested.getAction(topOff.getActionId());
         assertEquals(foundAction, topOff);
+
+        List<ActionInterface> actions = tested.findActionsByScheduleType(ScheduleType.AlwaysOn);
+        assertEquals(1, actions.size());
 
         tested.deleteAction(topOff.getActionId());
 

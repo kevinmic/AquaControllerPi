@@ -1,6 +1,7 @@
 package com.kevin_mic.aqua.model.dbobj;
 
 import com.kevin_mic.aqua.model.types.ActionType;
+import com.kevin_mic.aqua.model.types.ScheduleType;
 import lombok.Data;
 
 @Data
@@ -10,4 +11,5 @@ public class ActionDB {
     private ActionType actionType;
     private String name;
     private String actionJson;
+    private ScheduleType scheduleType;
 }

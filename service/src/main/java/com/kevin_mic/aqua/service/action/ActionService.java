@@ -2,6 +2,7 @@ package com.kevin_mic.aqua.service.action;
 
 import com.kevin_mic.aqua.dao.ActionDao;
 import com.kevin_mic.aqua.model.actions.ActionInterface;
+import com.kevin_mic.aqua.model.types.ScheduleType;
 import com.kevin_mic.aqua.service.action.schedulevalidators.ScheduleServiceFactory;
 
 import javax.inject.Inject;
@@ -57,5 +58,9 @@ public class ActionService {
     public void deleteAction(int actionId) {
         scheduleServiceFactory.deleteSchedules(actionId);
         actionDao.deleteAction(actionId);
+    }
+
+    public List<ActionInterface> findActionsByScheduleType(ScheduleType scheduleType) {
+        return actionDao.findActionsByScheduleType(scheduleType);
     }
 }

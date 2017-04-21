@@ -108,7 +108,7 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
                 .build();
     }
 
-    private String getOnOffName(boolean on) {
+    public static String getOnOffName(boolean on) {
         return on ? "on" : "off";
     }
 

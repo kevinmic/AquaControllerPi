@@ -1,11 +1,9 @@
 package com.kevin_mic.aqua.service.action;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.kevin_mic.aqua.dao.ActionDao;
 import com.kevin_mic.aqua.model.actions.ActionInterface;
 import com.kevin_mic.aqua.model.actions.PumpSchedule;
-import com.kevin_mic.aqua.model.schedule.AlwaysOnSchedule;
+import com.kevin_mic.aqua.model.types.ScheduleType;
 import com.kevin_mic.aqua.service.action.schedulevalidators.ScheduleServiceFactory;
 import org.junit.After;
 import org.junit.Before;
@@ -105,11 +103,9 @@ public class ActionServiceTest {
     }
 
     @Test
-    public void test() throws JsonProcessingException {
-        ObjectMapper mapper = new ObjectMapper();
-        PumpSchedule value = new PumpSchedule();
-        value.setSchedule(new AlwaysOnSchedule());
-        System.out.println(mapper.writeValueAsString(value));
+    public void test_findActionsByScheduleType() {
+        tested.findActionsByScheduleType(ScheduleType.OnOff);
+        verify(actionDao).findActionsByScheduleType(ScheduleType.OnOff);
     }
 
 }
