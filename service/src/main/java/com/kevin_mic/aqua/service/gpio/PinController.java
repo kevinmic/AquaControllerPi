@@ -4,10 +4,13 @@ import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.pi4j.gpio.extension.pcf.PCF8574Pin;
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+
+import java.util.List;
 
 public class PinController {
     private final GpioController gpioController;
@@ -35,8 +38,8 @@ public class PinController {
         throw new RuntimeException("INVALID PCF PIN NUMBER " + pinNumber);
     }
 
-    private String getPinName(DevicePinSupplierJoin pin) {
-        return "pin_" + pin.getPinId();
+    private String getPinName(int pinId) {
+        return "pin_" + pinId;
     }
 
     public void on(DevicePinSupplierJoin pin) {
@@ -70,12 +73,21 @@ public class PinController {
 
             switch (pin.getPinSupplierType()) {
                 case RASBERRY_PI:
-                    return gpioController.provisionDigitalOutputPin(RaspiPin.getPinByAddress(pin.getPinNumber()), getPinName(pin), PinState.LOW);
+                    return gpioController.provisionDigitalOutputPin(RaspiPin.getPinByAddress(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.LOW);
                 case PCF8574:
                 case PCF8574A:
-                    return gpioController.provisionDigitalOutputPin(pcf8574ProviderFactory.getProvider(pin.getPinSupplierType(), pin.getPinSupplierHardwareId()), getPcfPin(pin.getPinNumber()), getPinName(pin), PinState.HIGH);
+                    return gpioController.provisionDigitalOutputPin(pcf8574ProviderFactory.getProvider(pin.getPinSupplierType(), pin.getPinSupplierHardwareId()), getPcfPin(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.HIGH);
                 default:
                     throw new RuntimeException("PinSupplierType Not Handled: " + pin.getPinSupplierType());
+            }
+        });
+    }
+
+    public void unProvisionPins(List<Integer> pins) {
+        pins.forEach(pin -> {
+            GpioPin provisionedPin = gpioController.getProvisionedPin(getPinName(pin));
+            if (provisionedPin != null) {
+                gpioController.unprovisionPin(provisionedPin);
             }
         });
     }

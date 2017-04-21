@@ -1,9 +1,11 @@
 package com.kevin_mic.aqua.service.gpio;
 
+import com.google.common.collect.Lists;
 import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.pi4j.gpio.extension.pcf.PCF8574Pin;
 import com.pi4j.io.gpio.GpioController;
+import com.pi4j.io.gpio.GpioPin;
 import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.GpioProvider;
 import com.pi4j.io.gpio.Pin;
@@ -143,6 +145,20 @@ public class PinControllerTest {
         verify(controller, times(1)).getProvisionedPin("pin_1");
         verify(controller, times(1)).getProvisionedPin("pin_2");
         verify(outputPin, times(2)).high();
+    }
+
+    @Test
+    public void test_unprovisionPins() {
+        GpioPin pin1 = mock(GpioPin.class);
+        GpioPin pin3 = mock(GpioPin.class);
+
+        when(controller.getProvisionedPin("pin_1")).thenReturn(pin1);
+        when(controller.getProvisionedPin("pin_3")).thenReturn(pin3);
+
+        tested.unProvisionPins(Lists.newArrayList(1,2,3));
+
+        verify(controller).unprovisionPin(pin1);
+        verify(controller).unprovisionPin(pin3);
     }
 
     private DevicePinSupplierJoin getPin() {
