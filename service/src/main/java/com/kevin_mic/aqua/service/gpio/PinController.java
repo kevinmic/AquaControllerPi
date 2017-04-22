@@ -10,15 +10,17 @@ import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
 
+import javax.inject.Inject;
 import java.util.List;
 
 public class PinController {
     private final GpioController gpioController;
-    private final PCF8574ProviderFactory pcf8574ProviderFactory;
+    private final PCF8574ProviderService pcf8574ProviderService;
 
-    public PinController(GpioController gpioController, PCF8574ProviderFactory pcf8574ProviderFactory) {
+    @Inject
+    public PinController(GpioController gpioController, PCF8574ProviderService pcf8574ProviderService) {
         this.gpioController = gpioController;
-        this.pcf8574ProviderFactory = pcf8574ProviderFactory;
+        this.pcf8574ProviderService = pcf8574ProviderService;
     }
 
     public GpioPinDigitalOutput getGpioOutputPin(DevicePinSupplierJoin pin) {
@@ -65,7 +67,7 @@ public class PinController {
     }
 
     private GpioPinDigitalOutput provisionOutputPin(DevicePinSupplierJoin pin) {
-        return PinLock.lockSupplier(() -> {
+        return PinLock.lock(() -> {
             GpioPinDigitalOutput gpioPin = (GpioPinDigitalOutput) gpioController.getProvisionedPin("pin_" + pin.getPinId());
             if (gpioPin != null) {
                 return gpioPin;
@@ -76,7 +78,7 @@ public class PinController {
                     return gpioController.provisionDigitalOutputPin(RaspiPin.getPinByAddress(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.LOW);
                 case PCF8574:
                 case PCF8574A:
-                    return gpioController.provisionDigitalOutputPin(pcf8574ProviderFactory.getProvider(pin.getPinSupplierType(), pin.getPinSupplierHardwareId()), getPcfPin(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.HIGH);
+                    return gpioController.provisionDigitalOutputPin(pcf8574ProviderService.getProvider(pin.getPinSupplierType(), pin.getPinSupplierHardwareId()), getPcfPin(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.HIGH);
                 default:
                     throw new RuntimeException("PinSupplierType Not Handled: " + pin.getPinSupplierType());
             }

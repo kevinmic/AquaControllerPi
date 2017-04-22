@@ -25,17 +25,17 @@ import static org.mockito.Mockito.when;
 public class PinControllerTest {
     PinController tested;
     GpioController controller;
-    PCF8574ProviderFactory pcf8574ProviderFactory;
+    PCF8574ProviderService pcf8574ProviderService;
 
     GpioPinDigitalOutput outputPin;
 
     @Before
     public void before() {
         controller = mock(GpioController.class);
-        pcf8574ProviderFactory = mock(PCF8574ProviderFactory.class);
+        pcf8574ProviderService = mock(PCF8574ProviderService.class);
         outputPin = mock(GpioPinDigitalOutput.class);
 
-        tested = new PinController(controller, pcf8574ProviderFactory);
+        tested = new PinController(controller, pcf8574ProviderService);
     }
 
     @Test
@@ -68,13 +68,13 @@ public class PinControllerTest {
         GpioProvider provider = mock(GpioProvider.class);
 
         when(controller.getProvisionedPin("pin_1")).thenReturn(null);
-        when(pcf8574ProviderFactory.getProvider(any(PinSupplierType.class), anyString())).thenReturn(provider);
+        when(pcf8574ProviderService.getProvider(any(PinSupplierType.class), anyString())).thenReturn(provider);
         when(controller.provisionDigitalOutputPin(any(GpioProvider.class), any(Pin.class), anyString(), any(PinState.class))).thenReturn(outputPin);
         GpioPinDigitalOutput gpioOutputPin = tested.getGpioOutputPin(pin);
 
         verify(controller, times(2)).getProvisionedPin("pin_1");
         verify(controller, times(1)).provisionDigitalOutputPin(provider, PCF8574Pin.GPIO_00, "pin_1", PinState.HIGH);
-        verify(pcf8574ProviderFactory, times(1)).getProvider(PinSupplierType.PCF8574, "5");
+        verify(pcf8574ProviderService, times(1)).getProvider(PinSupplierType.PCF8574, "5");
         assertEquals(outputPin, gpioOutputPin);
     }
 
@@ -85,13 +85,13 @@ public class PinControllerTest {
         GpioProvider provider = mock(GpioProvider.class);
 
         when(controller.getProvisionedPin("pin_1")).thenReturn(null);
-        when(pcf8574ProviderFactory.getProvider(any(PinSupplierType.class), anyString())).thenReturn(provider);
+        when(pcf8574ProviderService.getProvider(any(PinSupplierType.class), anyString())).thenReturn(provider);
         when(controller.provisionDigitalOutputPin(any(GpioProvider.class), any(Pin.class), anyString(), any(PinState.class))).thenReturn(outputPin);
         GpioPinDigitalOutput gpioOutputPin = tested.getGpioOutputPin(pin);
 
         verify(controller, times(2)).getProvisionedPin("pin_1");
         verify(controller, times(1)).provisionDigitalOutputPin(provider, PCF8574Pin.GPIO_00, "pin_1", PinState.HIGH);
-        verify(pcf8574ProviderFactory, times(1)).getProvider(PinSupplierType.PCF8574A, "5");
+        verify(pcf8574ProviderService, times(1)).getProvider(PinSupplierType.PCF8574A, "5");
         assertEquals(outputPin, gpioOutputPin);
     }
 

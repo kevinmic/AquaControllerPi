@@ -6,7 +6,7 @@ import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
-import com.kevin_mic.aqua.service.gpio.PCF8574ProviderFactory;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -27,15 +27,15 @@ public class PinSupplierServiceTest {
     PinSupplierService tested;
     PinSupplierDao supplierDao;
     PinSupplierValidator validator;
-    PCF8574ProviderFactory pcf8574ProviderFactory;
+    PCF8574ProviderService pcf8574ProviderService;
 
     @Before
     public void before() {
         supplierDao = mock(PinSupplierDao.class);
         validator = mock(PinSupplierValidator.class);
-        pcf8574ProviderFactory = mock(PCF8574ProviderFactory.class);
+        pcf8574ProviderService = mock(PCF8574ProviderService.class);
 
-        tested = new PinSupplierService(supplierDao, validator, pcf8574ProviderFactory);
+        tested = new PinSupplierService(supplierDao, validator, pcf8574ProviderService);
     }
 
     @After
@@ -81,7 +81,7 @@ public class PinSupplierServiceTest {
         verify(validator).validate(pinSupplier);
         verify(validator).validateHardwareConnected(pinSupplier);
         verify(validator).validateHardwareIdNotUsed(55, HARDWARE_ID);
-        verify(pcf8574ProviderFactory).shutdownBus(PinSupplierType.PCF8574, HARDWARE_ID_2);
+        verify(pcf8574ProviderService).shutdownBus(PinSupplierType.PCF8574, HARDWARE_ID_2);
 
         verify(supplierDao).getPinSupplier(55);
         verify(supplierDao).updatePinSupplier(pinSupplier);
@@ -122,7 +122,7 @@ public class PinSupplierServiceTest {
         verify(supplierDao).getPinSupplier(1);
         verify(validator).validatePinsNotOwned(1);
         verify(supplierDao).deletePinSupplier(1);
-        verify(pcf8574ProviderFactory).shutdownBus(PinSupplierType.PCF8574, "123");
+        verify(pcf8574ProviderService).shutdownBus(PinSupplierType.PCF8574, "123");
     }
 
     @Test
@@ -136,7 +136,7 @@ public class PinSupplierServiceTest {
         verify(supplierDao).getPinSupplier(1);
         verify(validator).validatePinsNotOwned(1);
         verify(supplierDao).deletePinSupplier(1);
-        verify(pcf8574ProviderFactory).shutdownBus(PinSupplierType.PCF8574A, "123");
+        verify(pcf8574ProviderService).shutdownBus(PinSupplierType.PCF8574A, "123");
     }
 
     @Test

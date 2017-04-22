@@ -21,9 +21,14 @@ import com.pi4j.io.gpio.event.GpioPinListener;
 import com.pi4j.io.gpio.trigger.GpioTrigger;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 public class GpioControllerMock implements GpioController {
     private boolean shutdownFlag = false;
+
+    private Map<String, GpioPinDigitalOutput> pins = Collections.synchronizedMap(new HashMap<>());
 
     @Override
     public void export(PinMode mode, PinState defaultState, GpioPin... pin) {
@@ -277,7 +282,9 @@ public class GpioControllerMock implements GpioController {
 
     @Override
     public GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name, PinState defaultState) {
-        throw new RuntimeException("NOT IMPLEMENTED");
+        GpioPinDigitalOutput gpioPin = new GpioPinDigitalOutputMock(name + "-" + pin.getAddress(), pin);
+        pins.put(name, gpioPin);
+        return gpioPin;
     }
 
     @Override
@@ -287,7 +294,9 @@ public class GpioControllerMock implements GpioController {
 
     @Override
     public GpioPinDigitalOutput provisionDigitalOutputPin(GpioProvider provider, Pin pin, String name) {
-        throw new RuntimeException("NOT IMPLEMENTED");
+        GpioPinDigitalOutput gpioPin = new GpioPinDigitalOutputMock(name + "-" + pin.getAddress(), pin);
+        pins.put(name, gpioPin);
+        return gpioPin;
     }
 
     @Override
@@ -522,7 +531,7 @@ public class GpioControllerMock implements GpioController {
 
     @Override
     public GpioPin getProvisionedPin(String name) {
-        throw new RuntimeException("NOT IMPLEMENTED");
+        return pins.get(name);
     }
 
     @Override

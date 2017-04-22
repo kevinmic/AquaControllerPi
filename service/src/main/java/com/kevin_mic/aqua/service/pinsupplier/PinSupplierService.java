@@ -6,7 +6,7 @@ import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
-import com.kevin_mic.aqua.service.gpio.PCF8574ProviderFactory;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderService;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
@@ -16,13 +16,13 @@ import java.util.Objects;
 public class PinSupplierService {
     private final PinSupplierDao pinSupplierDao;
     private final PinSupplierValidator validator;
-    private final PCF8574ProviderFactory pcf8574ProviderFactory;
+    private final PCF8574ProviderService pcf8574ProviderService;
 
     @Inject
-    public PinSupplierService(PinSupplierDao pinSupplierDao, PinSupplierValidator validator, PCF8574ProviderFactory pcf8574ProviderFactory) {
+    public PinSupplierService(PinSupplierDao pinSupplierDao, PinSupplierValidator validator, PCF8574ProviderService pcf8574ProviderService) {
         this.pinSupplierDao = pinSupplierDao;
         this.validator = validator;
-        this.pcf8574ProviderFactory = pcf8574ProviderFactory;
+        this.pcf8574ProviderService = pcf8574ProviderService;
     }
 
     public PinSupplier addPinSupplier(PinSupplier pinSupplier) {
@@ -80,7 +80,7 @@ public class PinSupplierService {
 
     private void shutdownSupplierBus(PinSupplierType type, String hardwareId) {
         if (!StringUtils.isEmpty(hardwareId) && (type == PinSupplierType.PCF8574 || type == PinSupplierType.PCF8574A)) {
-            pcf8574ProviderFactory.shutdownBus(type, hardwareId);
+            pcf8574ProviderService.shutdownBus(type, hardwareId);
         }
     }
 

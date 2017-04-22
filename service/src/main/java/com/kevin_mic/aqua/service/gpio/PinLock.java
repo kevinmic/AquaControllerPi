@@ -8,9 +8,9 @@ import java.util.function.Supplier;
 public class PinLock {
     private static Lock lock = new ReentrantLock();
 
-    public static <T> T lockSupplier(Supplier<T> supplier) {
+    public static <T> T lock(Supplier<T> supplier) {
+        lock.lock();
         try {
-            lock.lock();
             return supplier.get();
         }
         finally {

@@ -13,6 +13,9 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Provides;
 import com.kevin_mic.aqua.rest.mockgpio.GpioControllerMock;
+import com.kevin_mic.aqua.rest.mockgpio.PCF8574ProviderFactoryMock;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderFactory;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderFactoryImpl;
 import com.pi4j.io.gpio.GpioController;
 import com.pi4j.io.gpio.GpioFactory;
 import io.dropwizard.db.DatabaseConfiguration;
@@ -58,6 +61,16 @@ public class AquaControllerModule extends AbstractModule {
             return mockGpio;
         }
         return GpioFactory.getInstance();
+    }
+
+    @Provides
+    @Singleton
+    public PCF8574ProviderFactory providePCF8574Factory(GpioControllerMock mockGpio) {
+        String mockgpio = System.getProperty("mockgpio");
+        if (Boolean.TRUE.toString().equalsIgnoreCase(mockgpio)) {
+            return new PCF8574ProviderFactoryMock();
+        }
+        return new PCF8574ProviderFactoryImpl();
     }
 
     @Provides
