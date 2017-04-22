@@ -9,10 +9,12 @@ import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import com.pi4j.io.gpio.Pin;
 import com.pi4j.io.gpio.PinState;
 import com.pi4j.io.gpio.RaspiPin;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.inject.Inject;
 import java.util.List;
 
+@Slf4j
 public class PinController {
     private final GpioController gpioController;
     private final PCF8574ProviderService pcf8574ProviderService;
@@ -48,9 +50,11 @@ public class PinController {
         GpioPinDigitalOutput gpioPin = getGpioOutputPin(pin);
         if (pin.getPinSupplierType() == PinSupplierType.PCF8574 || pin.getPinSupplierType() == PinSupplierType.PCF8574A) {
             // For PCF8574 we are going to sink current, which mans LOW = HIGH
+            log.info("Pin ON low - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
             gpioPin.low();
         }
         else {
+            log.info("Pin ON high - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
             gpioPin.high();
         }
     }
@@ -59,9 +63,11 @@ public class PinController {
         GpioPinDigitalOutput gpioPin = getGpioOutputPin(pin);
         if (pin.getPinSupplierType() == PinSupplierType.PCF8574 || pin.getPinSupplierType() == PinSupplierType.PCF8574A) {
             // For PCF8574 we are going to sink current, which mans HIGH = LOW
+            log.info("Pin OFF high - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
             gpioPin.high();
         }
         else {
+            log.info("Pin OFF low - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
             gpioPin.low();
         }
     }
@@ -75,9 +81,11 @@ public class PinController {
 
             switch (pin.getPinSupplierType()) {
                 case RASBERRY_PI:
+                    log.info("PROVISION PI PIN - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
                     return gpioController.provisionDigitalOutputPin(RaspiPin.getPinByAddress(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.LOW);
                 case PCF8574:
                 case PCF8574A:
+                    log.info("PROVISION PCF8574 PIN - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
                     return gpioController.provisionDigitalOutputPin(pcf8574ProviderService.getProvider(pin.getPinSupplierType(), pin.getPinSupplierHardwareId()), getPcfPin(pin.getPinNumber()), getPinName(pin.getPinId()), PinState.HIGH);
                 default:
                     throw new RuntimeException("PinSupplierType Not Handled: " + pin.getPinSupplierType());
@@ -87,6 +95,7 @@ public class PinController {
 
     public void unProvisionPins(List<Integer> pins) {
         pins.forEach(pin -> {
+            log.info("PROVISION PI PIN - pin:{}", pin);
             GpioPin provisionedPin = gpioController.getProvisionedPin(getPinName(pin));
             if (provisionedPin != null) {
                 gpioController.unprovisionPin(provisionedPin);

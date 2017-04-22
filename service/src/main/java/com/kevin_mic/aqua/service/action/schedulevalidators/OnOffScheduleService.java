@@ -105,6 +105,7 @@ public class OnOffScheduleService implements ScheduleServiceInterface<OnOffSched
                 .withIdentity(getOnOffName(on) + extraNameInfo, getActionGroupName(actionId))
                 .usingJobData(OnOffJob.ACTION_ID, actionId)
                 .usingJobData(OnOffJob.ON, on)
+                .storeDurably()
                 .build();
     }
 

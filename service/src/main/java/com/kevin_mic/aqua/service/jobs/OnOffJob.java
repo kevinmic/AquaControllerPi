@@ -34,6 +34,7 @@ public class OnOffJob implements Job {
             boolean on = context.getJobDetail().getJobDataMap().getBoolean(ON);
             OnOffInterface action = (OnOffInterface) actionDao.getAction(actionId);
 
+            log.info("Runnong OnJob - action:{}, on:{}", actionId, on);
             // Attempt
             action.getDeviceIds().stream()
                     .map(deviceId -> {

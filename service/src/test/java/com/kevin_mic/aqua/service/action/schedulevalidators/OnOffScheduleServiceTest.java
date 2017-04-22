@@ -9,6 +9,7 @@ import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.service.jobs.OnOffJob;
 import org.junit.Before;
 import org.junit.Test;
+import org.quartz.JobDetail;
 import org.quartz.Trigger;
 import org.quartz.TriggerKey;
 
@@ -195,7 +196,7 @@ public class OnOffScheduleServiceTest {
         assertEquals(3, jobs.size());
 
         ScheduleJob job = jobs.get(0);
-        verifyJob(job, onOffSchedule.isOnNow()?"on_IMMEDIATE":"off_IMMEDIATE", true);
+        verifyJob(job, onOffSchedule.isOnNow()?"on_IMMEDIATE":"off_IMMEDIATE", onOffSchedule.isOnNow());
         assertEquals(1, job.getTriggers().size());
         assertEquals(new TriggerKey("IMMEDIATE", "action_1"), job.getTriggers().get(0).getKey());
 
@@ -211,14 +212,19 @@ public class OnOffScheduleServiceTest {
     }
 
     private void verifyJob(ScheduleJob job, String name, boolean on) {
-        assertEquals(
-                job.getJobDetail(),
-                newJob(OnOffJob.class)
-                        .withIdentity(name, "action_1")
-                        .usingJobData(OnOffJob.ACTION_ID, 1)
-                        .usingJobData(OnOffJob.ON, on)
-                        .build()
-        );
+        JobDetail jobDetail = job.getJobDetail();
+
+        JobDetail defaultJobDetail = newJob(OnOffJob.class)
+                .withIdentity(name, "action_1")
+                .usingJobData(OnOffJob.ACTION_ID, 1)
+                .usingJobData(OnOffJob.ON, on)
+                .storeDurably(true)
+                .build();
+
+        assertEquals(defaultJobDetail.getKey(), jobDetail.getKey());
+        assertEquals(defaultJobDetail.getJobClass(), jobDetail.getJobClass() );
+        assertEquals(defaultJobDetail.getJobDataMap().getWrappedMap(), jobDetail.getJobDataMap().getWrappedMap() );
+        assertEquals(defaultJobDetail.isDurable(), jobDetail.isDurable());
 
     }
 

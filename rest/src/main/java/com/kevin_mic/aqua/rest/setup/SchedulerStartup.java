@@ -48,6 +48,9 @@ public class SchedulerStartup implements Managed {
             Set<JobKey> jobKeys = null;
             try {
                 jobKeys = scheduler.getJobKeys(GroupMatcher.groupEquals(ScheduleServiceFactory.getActionGroupName(action.getActionId())));
+                if (jobKeys.size() == 0) {
+                    log.warn("NO JOBS FOUND FOR ACTION AT STARTUP - actionId:{}, scheduleType:{}", action.getActionId(), type);
+                }
                 for (JobKey jobKey : jobKeys) {
                     if (function.apply(action, jobKey)) {
                         scheduler.triggerJob(jobKey);
