@@ -18,4 +18,13 @@ public class PCF8574ProviderFactoryImpl implements PCF8574ProviderFactory {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public I2CBus getBus(int busNum) {
+        try {
+            return I2CFactory.getInstance(busNum);
+        } catch (I2CFactory.UnsupportedBusNumberException|IOException  e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

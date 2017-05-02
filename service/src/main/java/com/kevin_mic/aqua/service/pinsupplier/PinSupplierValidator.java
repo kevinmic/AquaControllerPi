@@ -3,19 +3,23 @@ package com.kevin_mic.aqua.service.pinsupplier;
 import com.kevin_mic.aqua.dao.PinSupplierDao;
 import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
+import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.service.AquaException;
 import com.kevin_mic.aqua.service.ErrorType;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderService;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import java.util.List;
 
 public class PinSupplierValidator {
-    PinSupplierDao pinSupplierDao;
+    private final PinSupplierDao pinSupplierDao;
+    private final PCF8574ProviderService pcf8574ProviderService;
 
     @Inject
-    PinSupplierValidator(PinSupplierDao pinSupplierDao) {
+    PinSupplierValidator(PinSupplierDao pinSupplierDao, PCF8574ProviderService pcf8574ProviderService) {
         this.pinSupplierDao = pinSupplierDao;
+        this.pcf8574ProviderService = pcf8574ProviderService;
     }
 
     void validate(PinSupplier pinSupplier) {
@@ -31,6 +35,9 @@ public class PinSupplierValidator {
         if (pinSupplier.getType() == null) {
             throw new AquaException(ErrorType.SupplierTypeCannotBeNull);
         }
+        if (pinSupplier.getType() == PinSupplierType.PCF8574 || pinSupplier.getType() == PinSupplierType.PCF8574A) {
+            pcf8574ProviderService.assertValidHardwareId(pinSupplier.getType(), pinSupplier.getHardwareId());
+        }
         if (pinSupplier.getSubType() == null) {
             throw new AquaException(ErrorType.SupplierSubTypeCannotBeNull);
         }
@@ -40,7 +47,11 @@ public class PinSupplierValidator {
     }
 
     void validateHardwareConnected(PinSupplier pinSupplier) {
-        // TODO
+        if (pinSupplier.getType() == PinSupplierType.PCF8574 ||pinSupplier.getType() == PinSupplierType.PCF8574A) {
+            if (!pcf8574ProviderService.isDeviceActive(Integer.parseInt(pinSupplier.getHardwareId()))) {
+                throw new AquaException(ErrorType.SupplierHardwareIdNotActive);
+            }
+        }
     }
 
     void validateHardwareIdNotUsed(int pinSupplierId, String hardwareId) {

@@ -6,6 +6,8 @@ import com.kevin_mic.aqua.model.dbobj.PinSupplier;
 import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.service.ErrorType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
+import com.kevin_mic.aqua.service.gpio.PCF8574ProviderService;
+import com.pi4j.gpio.extension.pcf.PCF8574GpioProvider;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -16,6 +18,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 public class PinSupplierValidatorTest {
@@ -24,20 +27,22 @@ public class PinSupplierValidatorTest {
     public static final int PIN_SUPPLIER_ID = 1;
     PinSupplierValidator tested;
     PinSupplierDao supplierDao;
+    private PCF8574ProviderService pcf8574ProviderService;
 
     @Before
     public void before() {
         supplierDao = mock(PinSupplierDao.class);
+        pcf8574ProviderService = mock(PCF8574ProviderService.class);
 
-        tested = new PinSupplierValidator(supplierDao);
+        tested = new PinSupplierValidator(supplierDao, pcf8574ProviderService);
     }
 
     @Test
     public void test_validate_valid() {
         PinSupplier pinSupplier = getValidPinSupplier();
         tested.validate(pinSupplier);
-
-        Mockito.verifyNoMoreInteractions(supplierDao);
+        verify(pcf8574ProviderService).assertValidHardwareId(PinSupplierType.PCF8574, HARDWARE_ID);
+        Mockito.verifyNoMoreInteractions(supplierDao, pcf8574ProviderService);
     }
 
     @Test
@@ -120,6 +125,52 @@ public class PinSupplierValidatorTest {
         when(supplierDao.getPins(1)).thenReturn(pins);
 
         assertThatThrownBy(() -> tested.validatePinsNotOwned(1)).hasMessage(ErrorType.PinsInUse.name());
+    }
+
+    @Test
+    public void test_validateHardwareNotUsed_isActive() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("" + PCF8574GpioProvider.PCF8574_0x20);
+        pinSupplier.setType(PinSupplierType.PCF8574);
+
+        when(pcf8574ProviderService.isDeviceActive(PCF8574GpioProvider.PCF8574_0x20)).thenReturn(true);
+        tested.validateHardwareConnected(pinSupplier);
+
+        verify(pcf8574ProviderService).isDeviceActive(PCF8574GpioProvider.PCF8574_0x20);
+    }
+
+    @Test
+    public void test_validateHardwareNotUsed_A_isActive() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("" + PCF8574GpioProvider.PCF8574A_0x3A);
+        pinSupplier.setType(PinSupplierType.PCF8574A);
+
+        when(pcf8574ProviderService.isDeviceActive(PCF8574GpioProvider.PCF8574A_0x3A)).thenReturn(true);
+        tested.validateHardwareConnected(pinSupplier);
+
+        verify(pcf8574ProviderService).isDeviceActive(PCF8574GpioProvider.PCF8574A_0x3A);
+    }
+
+    @Test
+    public void test_validateHardwareNotUsed_isNotActive() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("" + PCF8574GpioProvider.PCF8574_0x20);
+        pinSupplier.setType(PinSupplierType.PCF8574);
+
+        when(pcf8574ProviderService.isDeviceActive(PCF8574GpioProvider.PCF8574_0x20)).thenReturn(false);
+        assertThatThrownBy(() -> tested.validateHardwareConnected(pinSupplier)).hasMessage(ErrorType.SupplierHardwareIdNotActive.name());
+
+        verify(pcf8574ProviderService).isDeviceActive(PCF8574GpioProvider.PCF8574_0x20);
+    }
+
+    @Test
+    public void test_validateHardwareNotUsed_notPCF8574() {
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setHardwareId("notChecked");
+        pinSupplier.setType(PinSupplierType.SN74HC595);
+
+        tested.validateHardwareConnected(pinSupplier);
+        verifyNoMoreInteractions(pcf8574ProviderService);
     }
 
     private PinSupplier getValidPinSupplier() {
