@@ -61,32 +61,20 @@ public class ScheduleServiceFactory {
     }
 
 
-    public <T extends ActionInterface> void updateSchedules(ActionInterface before, ActionInterface updated) {
-
-//        ScheduleInterface beforeSchedule = before != null? getScheduleFromAction(before, null) : null;
-        ScheduleInterface afterSchedule = updated.findSchedule();
-
-//        if (!Objects.equals(beforeSchedule, afterSchedule)) {
-            deleteSchedules(updated.getActionId());
-            createSchedules(updated);
-//        }
+    public <T extends ActionInterface> void updateSchedules(ActionInterface updated) {
+        deleteSchedules(updated.getActionId());
+        createSchedules(updated);
     }
 
     private <T extends ActionInterface> void createSchedules(ActionInterface action) {
         int actionId = action.getActionId();
-        try {
-            ScheduleInterface schedule = action.findSchedule();
-            if (schedule != null) {
-                List<ScheduleJob> jobs = getServiceForType(schedule.getType()).getJobs(actionId, schedule);
+        ScheduleInterface schedule = action.findSchedule();
+        if (schedule != null) {
+            List<ScheduleJob> jobs = getServiceForType(schedule.getType()).getJobs(actionId, schedule);
 
-                for (ScheduleJob job : jobs) {
-                    for (Trigger trigger : job.getTriggers()) {
-                        scheduler.scheduleJob(job.getJobDetail(), trigger);
-                    }
-                }
+            for (ScheduleJob job : jobs) {
+                scheduleJob(job);
             }
-        } catch (SchedulerException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -126,6 +114,16 @@ public class ScheduleServiceFactory {
                 return runScheduleService;
             default:
                 throw new RuntimeException("ScheduleType Not Handled - " + type);
+        }
+    }
+
+    public void scheduleJob(ScheduleJob job) {
+        try {
+            for (Trigger trigger : job.getTriggers()) {
+                scheduler.scheduleJob(job.getJobDetail(), trigger);
+            }
+        } catch (SchedulerException e) {
+            throw new RuntimeException("Error while scheduling jobs", e);
         }
     }
 }

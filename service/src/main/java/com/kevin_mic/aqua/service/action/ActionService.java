@@ -27,7 +27,7 @@ public class ActionService {
         scheduleServiceFactory.validateSchedules(action);
 
         T savedAction = (T) actionDao.addAction(action);
-        scheduleServiceFactory.updateSchedules(null, savedAction);
+        scheduleServiceFactory.updateSchedules(savedAction);
 
         return savedAction;
     }
@@ -42,7 +42,7 @@ public class ActionService {
 
 
         T savedAction = (T) actionDao.updateAction(action);
-        scheduleServiceFactory.updateSchedules(foundAction, savedAction);
+        scheduleServiceFactory.updateSchedules(savedAction);
 
         return savedAction;
     }

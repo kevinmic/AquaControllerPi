@@ -4,10 +4,7 @@ import com.kevin_mic.aqua.dao.ActionDao;
 import com.kevin_mic.aqua.dao.DeviceDao;
 import com.kevin_mic.aqua.model.actions.PumpSchedule;
 import com.kevin_mic.aqua.model.joins.DevicePinSupplierJoin;
-import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.service.gpio.PinController;
-import com.pi4j.io.gpio.GpioController;
-import com.pi4j.io.gpio.GpioPinDigitalOutput;
 import org.assertj.core.util.Lists;
 import org.junit.Before;
 import org.junit.Test;
@@ -43,6 +40,13 @@ public class OnOffJobTest {
         pinController = mock(PinController.class);
 
         tested = new OnOffJob(actionDao, deviceDao, pinController);
+    }
+
+    @Test(expected = JobExecutionException.class)
+    public void test_execute_catchError() throws JobExecutionException {
+        JobExecutionContext context = mock(JobExecutionContext.class);
+        when(context.getJobDetail()).thenThrow(new RuntimeException("Error"));
+        tested.execute(context);
     }
 
     @Test

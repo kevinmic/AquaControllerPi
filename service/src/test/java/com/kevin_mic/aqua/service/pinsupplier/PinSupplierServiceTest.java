@@ -4,9 +4,13 @@ import com.kevin_mic.aqua.dao.PinSupplierDao;
 import com.kevin_mic.aqua.model.EntityNotFoundException;
 import com.kevin_mic.aqua.model.dbobj.Pin;
 import com.kevin_mic.aqua.model.dbobj.PinSupplier;
+import com.kevin_mic.aqua.model.types.PinSupplierSubType;
 import com.kevin_mic.aqua.model.types.PinSupplierType;
 import com.kevin_mic.aqua.model.updates.PinSupplierUpdate;
+import com.kevin_mic.aqua.service.ErrorType;
+import com.kevin_mic.aqua.service.action.schedulevalidators.ScheduleServiceFactory;
 import com.kevin_mic.aqua.service.gpio.PCF8574ProviderService;
+import com.kevin_mic.aqua.service.jobs.TestPinOnOffJob;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,7 +18,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
+import static org.assertj.core.api.Java6Assertions.assertThatThrownBy;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -28,19 +32,21 @@ public class PinSupplierServiceTest {
     PinSupplierDao supplierDao;
     PinSupplierValidator validator;
     PCF8574ProviderService pcf8574ProviderService;
+    ScheduleServiceFactory scheduler;
 
     @Before
     public void before() {
         supplierDao = mock(PinSupplierDao.class);
         validator = mock(PinSupplierValidator.class);
         pcf8574ProviderService = mock(PCF8574ProviderService.class);
+        scheduler = mock(ScheduleServiceFactory.class);
 
-        tested = new PinSupplierService(supplierDao, validator, pcf8574ProviderService);
+        tested = new PinSupplierService(supplierDao, validator, pcf8574ProviderService, scheduler);
     }
 
     @After
     public void after() {
-        Mockito.verifyNoMoreInteractions(supplierDao, validator);
+        Mockito.verifyNoMoreInteractions(supplierDao, validator, scheduler, pcf8574ProviderService);
     }
 
     @Test
@@ -157,6 +163,79 @@ public class PinSupplierServiceTest {
         when(supplierDao.getPinSupplier(1)).thenThrow(new EntityNotFoundException("", 1));
         tested.deletePinSupplier(1);
         verify(supplierDao).getPinSupplier(1);
+    }
+
+    @Test
+    public void test_testPin_ownedByDevice() {
+        Pin pin = new Pin();
+        pin.setPinSupplierId(1);
+        pin.setOwnedByDeviceId(5);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setType(PinSupplierType.PCF8574);
+        pinSupplier.setSubType(PinSupplierSubType.Relay_120_VAC);
+
+        when(supplierDao.getPin(2)).thenReturn(pin);
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
+
+        assertThatThrownBy(() -> tested.testPin(2, 5)).hasMessage(ErrorType.PinAlreadyOwned.name());
+    }
+
+    @Test
+    public void test_testPin_relay_120V() {
+        Pin pin = new Pin();
+        pin.setPinSupplierId(1);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setType(PinSupplierType.PCF8574);
+        pinSupplier.setSubType(PinSupplierSubType.Relay_120_VAC);
+
+        when(supplierDao.getPin(2)).thenReturn(pin);
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
+        tested.testPin(2, 5);
+
+        verify(scheduler).scheduleJob(TestPinOnOffJob.getScheduleJob(2, 5));
+        verify(supplierDao).getPinSupplier(1);
+        verify(supplierDao).getPin(2);
+    }
+
+    @Test
+    public void test_testPin_relay_12V() {
+        Pin pin = new Pin();
+        pin.setPinSupplierId(1);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setType(PinSupplierType.PCF8574);
+        pinSupplier.setSubType(PinSupplierSubType.Relay_12_VDC);
+
+        when(supplierDao.getPin(2)).thenReturn(pin);
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
+        tested.testPin(2, 5);
+
+        verify(scheduler).scheduleJob(TestPinOnOffJob.getScheduleJob(2, 5));
+        verify(supplierDao).getPinSupplier(1);
+        verify(supplierDao).getPin(2);
+    }
+
+    @Test
+    public void test_testPin_other() {
+        Pin pin = new Pin();
+        pin.setPinSupplierId(1);
+
+        PinSupplier pinSupplier = new PinSupplier();
+        pinSupplier.setType(PinSupplierType.PCF8574);
+
+        when(supplierDao.getPin(2)).thenReturn(pin);
+        when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
+
+        pinSupplier.setSubType(PinSupplierSubType.PI);
+        assertThatThrownBy(() -> tested.testPin(2, 5)).hasMessage(ErrorType.PinSupplierSubTypeTestNotImplemented.name());
+        pinSupplier.setSubType(PinSupplierSubType.SensorArray);
+        assertThatThrownBy(() -> tested.testPin(2, 5)).hasMessage(ErrorType.PinSupplierSubTypeTestNotImplemented.name());
+        pinSupplier.setSubType(PinSupplierSubType.StepperArray);
+        assertThatThrownBy(() -> tested.testPin(2, 5)).hasMessage(ErrorType.PinSupplierSubTypeTestNotImplemented.name());
+
+        Mockito.reset(supplierDao);
     }
 
 }

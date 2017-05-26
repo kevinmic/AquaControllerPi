@@ -74,7 +74,7 @@ public class PCF8574ProviderService {
 
         I2CBus bus = null;
         try {
-            bus = pcf8574ProviderFactory.getBus(I2CBus.BUS_2);
+            bus = pcf8574ProviderFactory.getBus(I2CBus.BUS_1);
             final I2CBus finalBus = bus;
             return possibleAddresses.stream().filter((hwId) -> isDeviceActive(finalBus, hwId)).collect(Collectors.toList());
         } finally {
@@ -106,7 +106,7 @@ public class PCF8574ProviderService {
 
         I2CBus bus = null;
         try {
-            bus = pcf8574ProviderFactory.getBus(I2CBus.BUS_2);
+            bus = pcf8574ProviderFactory.getBus(I2CBus.BUS_1);
             return isDeviceActive(bus, hwId);
         } finally {
             if (bus != null) {

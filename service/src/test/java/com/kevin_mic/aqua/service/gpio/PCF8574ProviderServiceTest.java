@@ -45,7 +45,7 @@ public class PCF8574ProviderServiceTest {
         I2CBus bus = mock(I2CBus.class);
         I2CDevice device = mock(I2CDevice.class);
 
-        when(factory.getBus(I2CBus.BUS_2)).thenReturn(bus);
+        when(factory.getBus(I2CBus.BUS_1)).thenReturn(bus);
         when(bus.getDevice(anyInt())).thenReturn(device);
 
         List<Integer> found = tested.lookupActiveNonExistingProviders(PinSupplierType.PCF8574, Lists.newArrayList(PCF8574GpioProvider.PCF8574_0x20, PCF8574GpioProvider.PCF8574_0x22, PCF8574GpioProvider.PCF8574_0x24, PCF8574GpioProvider.PCF8574_0x26));
@@ -61,7 +61,7 @@ public class PCF8574ProviderServiceTest {
         I2CBus bus = mock(I2CBus.class);
         I2CDevice device = mock(I2CDevice.class);
 
-        when(factory.getBus(I2CBus.BUS_2)).thenReturn(bus);
+        when(factory.getBus(I2CBus.BUS_1)).thenReturn(bus);
         when(bus.getDevice(anyInt())).thenReturn(device);
 
         List<Integer> found = tested.lookupActiveNonExistingProviders(PinSupplierType.PCF8574A, Lists.newArrayList(PCF8574GpioProvider.PCF8574A_0x38, PCF8574GpioProvider.PCF8574A_0x3A, PCF8574GpioProvider.PCF8574A_0x3C, PCF8574GpioProvider.PCF8574A_0x3E));
@@ -78,7 +78,7 @@ public class PCF8574ProviderServiceTest {
         I2CDevice device = mock(I2CDevice.class);
         int deviceId = PCF8574GpioProvider.PCF8574_0x20;
 
-        when(factory.getBus(I2CBus.BUS_2)).thenReturn(bus);
+        when(factory.getBus(I2CBus.BUS_1)).thenReturn(bus);
         when(bus.getDevice(deviceId)).thenReturn(device);
 
         assertTrue(tested.isDeviceActive(deviceId));
@@ -93,7 +93,7 @@ public class PCF8574ProviderServiceTest {
         I2CDevice device = mock(I2CDevice.class);
         int deviceId = PCF8574GpioProvider.PCF8574_0x20;
 
-        when(factory.getBus(I2CBus.BUS_2)).thenReturn(bus);
+        when(factory.getBus(I2CBus.BUS_1)).thenReturn(bus);
         when(bus.getDevice(deviceId)).thenReturn(device);
         when(device.read(any(), anyInt(), anyInt())).thenThrow(new IOException());
 

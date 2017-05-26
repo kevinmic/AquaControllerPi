@@ -7,7 +7,7 @@ import org.quartz.Trigger;
 import java.util.List;
 
 @Data
-class ScheduleJob {
+public class ScheduleJob {
     JobDetail jobDetail;
     List<Trigger> triggers;
 }

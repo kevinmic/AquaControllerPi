@@ -51,7 +51,7 @@ public class ActionServiceTest {
         verify(actionValidator).validateRequired(action);
         verify(scheduleServiceFactory).validateSchedules(action);
         verify(actionDao).addAction(action);
-        verify(scheduleServiceFactory).updateSchedules(null, action);
+        verify(scheduleServiceFactory).updateSchedules(action);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class ActionServiceTest {
         verify(scheduleServiceFactory).validateSchedules(action);
         verify(actionDao).updateAction(action);
         verify(actionDao).getAction(5);
-        verify(scheduleServiceFactory).updateSchedules(foundAction, action);
+        verify(scheduleServiceFactory).updateSchedules(action);
     }
 
     @Test
