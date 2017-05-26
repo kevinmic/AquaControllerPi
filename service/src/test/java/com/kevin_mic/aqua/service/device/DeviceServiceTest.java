@@ -73,6 +73,7 @@ public class DeviceServiceTest {
 
         verify(deviceValidator).validate(device);
         verify(deviceValidator).validatePins(device);
+        verify(deviceValidator).validateDefaultOn(device);
         verify(deviceDao).addDevice(device);
     }
 
@@ -102,6 +103,7 @@ public class DeviceServiceTest {
 
         verify(deviceValidator).validate(device);
         verify(deviceValidator).validatePins(device);
+        verify(deviceValidator).validateDefaultOn(device);
         verify(deviceDao).updateDevice(device);
         verify(deviceDao).getDevice(1);
 

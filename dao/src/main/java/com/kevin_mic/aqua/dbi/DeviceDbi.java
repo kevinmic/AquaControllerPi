@@ -17,12 +17,13 @@ import java.util.List;
 
 @RegisterMapperFactory(BeanMapperFactory.class)
 public interface DeviceDbi {
-    @SqlUpdate("insert into " + Device.TABLE_NAME + " (type, name, hardwareId) values (:type, :name, :hardwareId) ")
+    @SqlUpdate("insert into " + Device.TABLE_NAME + " (type, name, hardwareId, defaultOn) values (:type, :name, :hardwareId, :defaultOn) ")
     @GetGeneratedKeys
     int insert(@BindBean Device device);
 
     @SqlUpdate("update " + Device.TABLE_NAME + " " +
             "   set name = :name, " +
+            "       defaultOn = :defaultOn, " +
             "       hardwareId = :hardwareId " +
             " where deviceId = :deviceId ")
     void update(@BindBean Device device);
@@ -48,8 +49,9 @@ public interface DeviceDbi {
     @SqlUpdate("delete from " + DevicePin.TABLE_NAME + " where deviceId = :deviceId")
     void removeAllPins(@Bind("deviceId") int deviceId);
 
-    @SqlQuery("select dp.deviceId, dp.pinType, p.pinId, p.pinNumber, p.pinSupplierId, ps.type as pinSupplierType, ps.subType as pinSupplierSubType, ps.hardwareId as pinSupplierHardwareId" +
+    @SqlQuery("select d.defaultOn as deviceDefaultOn, dp.deviceId, dp.pinType, p.pinId, p.pinNumber, p.pinSupplierId, ps.type as pinSupplierType, ps.subType as pinSupplierSubType, ps.hardwareId as pinSupplierHardwareId" +
             " from " + DevicePin.TABLE_NAME + " dp " +
+            " INNER JOIN " + Device.TABLE_NAME + " d ON dp.deviceId = d.deviceId " +
             " INNER JOIN " + Pin.TABLE_NAME + " p ON dp.pinId = p.pinId " +
             " INNER JOIN " + PinSupplier.TABLE_NAME + " ps ON p.pinSupplierId = ps.pinSupplierId " +
             " where dp.deviceId = :deviceId")

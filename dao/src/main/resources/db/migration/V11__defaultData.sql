@@ -2,6 +2,7 @@ insert into pin_supplier (pinSupplierId, type, subtype, name, hardwareId) VALUES
 
 insert into device (deviceId, type, name) values (2, 'I2C_BUS', 'I2C Bus');
 insert into device (deviceId, type, name) values (3, 'SHIFT_REGISTER_BUS', 'ShiftRegister BUS');
+insert into device (deviceId, type, name) values (4, 'THERMOMETER_BUS', 'Thermometer BUS');
 
 insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (30, 0, 1, 3);
 insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (31, 1, 1, 3);
@@ -10,7 +11,7 @@ insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (33, 3
 insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (34, 4, 1, 3);
 insert into pin (pinid, pinNumber, pinSupplierId) values (35, 5, 1);
 insert into pin (pinid, pinNumber, pinSupplierId) values (36, 6, 1);
-insert into pin (pinid, pinNumber, pinSupplierId) values (37, 7, 1);
+insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (37, 7, 1, 4);
 insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (38, 8, 1, 2);
 insert into pin (pinid, pinNumber, pinSupplierId, ownedByDeviceId) values (39, 9, 1, 2);
 insert into pin (pinid, pinNumber, pinSupplierId) values (40, 10, 1);
@@ -42,3 +43,5 @@ insert into device_pin (pinId, deviceId, pinType) values (34, 3, 'SN74HC595_Rese
 
 insert into device_pin (pinId, deviceId, pinType) values (38, 2, 'I2C_SDA1');
 insert into device_pin (pinId, deviceId, pinType) values (39, 2, 'I2C_SLC1');
+
+insert into device_pin (pinId, deviceId, pinType) values (37, 4, 'I2C_THERMOMETER');

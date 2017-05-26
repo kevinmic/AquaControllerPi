@@ -50,4 +50,5 @@ public enum ErrorType {
     InvalidHardwareId_PCF8574_MustBeInt,
     InvalidHardwareId_PCF8574_BadAddress,
     PinSupplierSubTypeTestNotImplemented,
+    InvalidDeviceTypeForDefaultOn,
 }

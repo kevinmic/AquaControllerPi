@@ -13,6 +13,7 @@ public class Device {
     private DeviceType type;
     private String name;
     private String hardwareId;
+    private boolean defaultOn;
 
     List<DevicePin> pins;
 }

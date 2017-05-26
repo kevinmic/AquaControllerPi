@@ -47,30 +47,42 @@ public class PinController {
     }
 
     public void on(DevicePinSupplierJoin pin) {
+        flipPin(pin, true, "ON");
+    }
+
+
+    public void off(DevicePinSupplierJoin pin) {
+        flipPin(pin, false, "ON");
+    }
+
+    private void flipPin(DevicePinSupplierJoin pin, boolean doHigh, String debug) {
+        if (swapLoHi(pin.getPinSupplierType())) {
+            doHigh = !doHigh;
+            debug += ":swapLoHigh";
+        }
+
+        if (pin.isDeviceDefaultOn()) {
+            // Flip the value for defaultOn
+            doHigh = !doHigh;
+            debug += ":defaultOn";
+        }
+
         GpioPinDigitalOutput gpioPin = getGpioOutputPin(pin);
-        if (pin.getPinSupplierType() == PinSupplierType.PCF8574 || pin.getPinSupplierType() == PinSupplierType.PCF8574A) {
-            // For PCF8574 we are going to sink current, which mans LOW = HIGH
-            log.info("Pin ON low - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
-            gpioPin.low();
+        if (doHigh) {
+            log.info("Pin high - info:{} device:{}, pin:{}, pinSupplierId:{}", debug, pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
+            gpioPin.high();
         }
         else {
-            log.info("Pin ON high - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
-            gpioPin.high();
+            log.info("Pin low - info:{} device:{}, pin:{}, pinSupplierId:{}", debug, pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
+            gpioPin.low();
         }
     }
 
-    public void off(DevicePinSupplierJoin pin) {
-        GpioPinDigitalOutput gpioPin = getGpioOutputPin(pin);
-        if (pin.getPinSupplierType() == PinSupplierType.PCF8574 || pin.getPinSupplierType() == PinSupplierType.PCF8574A) {
-            // For PCF8574 we are going to sink current, which mans HIGH = LOW
-            log.info("Pin OFF high - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
-            gpioPin.high();
-        }
-        else {
-            log.info("Pin OFF low - device:{}, pin:{}, pinSupplierId:{}", pin.getDeviceId(), pin.getPinId(), pin.getPinSupplierId());
-            gpioPin.low();
-        }
+    private boolean swapLoHi(PinSupplierType pinSupplierType) {
+        // For PCF8574 we are going to sink current, which mans LOW = HIGH
+        return pinSupplierType == PinSupplierType.PCF8574 || pinSupplierType== PinSupplierType.PCF8574A;
     }
+
 
     private GpioPinDigitalOutput provisionOutputPin(DevicePinSupplierJoin pin) {
         return PinLock.lock(() -> {

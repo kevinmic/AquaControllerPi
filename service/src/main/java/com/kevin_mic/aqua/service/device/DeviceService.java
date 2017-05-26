@@ -36,6 +36,7 @@ public class DeviceService {
         device.setDeviceId(-1); // Unset the deviceid on addDevice
         deviceValidator.validate(device);
         deviceValidator.validatePins(device);
+        deviceValidator.validateDefaultOn(device);
 
         return deviceDao.addDevice(device);
     }
@@ -50,6 +51,7 @@ public class DeviceService {
 
         deviceValidator.validate(device);
         deviceValidator.validatePins(device);
+        deviceValidator.validateDefaultOn(device);
 
         resetPins(beforePins, deviceUpdate.getPins());
         return deviceDao.updateDevice(device);

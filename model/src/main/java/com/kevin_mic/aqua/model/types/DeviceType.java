@@ -8,14 +8,15 @@ import static com.kevin_mic.aqua.model.types.PinType.*;
 import static com.kevin_mic.aqua.model.types.PinSupplierSubType.*;
 
 public enum DeviceType {
-    I2C_BUS(false, null, I2C_SDA1, I2C_SLC1),
-    SHIFT_REGISTER_BUS(false, null, SN74HC595_Clock, SN74HC595_LClock, SN74HC595_OutputEnabled, SN74HC595_Reset, SN74HC595_SER),
+    I2C_BUS(false, false, null, I2C_SDA1, I2C_SLC1),
+    SHIFT_REGISTER_BUS(false, false, null, SN74HC595_Clock, SN74HC595_LClock, SN74HC595_OutputEnabled, SN74HC595_Reset, SN74HC595_SER),
+    THERMOMETER_BUS(false, false, null, I2C_THERMOMETER),
 
-    PumpAC(Relay_120_VAC, Toggle),
-    LightAC(Relay_120_VAC, Toggle),
-    Heater(Relay_120_VAC, Toggle),
-    FanAC(Relay_120_VAC, Toggle),
-    FanDC(Relay_12_VDC, Toggle),
+    PumpAC(true, true, Relay_120_VAC, Toggle),
+    LightAC(true, true, Relay_120_VAC, Toggle),
+    Heater(true, true, Relay_120_VAC, Toggle),
+    FanAC(true, true, Relay_120_VAC, Toggle),
+    FanDC(true, true, Relay_12_VDC, Toggle),
     DosingPumpPeristalticTimed(Relay_12_VDC, Toggle),
     DosingPumpPeristalticStepper(StepperArray, STEPPER_Direction, STEPPER_Step),
     FloatSwitch(SensorArray, Toggle),
@@ -26,15 +27,17 @@ public enum DeviceType {
     ;
 
     private final boolean canCreate;
+    private final boolean allowDefaultOn;
     private final List<PinType> requiredPinTypes;
     private final PinSupplierSubType requiredPinSupplierSubType;
 
     DeviceType(PinSupplierSubType pinSupplierSubType, PinType ... requirePinTypes) {
-        this(true, pinSupplierSubType, requirePinTypes);
+        this(true, false, pinSupplierSubType, requirePinTypes);
     }
 
-    DeviceType(boolean canCreate, PinSupplierSubType pinSupplierSubType, PinType ... requiredPinTypes) {
+    DeviceType(boolean canCreate, boolean allowDefaultOn, PinSupplierSubType pinSupplierSubType, PinType ... requiredPinTypes) {
         this.canCreate = canCreate;
+        this.allowDefaultOn = allowDefaultOn;
         this.requiredPinTypes = new ArrayList<>();
         this.requiredPinTypes.addAll(Arrays.asList(requiredPinTypes));
         this.requiredPinSupplierSubType = pinSupplierSubType;
@@ -51,4 +54,8 @@ public enum DeviceType {
     public PinSupplierSubType getRequiredPinSupplierSubType() {
         return requiredPinSupplierSubType;
     };
+
+    public boolean isAllowDefaultOn() {
+        return allowDefaultOn;
+    }
 }

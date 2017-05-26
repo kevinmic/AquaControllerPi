@@ -144,6 +144,22 @@ public class DeviceValidatorTest {
         Mockito.verifyNoMoreInteractions(pinSupplierDao);
     }
 
+    @Test
+    public void test_validateDefaultOn() {
+        Device device = new Device();
+
+        device.setDefaultOn(false);
+        device.setType(null);
+        tested.validateDefaultOn(device);
+
+        device.setDefaultOn(true);
+        device.setType(DeviceType.DosingPumpPeristalticStepper);
+        assertThatThrownBy(() -> tested.validateDefaultOn(device)).hasMessage(ErrorType.InvalidDeviceTypeForDefaultOn.name());
+
+        device.setType(DeviceType.FanAC);
+        tested.validateDefaultOn(device);
+    }
+
     private Device getDevice() {
         Device device = new Device();
         device.setType(DeviceType.I2C_BUS);

@@ -15,4 +15,5 @@ public class DevicePinSupplierJoin {
     private PinSupplierType pinSupplierType;
     private PinSupplierSubType pinSupplierSubType;
     private String pinSupplierHardwareId;
+    private boolean deviceDefaultOn;
 }

@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -99,12 +100,14 @@ public class DeviceDaoTest extends BaseTest {
         updateDevice.setName("NEW_NAME");
         updateDevice.setHardwareId("NEW_HARDWARE");
         updateDevice.setType(DeviceType.I2C_BUS);
+        updateDevice.setDefaultOn(false);
 
         Device checkDevice = tested.updateDevice(updateDevice);
         assertNotEquals(checkDevice, updateDevice);
         assertEquals(checkDevice.getHardwareId(), updateDevice.getHardwareId());
         assertEquals(checkDevice.getName(), updateDevice.getName());
         assertNotEquals(checkDevice.getType(), updateDevice.getType());
+        assertFalse(checkDevice.isDefaultOn());
 
         pin = pinSupplierDao.getPin(pinIdA);
         assertNull(pin.getOwnedByDeviceId());
@@ -120,7 +123,6 @@ public class DeviceDaoTest extends BaseTest {
 
         Device createDevice = createDevice(pinIdA);
         tested.addDevice(createDevice);
-
         int deviceId = createDevice.getDeviceId();
 
         List<DevicePinSupplierJoin> pinsForDevice = tested.getPinsForDevice(deviceId);
@@ -128,6 +130,8 @@ public class DeviceDaoTest extends BaseTest {
 
         DevicePinSupplierJoin pinJoin = pinsForDevice.get(0);
         DevicePin devicePin = createDevice.getPins().get(0);
+
+        assertTrue(pinJoin.isDeviceDefaultOn());
 
         assertEquals(devicePin.getPinType(), pinJoin.getPinType());
         assertEquals(devicePin.getDeviceId(), pinJoin.getDeviceId());
@@ -209,6 +213,7 @@ public class DeviceDaoTest extends BaseTest {
         createDevice.setName("NAME");
         createDevice.setHardwareId("HWD");
         createDevice.setType(DeviceType.DosingPumpPeristalticStepper);
+        createDevice.setDefaultOn(true);
         addPin(createDevice, pinId, PinType.I2C_SDA1);
         return createDevice;
     }

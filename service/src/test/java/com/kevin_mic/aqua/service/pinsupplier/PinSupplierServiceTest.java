@@ -179,6 +179,8 @@ public class PinSupplierServiceTest {
         when(supplierDao.getPinSupplier(1)).thenReturn(pinSupplier);
 
         assertThatThrownBy(() -> tested.testPin(2, 5)).hasMessage(ErrorType.PinAlreadyOwned.name());
+
+        Mockito.reset(supplierDao);
     }
 
     @Test

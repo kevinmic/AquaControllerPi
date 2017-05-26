@@ -35,6 +35,12 @@ public class DeviceValidator {
         }
     }
 
+    public void validateDefaultOn(Device device) {
+        if (device.isDefaultOn() && !device.getType().isAllowDefaultOn()) {
+            throw new AquaException(ErrorType.InvalidDeviceTypeForDefaultOn);
+        }
+    }
+
     public void validatePins(Device device) {
         validatePinTypes(device.getType(), device.getPins());
 
